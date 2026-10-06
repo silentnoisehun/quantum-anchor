@@ -245,15 +245,25 @@ def main(argv: list[str] | None = None) -> int:
     if args.backend == "aer_simulator":
         backend = AerSimulator()
         backend_label = "AerSimulator (ideal, NO noise)"
+        evidence_grade = "SIMULATION. No QPU. Not hardware evidence."
     else:
+        # Try fake provider first (noise model)
         from qiskit_ibm_runtime import fake_provider as fp
-
-        backend = getattr(fp, args.backend)()
-        backend_label = f"{args.backend} (NOISE MODEL, still not hardware)"
+        if hasattr(fp, args.backend):
+            backend = getattr(fp, args.backend)()
+            backend_label = f"{args.backend} (NOISE MODEL, still not hardware)"
+            evidence_grade = "SIMULATION. No QPU. Not hardware evidence."
+        else:
+            # Try real backend via QiskitRuntimeService
+            from qiskit_ibm_runtime import QiskitRuntimeService
+            svc = QiskitRuntimeService(instance='open-instance')
+            backend = svc.backend(args.backend)
+            backend_label = f"{args.backend} (REAL QPU — HARDWARE EVIDENCE)"
+            evidence_grade = "HARDWARE. Measured on a real quantum processor."
 
     print("QUANTUM ANCHOR — measurement layer")
     print("=" * 62)
-    print("EVIDENCE GRADE: SIMULATION. No QPU. Not hardware evidence.")
+    print(f"EVIDENCE GRADE: {evidence_grade}")
     print(f"Backend: {backend_label}")
     print(f"Shots:   {args.shots}")
     print()
