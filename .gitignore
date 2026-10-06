@@ -24,3 +24,6 @@ Thumbs.db
 
 # Measurement output
 *.qasm
+
+# Scratch file from a local dependency experiment (not part of the project).
+_stdcheck.py
