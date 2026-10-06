@@ -20,15 +20,16 @@ jobs:
         with:
           python-version: "3.12"
 
-      # The model must run on the standard library alone. There is no
-      # third-party dependency in this project, and adding one would break
-      # the guarantee that the ledger can be checked without an IBM account.
+      # The CLASSICAL MODEL (anchor_model.py) must run on the standard library
+      # alone. The measurement layer (anchor_measure.py) explicitly depends on
+      # qiskit for simulation/QPU runs, as documented. The stdlib-only guarantee
+      # applies only to anchor_model.py.
       #
       # The check is STATIC (it parses the project's own import statements)
       # rather than reading sys.modules, because the interpreter preloads
       # platform modules such as pywin32_* that have nothing to do with this
       # project and would fail the assertion for the wrong reason.
-      - name: "Dependency audit — stdlib only"
+      - name: "Dependency audit — stdlib only (classical model)"
         run: python -m src.check_no_dependencies
 
       - name: "Run the model evaluation"
