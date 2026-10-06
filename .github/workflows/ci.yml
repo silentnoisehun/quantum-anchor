@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  model:
+    name: "Classical model (NOT hardware evidence)"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # The model must run on the standard library alone. There is no
+      # third-party dependency in this project, and adding one would break
+      # the guarantee that the ledger can be checked without an IBM account.
+      #
+      # The check is STATIC (it parses the project's own import statements)
+      # rather than reading sys.modules, because the interpreter preloads
+      # platform modules such as pywin32_* that have nothing to do with this
+      # project and would fail the assertion for the wrong reason.
+      - name: "Dependency audit — stdlib only"
+        run: python -m src.check_no_dependencies
+
+      - name: "Run the model evaluation"
+        run: python -m src.anchor_model
+
+  secrets:
+    name: "No credential committed"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Assert no real .env is tracked"
+        run: |
+          if git ls-files | grep -qE '(^|/)\.env$'; then
+            echo "::error::a real .env file is tracked"
+            exit 1
+          fi
+          echo "clean: no tracked .env"
+
+      - name: "Assert placeholder values only"
+        run: |
+          # The template is safe to ship; make sure it holds placeholders.
+          if grep -qE 'IBM_QUANTUM_API_TOKEN=[A-Za-z0-9_-]{20,}' config/.env.template; then
+            echo "::error::config/.env.template appears to contain a real token"
+            exit 1
+          fi
+          echo "clean: placeholders only"
