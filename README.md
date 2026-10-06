@@ -38,28 +38,64 @@ hipotézis, hol ellenőrizetlen, és miért nem publikálható még.
 
 | Fájl | Mi benne |
 |---|---|
-| [`docs/VALIDATION.md`](docs/VALIDATION.md) | **A proof ledger.** Minden állítás jelöléssel, az öt blokkoló hibával. |
-| `src/anchor_model.py` | A horgonyegyenlet klasszikus kiértékelése. Futtatható, ellenőrizhető. |
+| [`docs/VALIDATION.md`](docs/VALIDATION.md) | **A proof ledger.** Minden állítás jelöléssel, az öt blokkoló hibával, és a §7-ben a lefuttatott mérésekkel. |
+| `src/anchor_model.py` | A horgonyegyenlet klasszikus kiértékelése. Csak stdlib. |
+| `src/anchor_measure.py` | A mérési réteg: amplitúdó-söprés, roundtrip, telítés. Szimuláció. |
+| `src/check_no_dependencies.py` | Statikus függőségi audit. |
 | `config/.env.template` | A környezeti változók helyőrzői. Csak helyőrző, nem titok. |
 
 ## Futtatás
+
+### A mérési réteg
+
+```powershell
+python -m src.anchor_measure --shots 4000                      # ideális
+python -m src.anchor_measure --backend FakeKyiv --shots 4000  # zajmodell
+```
+
+Ez **szimuláció**. Nem használ QPU-t, nem állít hardveres bizonyítékot.
+A white paper fizikai állításait teszteli:
+
+| Teszt | Eredmény |
+|---|---|
+| A4 — a populáció követi a Rabi-képletet | **HOLDS**, max hiba 0,95% |
+| A2 — a forgatás visszafordítható | **HOLDS**, maradék 0,00% / 0,22% zaj |
+| A3 — telítés a π környezetében | megvan, jól látható |
+
+**Amit ezek NEM bizonyítanak:** mindhárom eredmény magyarázható egy **üres
+egyqubites Bloch-forgatással**, amelyben nincs λ, nincs γ, nincs mező.
+A mért viselkedés **nem különböztethető meg a triviális Rabi-forgatástól** —
+tehát a mérések nem támasztják alá az „horgony" állítást. Részletek:
+[docs/VALIDATION.md §7](docs/VALIDATION.md).
+
+### A klasszikus modell
 
 ```powershell
 python -m src.anchor_model
 ```
 
-Ez **klasszikus számítás**. Nem használ QPU-t, nem állít hardveres
-bizonyítékot. Három dolgot mutat meg:
+Szintén **klasszikus számítás**. Az `anchor_model.py` a horgonyegyenletet
+értékeli ki, és **nulla hardveres állítást** tesz.
 
-1. mit mond a modell `γ=0` esetben (és hogy ez hardveren nem elérhető);
-2. hogy `amp=0.08` 37 ns-on egy 94%-os π-fordulás;
-3. hogy egy ilyen mérés — még ha futtatható is lenne — nem különbözteti meg
-   a „horgonylást" a szokásos Bloch-vektor-fordulástól.
+### A függőségi audit
+
+```powershell
+python -m src.check_no_dependencies
+```
+
+Statikusan (AST-alapú) ellenőrzi, hogy a projekt csak standard library-t
+importál. Ez teszi ellenőrizhetővé a „nincs harmadik fél függőség"
+állítást.
 
 ## Követelmények
 
-**Nincs.** Csak a Python standard library. A `qiskit` nem kell — és a
-paperben szereplő `qiskit.pulse` ma már nem is létezik.
+| Rész | Követelmény |
+|---|---|
+| `anchor_model.py` | **nincs** — csak a standard library |
+| `check_no_dependencies.py` | **nincs** — csak a standard library |
+| `anchor_measure.py` | `qiskit`, `qiskit-aer` (szimuláció) |
+
+A `qiskit` a mérési réteghez kell, **nem** a modellhez.
 
 ## Bizonyítéki szintek
 

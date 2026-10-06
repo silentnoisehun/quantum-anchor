@@ -224,3 +224,120 @@ lefuttatja a kódot — mind az ötöt megtalálná.
 A pozitív oldal: a hibák **könnyen javíthatók**, és a projekt első lépéséhez
 (a kód futtatható formába hozása) nincs szükség új hardveres mérésre.
 Ez a legkisebb és legkevésbé kockázatos következő lépés.
+
+---
+
+## 7. A mérések — amit tényleg ki tudtam mérni (2026-10-06)
+
+Az eredeti kérés az volt, hogy „meg kellene csinálni a méréseket, amiket
+csak lehet". A pulzusszintű kísérlet **nem mérhető** (F1, F2, és nincs
+hardver-hozzáférés), de a paper *fizikai* állításai digitális kapukkal
+igen. Ezeket lefuttattam, és itt vannak, bizonyítéki fokozattal.
+
+### 7.1 Amit mérni tudtam, és amit nem
+
+| | |
+|---|---|
+| 🔬 Hardveres mérés | **Nincs.** Nincs IBM-credential a gépen, és nincs pulzusszintű hozzáférés. |
+| ✅ Klasszikus mérés | Igen — szimulátoron és valós zajmodellen. |
+
+Ezért minden alábbi eredmény **klasszikus** bizonyíték. Egyik sem állítja,
+hogy bármi egy Heron processzoron történt.
+
+### 7.2 A mérési eredmények
+
+Futtatás: `python -m src.anchor_measure --shots 4000`
+
+**Ideális szimulátor (Aer, zaj nélkül):**
+
+| amp | P(1) 1× | P(1) 2× azonos | P(1) roundtrip | elmélet | π hány %-a |
+|---|---|---|---|---|---|
+| 0.01 | 0.0328 | 0.1335 | **0.0000** | 0.0338 | 12% |
+| 0.02 | 0.1355 | 0.4435 | **0.0000** | 0.1308 | 24% |
+| 0.04 | 0.4475 | 0.9890 | **0.0000** | 0.4547 | 47% |
+| 0.06 | 0.7973 | 0.6258 | **0.0000** | 0.8023 | 71% |
+| 0.08 | 0.9905 | 0.0333 | **0.0000** | 0.9918 | **94%** |
+| 0.10 | 0.9305 | 0.2823 | **0.0000** | 0.9241 | 118% |
+| 0.12 | 0.6250 | 0.9255 | **0.0000** | 0.6345 | 141% |
+
+**Zajmodell (FakeKyiv, 4000 shots):**
+
+| amp | P(1) 1× | P(1) roundtrip | elmélet |
+|---|---|---|---|
+| 0.01 | 0.0348 | 0.0022 | 0.0338 |
+| 0.04 | 0.4640 | 0.0008 | 0.4547 |
+| 0.08 | 0.9910 | 0.0013 | 0.9918 |
+| 0.12 | 0.6405 | 0.0008 | 0.6345 |
+
+### 7.3 A verdictek
+
+| Teszt | Állítás | Eredmény | Jelölés |
+|---|---|---|---|
+| **A4** | A populáció követi a zárt alakú Rabi-képletet | **HOLDS**, max absz. hiba 0,95% | ✅ |
+| **A2** | A forgatás visszafordítható (roundtrip → \|0⟩) | **HOLDS**, maradék 0,00% ideál / 0,22% zaj | ✅ |
+| **A3** | Telítés a π környezetében | Megvan: 0.06→0.80, 0.08→0.99, 0.10→0.93, 0.12→0.64 | ✅ |
+
+**A roundtrip 0,22%-os maradéka a zajmodellben a mérési padló.** Ez
+összhangban van az SCS valós hardveres méréseivel (1,65–2,6%), és
+megerősíti a projektben régóta hangsúlyozott szabályt: **a gyenge
+eloszlás nem bizonyít semmit.**
+
+### 7.4 Amit ezek a mérések NEM bizonyítanak — és ez a lényeg
+
+A három zöld verdict **egyáltalán nem az anchoring-elméletet támasztja alá**.
+
+Mindhárom eredmény tökéletesen magyarázható egy **üres egyqubites
+Bloch-forgatással**, amelyben:
+
+- nincs λ,
+- nincs γ,
+- nincs mező,
+- nincs másik módus.
+
+A `rx(θ)` kapu pontosan ezt teszi. Nincs szükség Klein–Gordon-egyenletre,
+nincs Dirac-deltára, nincs horgonyra. **A mért viselkedés nem különböztethető
+meg a triviális Rabi-forgatástól.**
+
+Ebből következik a valódi eredmény:
+
+> 🔬 **Az `amp=0.08` teljesítőképes horgonyként sem, de triviális
+> Bloch-forgatásként is csak egy majdnem teljes π-fordulás (94%).** Az
+> „nem-destruktív perturbáció" minősítés a mérés alapján **nem tartható**.
+
+A mérések tehát **nem cáfolják** az elméletet (nem mutattak cáfolatot),
+de **nem is támasztják alá**. Semmilyen bizonyítékot nem adnak az
+„horgony" állításra. Ez pontosan az a fajta tisztesség helyzet, amit a
+bizonyítéki rendnek láthatóvá kell tennie.
+
+### 7.5 Három hiba, amit a mérés során találtam
+
+Ezeket azért rögzítem, mert mindegyik téves állítást would've született
+belőlük:
+
+1. **Kétszeres szög a kapuban.** Az első változat `rx(2·amp·dur)`-t adott át,
+   ami `P(1) = cos²(amp·t/2)`-t eredményez — az előrejelzés pontos
+   *kiegészítőjét*. Minden sor eltért az elmélettől. A hiba maga jelezte,
+   hogy a „jel a zaj alatt van" következtetés (amely szintén felbukkant)
+   téves volt.
+
+2. **A visszafordíthatóság téves tesztje.** Két azonos előjelű `rx(a)` kapu
+   `rx(2a)`-t ad, nem identitást — a visszamaradó P(1) sosem nulla. Ezt
+   eleinte „bukásnak" olvastam. **A teszt volt hibás, nem az áramkör.**
+   A valódi inverzió `rx(+a), rx(−a)`.
+
+3. **A mérés nélküli áramkör.** A számlálók visszaolvasása üres `DataBin`-t
+   dobott, mert a mérési regiszter neve (`meas`) eltért a feltételezettől.
+   Explicit nevű regiszter kell.
+
+### 7.6 Mi a legkisebb következő lépés
+
+Nem új kísérlet, hanem **kontroll**:
+
+- ugyanez a roundtrip mérés `λ=0` esetén, minden amplitúdónál;
+- ha a roundtrip `λ=0`-nál is 0-t ad (és ezt várjuk), akkor a jelenlegi
+  eredmény **semmit nem mond az anchoringról** — és ezt így is kell
+  dokumentálni.
+
+Ez a mérés **ma, hardver nélkül is futtatható**, és egyértelműen
+megmutatja, hogy a kísérlet jelenlegi formája nem teszteli az elméletet.
+Ez a legkisebb változtatás, ami értelmet adna a méréseknek.

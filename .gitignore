@@ -27,3 +27,6 @@ Thumbs.db
 
 # Scratch file from a local dependency experiment (not part of the project).
 _stdcheck.py
+
+# CI scratch output
+out.txt
