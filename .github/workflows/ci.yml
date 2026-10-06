@@ -51,19 +51,20 @@ jobs:
       # This asserts the three verdicts the paper's physics must satisfy, so a
       # regression in the measurement layer fails the build instead of quietly
       # changing the numbers in docs/VALIDATION.md.
+      # 4000 shots for stable statistics (2000 has ~0.02 fluctuation margin)
       - name: "Rabi relation and reversibility must hold"
         run: |
-          python -m src.anchor_measure --shots 2000 --assert-verdicts
+          python -m src.anchor_measure --shots 4000 --assert-verdicts
 
       - name: "Same sweep under a noise model"
-        run: python -m src.anchor_measure --backend FakeKyiv --shots 2000
+        run: python -m src.anchor_measure --backend FakeKyiv --shots 4000
 
       # The measurement layer must keep saying out loud that it is simulation.
       # A future edit that turns a green run into an implied hardware claim
       # should fail here rather than mislead a reader.
       - name: "The output must still declare itself simulation"
         run: |
-          python -m src.anchor_measure --shots 200 > out.txt
+          python -m src.anchor_measure --shots 400 > out.txt
           grep -q "SIMULATION" out.txt || { echo "::error::evidence-grade banner missing"; exit 1; }
           grep -q "No QPU" out.txt || { echo "::error::hardware disclaimer missing"; exit 1; }
           grep -q "Nothing here ran on a Heron processor" out.txt \
