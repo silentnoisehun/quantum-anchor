@@ -84,8 +84,15 @@ python tesseract_anchor.py --annihilation-scan
 ```powershell
 # Register at https://resonance.iqm.com → Starter tier (30 credits/month free)
 # export IQM_TOKEN="your_token"
-python anchor_measure_iqm.py --shots 1024 --backend garnet
+# ⚠️ Currently uses circuit-level API + raw shot memory (get_memory())
+# Pulse-level Sweep API requires 5 params: sweep_id, dut_label, settings, sweeps, return_parameters
+python anchor_measure_iqm_final.py --shots 1024 --backend garnet --token "YOUR_TOKEN"
 ```
+
+**Result (2026-10-07):** Job `01a1162c-717c-77e7-91d9-90ed16c0e591`, 1024 shots, 4 planes (8 qubits)
+- Per-plane Bell balance: 95.41%, 96.09%, 96.19%, 96.58% ✅
+- Global 00000000+11111111 balance: 11.62% ❌
+- Raw shot memory: 1024 bitstrings captured
 
 ### Dependency Audit
 
@@ -114,20 +121,24 @@ python -m src.check_no_dependencies
 | **ψ(37ns) single-qubit dynamics** | 0.331662 (γ=0) | 🔬 **HARDWARE PROVEN** | ibm_marrakesh, VALIDATION.md §7.7 |
 | **Borg 16-node clear signal** | 100% clear, 96.43% balance | 🔬 **HARDWARE PROVEN** | ibm_marrakesh, VALIDATION.md §8 |
 | **Matryoshka D0→D8 preservation** | 97.40% → 89.40% | ⚠️ UNVERIFIED | Cumulative noise, not anchor failure |
-| **Anchor drive compensation (Tesseract 4-plane)** | NOT MEASURED | ❌ PENDING | Requires IQM pulse-level |
+| **Anchor drive compensation (Tesseract 4-plane, IQM Garnet)** | Per-plane 95-96%, Global 11.62% | 🔬 **PARTIAL** | IQM Garnet, VALIDATION.md §7.8 |
 
 **Key insight:** The SamplerV2 API (IBM's current primitive) only supports coherent gates. It **cannot** implement the dissipative noise compensation (T1/T2) that the anchor drive requires. This is why anchor drive compensation shows 0% clear on hardware even at γ=0.
+
+**IQM Result:** Circuit-level raw shot memory (`result.get_memory()`) achieves 95-96% per-plane Bell balance with virtual Z phase (4.11 GHz × 37 ns = 0.4398 rad). Global 8-qubit sync (11.62%) requires pulse-level access (Sweep API) for true IQ vector measurement.
 
 ---
 
 ## Next Steps
 
-1. **IQM Registration** → `https://resonance.iqm.com` → Starter tier → API token
-2. **Run IQM measurement** → `python anchor_measure_iqm.py --shots 1024 --backend garnet`
-3. **Update VALIDATION.md §7.8** with raw IQ plot + counts
-4. **White Paper V1.2** → Tesseract appendix: Ψ(x,y,z,w)=Π λ_i·δ(p_i-p0_i)·ψ(t)
-5. **arXiv submission** → Both proofs together (ψ(37ns) + anchor drive)
-6. **Zenodo concept DOI** → Both repos (`.zenodo.json` ready, `CITATION.cff` ready)
+1. ✅ **IQM Registration** → `https://resonance.iqm.com` → Starter tier → API token
+2. ✅ **Run IQM measurement** → `python anchor_measure_iqm_final.py --shots 1024 --backend garnet` (COMPLETED 2026-10-07)
+3. ✅ **Update VALIDATION.md §7.8** with raw shot memory + counts (COMPLETED)
+4. 🔄 **White Paper V1.2** → Tesseract appendix: Ψ(x,y,z,w)=Π λ_i·δ(p_i-p0_i)·ψ(t)
+5. 🔄 **arXiv submission** → Both proofs together (ψ(37ns) + anchor drive)
+6. 🔄 **Zenodo concept DOI** → Both repos (`.zenodo.json` ready, `CITATION.cff` ready)
+7. ⏳ **Pulse-level Sweep API** on IQM (5 params) → true IQ vector measurement
+8. ⏳ **Braket Pulse** (Rigetti Ankaa-3) secondary validation
 
 ---
 
