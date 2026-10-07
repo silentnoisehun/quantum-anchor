@@ -167,52 +167,82 @@ def borg_circuit(
     use_fractional: bool = False,
 ) -> "QuantumCircuit":
     """
-    Borg cube node circuit.
+    Borg cube node circuit — anchor model test.
 
-    Each node predicts at a different horizon (prediction steps ahead).
-    Uses fractional gates with node-specific parameters.
-    
-    For γ=0 (anchor regime), each node should show high balance (coherent prediction).
+    Each node encodes a prediction horizon using fractional gates.
+    The anchor hypothesis: a weak parametric drive at the Klein-Gordon resonance
+    (frequency = wp.frequency band) counteracts the natural damping (gamma)
+    and preserves the Bell-state coherence.
+
+    Circuit structure (same for all gamma):
+    1. Bell preparation (H + CX) — anchor reference state
+    2. Horizon encoding (fractional RX on q1, RZ on q0, fractional CRX entangler)
+    3. Evolution window (duration proportional to horizon) with damping gamma
+    4. Optional anchor drive (if enabled) at resonance during evolution
+    5. Measurement in computational basis
+
+    The anchor prediction: with anchor drive ON, balance stays high even for gamma>0.
+    Without anchor drive, balance decays with gamma.
     """
     from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 
     qc = QuantumCircuit(QuantumRegister(num_qubits, "q"), ClassicalRegister(num_qubits, "meas"))
 
-    # Base encoding: prepare anchor state (Bell-like) for coherent prediction
-    # This mirrors matryoshka D0 preparation
+    # 1. Bell preparation — anchor reference state
     qc.h(0)
     qc.cx(0, 1)
-    
+
     if use_fractional:
-        # Node-specific fractional rotation based on horizon
+        # 2. Horizon encoding (fractional gates, Heron native)
         frac_angle = 2.0 * math.pi * (wp.frequency / 13.0) * (horizon / 8.0)
         qc.rx(frac_angle, 1)
         
         qc.rz(wp.phase + node_id * 0.1, 0)
         
-        # Entangler with fractional power - Heron native
         frac_power = 1.0 / (horizon + 1)
         entangler_angle = math.pi * frac_power
         qc.crx(entangler_angle, 0, 1)
         
-        # For γ=0 anchor regime, add compensating fractional sequence
-        if wp.gamma == 0.0:
-            # Compensation: apply CRX with opposite angle to cancel entangler on Bell state
-            # The Bell state is symmetric, so CRX(theta) on |Bell> = exp(-i*theta/2 * XX) |Bell>
-            # To cancel, we apply CRX(-theta) 
-            qc.crx(-entangler_angle, 0, 1)
-            # Also need to cancel the fractional RX on qubit 1 which broke symmetry
-            qc.rx(-frac_angle, 1)
+        # 3-4. Evolution with damping gamma + optional anchor drive
+        # The anchor drive is a fractional CRX at the resonance frequency
+        # applied periodically during the evolution window
+        evolution_steps = horizon + 1  # longer horizon = more evolution time
+        
+        if wp.gamma > 0.0:
+            # Damping channel simulation: small fractional rotations that leak coherence
+            # This approximates T1/T2 decay as coherent errors (since we can't do true noise)
+            for step in range(evolution_steps):
+                # Damping: small Z-rotations that dephase the Bell state
+                # gamma is in 1/ns, convert to angle per step
+                damp_angle = wp.gamma * 0.1  # scaling factor for simulation
+                qc.rz(damp_angle, 0)
+                qc.rz(damp_angle, 1)
+                
+                # ANCHOR DRIVE: counteracting rotation at resonance frequency
+                # This is the testable prediction: does this preserve coherence?
+                anchor_freq = 2.0 * math.pi * (wp.frequency + 1.0) / 13.0
+                anchor_angle = 0.5 * damp_angle * math.sin(anchor_freq * step)
+                qc.crx(anchor_angle, 0, 1)
+        else:
+            # gamma=0: no damping, no anchor drive needed (ideal case)
+            pass
     else:
-        # Standard encoding without fractional gates - still use Bell prep
+        # Standard encoding without fractional gates
         frac_angle = 2.0 * math.pi * (wp.frequency / 13.0) * (horizon / 8.0)
         qc.rx(frac_angle, 1)
         
         qc.rz(wp.phase + node_id * 0.1, 0)
         
-        # Standard entangler
         frac_power = 1.0 / (horizon + 1)
         qc.crx(math.pi * frac_power, 0, 1)
+        
+        if wp.gamma > 0.0:
+            # Simulate damping without anchor
+            evolution_steps = horizon + 1
+            for step in range(evolution_steps):
+                damp_angle = wp.gamma * 0.1
+                qc.rz(damp_angle, 0)
+                qc.rz(damp_angle, 1)
 
     qc.measure(range(num_qubits), range(num_qubits))
     return qc

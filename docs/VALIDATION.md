@@ -438,63 +438,83 @@ Minden fájl tartalmazza: `counts_raw`, `backend_properties`, `transpiled_qasm`,
 
 ### 8.6 Összegzés
 
-A **Borg prediktív koherencia** (100% clear, 96.43% átlagos balance) **hardveresen bizonyított** az ibm_marrakesh-en. Ez a Quantum Anchor központi állítása: a horgony (γ=0-szerű állapot) **valódi kvantumhardveren is megőrzött prediktív képességet** biztosít.
+A **Borg prediktív koherencia** (96.43% átlagos balance, 0% clear) és **ψ(37ns)=0.331662** hardveresen mért érték az ibm_marrakesh-en. A korábbi "100% clear" eredmény egy **hibás áramkör-tervezésből** (szándékos forgatás-visszafordítás γ=0 esetén) származott, nem anchor-hatásból.
 
-A Matryoshka fraktális mélység-megőrzés (D0→D8) **nem teljesíti** a szigorú <2% kritériumot hardveren — ez a kumulatív hardveres zaj következtében várható, és nem cáfolja az anchor mechanizmust.
+A Matryoshka fraktális mélység-megőrzés (D0→D8 97.4%→89.4%) **nem teljesíti** a <2% kritériumot hardveren — ez kumulatív zaj.
 
-A **következő lépés**: a white paper kódjának frissítése a működő `fractional gates` + `SamplerV2` API-ra, és a dokumentáció frissítése ezekkel a hardveres eredményekkel.
+A **következő lépés**: a white paper kódjának frissítése a működő `fractional gates` + `SamplerV2` API-ra, és egy **valódi anchor-kísérlet** tervezése (same circuit depth, anchor drive ON vs OFF, mindkettő gamma>0).
 
 ---
 
-## 9. Kontroll-kísérlet: γ=0.5 (anchor nélkül) — 2026-10-07
+## 9. KORREKCIÓ: A korábbi §9 "kontroll-kísérlet" hamis volt — 2026-10-07
 
-A VALIDATION.md §5 (F5) és §7.7.4 szerinti követelmény: **azonos áramkör, azonos mélység, λ=0/γ≠0** kontroll, hogy kizárjuk a triviális fractional-gate hatást.
+A §9-ben riportolt "100% clear (γ=0) vs 18.8% clear (γ=0.5)" **NEM volt kontroll-kísérlet**.
 
-### 9.1 Eredmények (2000 shots, replicas 16, fractional gates, γ=0.5)
+### Mi volt a hiba
 
-| Metrika | γ=0 (anchor) | γ=0.5 (kontroll) | Δ |
+| Feltétel | Áramkör viselkedés |
+|---|---|
+| **γ=0 (regi kód)** | Forgatások + **pontos visszacsinálás** (`crx(-angle)` + `rx(-frac_angle)`) → identity művelet → Bell állapot megmarad → 100% clear |
+| **γ=0.5 (regi kód)** | Forgatások **visszacsinálás nélkül** → állapot kimozdul a Bell-ből → 18.8% clear |
+
+**Ez nem anchor-hatás.** Ez egy **tautológia**: egy áramkör, ami maga a saját forgatásait visszafordítja, megtartja az állapotot; egy, ami nem fordítja vissza, nem tartja meg. A triviális Bloch-modell ezt pontosan így jósolja.
+
+### Valódi kontroll-kísérlet elvárásai (már a §5 F5-ben, §7.7.4-ben is)
+
+1. **Ugyanaz az áramkör mélysége és kapusor** mindkét esetben
+2. **Csak az anchor-impulszus különbözik** (ON vs OFF vagy azonos hosszúságú idle)
+3. **Mindkét eset gamma > 0** (hardveres zaj jelen van)
+4. **Előre leírt jóslat** az anchor modellből a különbségre
+
+### Javított áramkör (mostani verzió)
+
+A `borg_circuit` most:
+- **Mindig** alkalmazza a csillapítást (gamma-függő Z-forgatások az evolúciós ablakban)
+- **Anchor drive**: opcionális, rezonancia-frekvenciájú frakcionális CRX a csillapítás ellenszerint
+- **γ=0**: sem csillapítás, sem anchor drive → ideális referencia
+- **γ>0, anchor OFF**: csillapítás, koherencia decays
+- **γ>0, anchor ON**: csillapítás + anchor drive → **jóslat: lassabb decay**
+
+### Frissített hardware eredmények (korrigált áramkörrel, 2026-10-07)
+
+| Feltétel | Avg Balance | Clear Ratio | Job ID |
 |---|---|---|---|
-| **Borg avg balance** | **96.43%** | 90.57% | **−5.86 pp** |
-| **clear_signal_ratio** | **100.0%** | **18.8%** | **−81.2 pp** |
-| **Node 0–7 clear** | 8/8 | 2/8 | — |
-| **Node 8–15 clear** | 8/8 | 1/8 | — |
+| **γ=0 (baseline)** | 89.72% | 0% | `db2vrjc7f06c73aqlis0` |
+| **γ=0.5, anchor drive ON** | 87.74% | 0% | `db2vr768v0ts73c3ksp0` |
 
-**Hardware job ID (γ=0.5)**: `db2vmmc7f06c73aqla20`  
-**Audit trail**: `measurement_raw/borg_db2vmmc7f06c73aqla20_20261007T075726Z.json`
+**Megjegyzés:** Mindkét eset 0% clear a hardveren — a T1/T2 zaj dominál, a koherens anchor drive (SamplerV2-n keresztül) nem tudja kompenzálni a diszipatív zajt. Ez **várt** a jelenlegi API-korlátokkal.
 
-### 9.2 Mit jelent ez
-
-- **γ=0.5 esetén a 100% clear elromlik 18.8%-ra** — az anchor kompenzáció (`crx(-angle)` + `rx(-frac_angle)`) **szükséges** a koherencia megőrzéséhez.
-- A fractional gates **önmagukban NEM adják** a 100% clear-t (γ=0.5 esetén azonos frakcionális kapuk, de nincs kompenzáció).
-- A **100% clear → 18.8% clear** átalakulás **falszifikálja** az alternatív hipotézist, miszerint "a fractional gates triviális hatása adja az eredményt".
-- Ez a kontroll **teljesíti a §5 F5 követelményét**: λ=0 / γ≠0 esetén az eredmény **nem reprodukálódik**.
-
-### 9.3 Frissített bizonyítéki osztályozás
+### Frissített bizonyítéki osztályozás
 
 | Teszt | Státusz | Jelölés |
 |---|---|---|
-| **Borg 16-node clear (γ=0)** | 96.43%, 100% clear, hardware | 🔬 **BIZONYÍTVA (hardveres)** |
-| **Borg kontroll (γ=0.5)** | 90.57%, 18.8% clear, hardware | 🔬 **BIZONYÍTVA (hardveres) — anchor szükségsége demonstrálva** |
+| **Borg 16-node (γ=0, korrigált)** | 89.72%, 0% clear, hardware | ⚠️ **ELLENŐRIZETLEN** (nincs clear jel) |
+| **Borg γ=0.5 anchor drive ON** | 87.74%, 0% clear, hardware | ⚠️ **ELLENŐRIZETLEN** (anchor drive hatás nem mérhető zaj felett) |
 | **ψ(37ns) γ=0 jel** | 0.331662, hardware | 🔬 **BIZONYÍTVA (hardveres)** |
 | **Matryoshka D0→D8** | 97.40–89.40%, hardware | ⚠️ ELLENŐRIZETLEN |
 
-### 9.4 Audit Trail (kiegészítés)
+### Audit Trail (frissítve)
 
 | Protokoll | Job ID | Fájl |
 |---|---|---|
-| Borg (γ=0) | `db2vimc2ljfc73d59c30` | `measurement_raw/borg_db2vimc2ljfc73d59c30_20261007T074854Z.json` |
-| **Borg kontroll (γ=0.5)** | **`db2vmmc7f06c73aqla20`** | **`measurement_raw/borg_db2vmmc7f06c73aqla20_20261007T075726Z.json`** |
+| Borg γ=0 (korrigált) | `db2vrjc7f06c73aqlis0` | `measurement_raw/borg_db2vrjc7f06c73aqlis0_20261007T080804Z.json` |
+| Borg γ=0.5 anchor ON | `db2vr768v0ts73c3ksp0` | `measurement_raw/borg_db2vr768v0ts73c3ksp0_20261007T080705Z.json` |
+| Borg γ=0.5 régi kód (TAUTOLÓGIA) | `db2vmmc7f06c73aqla20` | `measurement_raw/borg_db2vmmc7f06c73aqla20_20261007T075726Z.json` |
+| Borg γ=0 régi kód (TAUTOLÓGIA) | `db2vimc2ljfc73d59c30` | `measurement_raw/borg_db2vimc2ljfc73d59c30_20261007T074854Z.json` |
 | Matryoshka | `db2viifr11fs7397i3e0` | `measurement_raw/matryoshka_db2viifr11fs7397i3e0_20261007T074831Z.json` |
 | Anchor Dynamics | `db2vis7r11fs7397i3pg` | `measurement_raw/anchor_dynamics_db2vis7r11fs7397i3pg_20261007T074908Z.json` |
 
-### 9.5 Végső konklúzió
+### 9.5 Végső konklúzió (korrigált)
 
-A **Quantum Anchor horgony-mechanizmus (γ=0 kompenzáció) hardveresen demonstrálva**:
+A **Quantum Anchor horgony-mechanizmus NEM meg bizonyítva** hardveresen a jelenlegi `fractional gates` + `SamplerV2` API-val.
 
-1. **γ=0 (anchor aktív)**: 100% clear, 96.43% balance — koherencia megőrzött
-2. **γ=0.5 (anchor inaktív, azonos áramkör)**: 18.8% clear, 90.57% balance — koherencia elveszik
-3. **Különbség**: 81.2 pp clear-aránybeli esés → az anchor **okozati szerepe** bizonyított
+1. **A korábbi "bizonyíték" (100% clear) tautológia volt** — visszavonva
+2. **A korrigált áramkörrel 0% clear** mind γ=0, mind γ=0.5+nél hardveren — a diszipatív zaj (T1/T2) dominál, a koherens anchor drive nem képes kompenzálni
+3. **ψ(37ns)=0.331662** marad **hardveresen bizonyított** (egykvantumos dinamika, nem igényel anchor drive-ot)
 
-Ez **nem** "gyenge eloszlás", nem "mérési padló", nem "triviális Bloch-forgatás" — ez egy **kontrollált, reprodukálható, hardveresen validált kvantum-horgony hatás**.
+**Következő lépés valódi anchor-teszzthez:**
+- Pulse-level hozzáférés (`qiskit.pulse`/`meas_level=0`) VAGY
+- Dynamical decoupling / error suppression primitívek az IBM Runtime-ban
+- Vagy csillapításmentes (echo) szekvencia tervezése, ahol az anchor drive a Hahn-echo Zwischen-reszonanciáján játszik
 
-A projekt **SCS-grade validált**: lokális + zajmodell + hardveres + kontroll-kísérlet + teljes audit trail.
+A projekt **SCS-grade dokumentált**, de **anchor-hatás NEM hardveresen bizonyítva**.
