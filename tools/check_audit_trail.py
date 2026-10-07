@@ -75,7 +75,7 @@ RAW_DIR = ROOT / "measurement_raw"
 JOB_ID_KEYS = ("job_id", "jobId", "id")
 COUNTS_KEYS = ("counts", "counts_raw")
 QASM_KEYS = ("transpiled_qasm",)
-BACKEND_PROPS_KEYS = ("backend_properties",)
+BACKEND_PROPS_KEYS = ("backend_properties", "backend_props")
 
 # Documents that make a repository-wide audit-trail claim.
 CLAIMING_DOCS = (

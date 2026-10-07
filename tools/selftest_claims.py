@@ -59,11 +59,10 @@ The global correlation is 11.62% of the requested 1024 shots; against the
 RETROACTIVE_RULE_FIXTURES = (
     (
         "garnet-qubit-count",
-        "The run used Garnet 20Q (free tier).\n",
+        "The run used Garnet 19Q (free tier).\n",
         # The scanner's negation guard reads the text BEFORE the match, so a
-        # genuinely corrected sentence has to carry its negation there. This is
-        # exactly the shape the real corrections in the docs take.
-        "The device has 19 qubits, not Garnet 20Q (free tier).\n",
+        # genuinely corrected sentence has to carry its negation there.
+        "The SDK reports 20 qubits, not Garnet 19Q (free tier).\n",
     ),
     (
         "gamma-zero-reachable",

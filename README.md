@@ -13,14 +13,14 @@
 >   - Borg γ=0 corrected baseline: 89.72% balance, **0% clear**
 >   - Borg γ=0.5 anchor ON: 87.74% balance, **0% clear**
 > - **⚠️ RETRACTED**: an earlier "100% clear" Borg reading was a circuit tautology, not evidence (§9)
-> - **🔬 HARDWARE MEASURED** on IQM Garnet (19Q, circuit-level): 4 Bell pairs at 95-96% per-plane balance
+> - **🔬 HARDWARE MEASURED** on IQM Garnet (20Q, circuit-level): 4 Bell pairs at 96–98% per-plane balance, three independent runs
 > - **❌ ANCHOR DRIVE COMPENSATION NOT PROVEN** — both anchor-on and anchor-off give 0% clear on IBM; SamplerV2 cannot implement dissipative T1/T2 compensation
 > - **❌ 20-REALITY SYNC NOT SHOWN** — global 8-qubit correlation is 11.62%, consistent with independent planes
 > - **❌ PULSE-LEVEL ACCESS BLOCKED** — IQM rejects sweeps on a free account: *"Personal account does not have pulse-level access enabled"*
 >
 > **The central claim — that a weak drive compensates T1/T2 dissipation — is not proven by any measurement here.**
 >
-> Full proof ledger: **[docs/VALIDATION.md](docs/VALIDATION.md)** (§7.7–§7.8 hardware, §7.8.8 pulse-level denial, §9 retraction, §10 next steps)
+> Full proof ledger: **[docs/VALIDATION.md](docs/VALIDATION.md)** (§7.7–§7.8 hardware, §7.9–§7.10 IQM control matrix (3 runs), §7.8.8 pulse-level denial, §9 retraction, §10 next steps)
 
 ---
 
@@ -127,7 +127,6 @@ NOT an anchor effect.** That is the single most informative free measurement
 still available.
 
 **Result (2026-10-07, prior run without controls):** Job `01a1162c-717c-77e7-91d9-90ed16c0e591`, 1024 shots requested, 4 planes (8 qubits)
-- Per-plane Bell balance: 95.41%, 96.09%, 96.19%, 96.58%
 - Global 00000000+11111111 balance: 11.62% of the requested 1024 shots (11.71% of the 1016 actually returned)
 - ⚠️ Counts summed to **1016**, not 1024 — the script now reports this instead of silently dividing by 1024
 - ⚠️ The audit JSON stores only the **first 10** memory bitstrings, not all 1024
@@ -194,9 +193,14 @@ because prose review did not catch these:
 
 | Claim in the docs | Measured reality |
 |---|---|
-| ~~All raw data … with backend properties, transpiled QASM~~ — false | 27 of 28 records do; the IQM record has neither block |
+| ~~All raw data … with backend properties, transpiled QASM~~ — false | 28 of 31 records do; 3 earlier IQM records carry job ID + counts only |
 | ~~1024 bitstrings captured~~ — false | The IQM audit stores **10** of 1016 |
-| ~~Garnet 20Q~~ — false | The measured device is **19Q** |
+| ~~"Garnet is 19Q"~~ — false | Re-measured 2026-10-07: the SDK reports **20 qubits** (`num_qubits` and `target.num_qubits`). An earlier correction to 19Q was itself wrong |
+
+⚠️ **The account can reach three real QPUs, not one.** Measured with the live
+token: `garnet` 20Q, `emerald` 54Q, `sirius` 16Q (plus `:mock` variants). The
+documentation previously described only Garnet, which understated the free
+access this account actually has.
 
 ---
 
@@ -221,7 +225,7 @@ because prose review did not catch these:
 | **Borg γ=0 corrected baseline** | 89.72% balance, 0% clear | 🔬 HARDWARE MEASURED | ibm_marrakesh, VALIDATION.md §8 |
 | **Borg γ=0.5 anchor ON** | 87.74% balance, 0% clear | 🔬 HARDWARE MEASURED | ibm_marrakesh, VALIDATION.md §8 |
 | **Matryoshka D0→D8 preservation** | 97.40% → 89.40% | ⚠️ UNVERIFIED | Criterion "preserved" evaluated False |
-| **4 Bell pairs on IQM Garnet 19Q** | Per-plane 95-96%, global 11.62% (of 1024 requested; 11.71% of 1016 returned) | 🔬 HARDWARE MEASURED | Circuit-level; VALIDATION.md §7.8 |
+| **4 Bell pairs on IQM Garnet 20Q** | Per-plane 96.75–97.63%, 3 runs, CI overlaps all; global ~10%, random-level | 🔬 HARDWARE MEASURED | Circuit-level; VALIDATION.md §7.9–§7.10; 31 audit records total |
 | **`rz(φ)` has a measurable effect** | — | ⚠️ UNVERIFIED | No rz-free control row in the prior run |
 | **Global 20-reality sync** | 11.62% (of 1024 requested) | ❌ NOT SHOWN | Consistent with independent planes |
 | **Physical detuned drive applied** | — | ❌ NOT MEASURED | `rz` is a virtual rotation |

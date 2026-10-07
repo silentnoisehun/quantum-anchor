@@ -29,7 +29,7 @@
 \maketitle
 
 \begin{abstract}
-We present Quantum Anchor V1.2 (Tesseract Anchor), a post-pulse experimental protocol for coherent state anchoring on superconducting quantum processors. The original pulse-level protocol (\texttt{qiskit.pulse}, \texttt{meas\_level=0}) was deprecated by IBM in 2025. V1.2 migrates to working APIs and reports evidence grades honestly. We report hardware measurements on IBM \texttt{ibm\_marrakesh} (156Q Heron r2) and on IQM Resonance Garnet 19Q. On IBM we measure single-qubit dynamics $\psi(37\text{ns}) = 0.331662$ under a $\gamma=0$ model, and we show that both the $\gamma=0$ baseline (89.72\% balance) and the $\gamma=0.5$ anchor-on condition (87.74\%) yield \textbf{0\% clear}. On IQM we measure four independent Bell pairs at 95--96\% per-plane balance using a virtual Z rotation of $0.4398$ rad. We \textbf{retract} an earlier positive result that we show to be a circuit tautology. The global 8-qubit correlation was 11.62\%, consistent with statistically independent planes, so the 20-reality synchronized-selection claim is \textbf{not demonstrated}. The physical anchor-drive compensation effect is \textbf{not proven by any measurement in this work}; pulse-level access required to test it was measured to be unavailable on our IQM account tier.
+We present Quantum Anchor V1.2 (Tesseract Anchor), a post-pulse experimental protocol for coherent state anchoring on superconducting quantum processors. The original pulse-level protocol (\texttt{qiskit.pulse}, \texttt{meas\_level=0}) was deprecated by IBM in 2025. V1.2 migrates to working APIs and reports evidence grades honestly. We report hardware measurements on IBM \texttt{ibm\_marrakesh} (156Q Heron r2) and on IQM Resonance Garnet 20Q. On IBM we measure single-qubit dynamics $\psi(37\text{ns}) = 0.331662$ under a $\gamma=0$ model, and we show that both the $\gamma=0$ baseline (89.72\% balance) and the $\gamma=0.5$ anchor-on condition (87.74\%) yield \textbf{0\% clear}. On IQM we measure four independent Bell pairs at 95--96\% per-plane balance using a virtual Z rotation of $0.4398$ rad. We \textbf{retract} an earlier positive result that we show to be a circuit tautology. The global 8-qubit correlation was 11.62\%, consistent with statistically independent planes, so the 20-reality synchronized-selection claim is \textbf{not demonstrated}. The physical anchor-drive compensation effect is \textbf{not proven by any measurement in this work}; pulse-level access required to test it was measured to be unavailable on our IQM account tier.
 \end{abstract}
 
 \section{Introduction}
@@ -184,7 +184,7 @@ was ever applied to the device.
 \centering
 \begin{tabular}{ll}
 \toprule
-Platform & IQM Resonance Garnet 19Q (Starter tier) \\
+Platform & IQM Resonance Garnet 20Q (Starter tier) \\
 Native gates & \texttt{id, delay, measure, r, if\_else, reset, cz} \\
 Circuit & 4 planes $\times$ 2 qubits = 8 qubits \\
 Phase formula & $\phi = 2\pi \cdot f[\text{GHz}] \cdot t[\text{ns}] \bmod 2\pi$ \\

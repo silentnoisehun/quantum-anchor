@@ -226,8 +226,8 @@ check("no 'Borg 16 cap clear 100%' string",
 # The refusal message must be present and quoted as measured.
 check("measured entitlement refusal is documented",
       "pulse-level access enabled" in src)
-check("measured device qubit count corrected to 19",
-      "Garnet 19Q" in src and "Garnet 20Q" not in src)
+check("device qubit count matches the live SDK (20, not 19)",
+      "Garnet 20Q" in src and "Garnet 19Q" not in src)
 check("no meas_level=0 equivalence claim",
       re.search(r"meas[_ ]level\s*=\s*0 (?:equivalent|ekvivalens)", src, re.I) is None)
 

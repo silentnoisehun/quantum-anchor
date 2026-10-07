@@ -30,7 +30,7 @@ The original pulse-level protocol (`qiskit.pulse`, `meas_level=0`) was **depreca
 | **Matryoshka D0→D8 preservation** | 97.40% → 89.40% | ⚠️ UNVERIFIED | Cumulative noise, not anchor failure |
 | **Borg γ=0 corrected baseline** | 89.72% balance, 0% clear | 🔬 **HARDWARE MEASURED** | IBM `ibm_marrakesh` |
 | **Borg γ=0.5 anchor ON** | 87.74% balance, 0% clear | 🔬 **HARDWARE MEASURED** | IBM `ibm_marrakesh` |
-| **Tesseract 4-plane (IQM Garnet)** | Per-plane 95-96%, Global 11.62% | 🔬 **HARDWARE MEASURED** | IQM Resonance Garnet 19Q |
+| **Tesseract 4-plane (IQM Garnet)** | Per-plane 95-96%, Global 11.62% | 🔬 **HARDWARE MEASURED** | IQM Resonance Garnet 20Q |
 
 **The central claim — that a weak drive can compensate T1/T2 dissipation — is
 NOT proven by any measurement in this paper.** The two anchor-on/off rows above
@@ -240,8 +240,8 @@ that rotation, not a frequency that was ever applied.
 
 | Parameter | Value |
 |---|---|
-| **Platform** | IQM Resonance — Garnet 19Q (Starter tier, 30 credits/month free) |
-| **Backend** | `garnet` (19 superconducting qubits) |
+| **Platform** | IQM Resonance — Garnet 20Q (Starter tier, 30 credits/month free) |
+| **Backend** | `garnet` (**20** superconducting qubits — live SDK: `num_qubits` = `target.num_qubits` = 20; the earlier "19Q" figure was wrong) |
 | **Native gates** | `id`, `delay`, `measure`, `r`, `if_else`, `reset`, `cz` |
 | **Circuit** | 4 Tesseract planes × 2 qubits = 8 qubits, Bell-prep + virtual Z + measure |
 | **Phase formula** | φ = 2π · f[GHz] · t[ns] mod 2π |

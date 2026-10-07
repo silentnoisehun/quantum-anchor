@@ -40,7 +40,7 @@ abstract: >-
   from production QPUs in February 2025. V1.2 migrates to working APIs and reports
   evidence grades honestly. Measured: single-qubit dynamics psi(37ns)=0.331662
   under a gamma=0 model on ibm_marrakesh; four independent Bell pairs at 95-96%
-  per-plane balance on IQM Resonance Garnet 19Q. Documented negative results: the
+  per-plane balance on IQM Resonance Garnet 20Q. Documented negative results: the
   anchor-on and anchor-off conditions both yield 0% clear, and the global 8-qubit
   correlation is 11.62%, consistent with statistically independent planes. The
   physical anchor-drive compensation effect is NOT proven by any measurement in

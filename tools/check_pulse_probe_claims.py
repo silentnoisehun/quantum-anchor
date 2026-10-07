@@ -12,7 +12,8 @@ retracted and unproven claims in plain sight:
     retracted as a circuit tautology;
   * `get_memory() is a meas_level=0 equivalent` — it returns decoded
     bitstrings, not an IQ vector;
-  * `Garnet 20Q` — the measured device has 19 qubits;
+  * `Garnet 19Q` — the live SDK reports 20 qubits; the 19Q figure was a
+    remembered value that had propagated through four documents;
   * a balance computation divided by the REQUESTED shot count, which is the
     exact arithmetic that produced the mis-reported 11.62% figure.
 
@@ -80,9 +81,9 @@ def check() -> list[str]:
         bad.append(f"{TARGET}: calls get_memory() a meas_level=0 equivalent; it "
                    f"returns decoded bitstrings, not an IQ vector")
 
-    if "20Q" in src:
-        bad.append(f"{TARGET}: mentions '20Q'; the measured Garnet device has "
-                   f"19 qubits")
+    if re.search(r"(?:Garnet|garnet)[^\n]{0,40}?\b19\s*Q\b", src):
+        bad.append(f"{TARGET}: mentions Garnet 19Q; the live SDK reports "
+                   f"20 qubits (measured 2026-10-07)")
 
     return bad
 

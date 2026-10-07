@@ -109,10 +109,15 @@ RULES: list[tuple[str, re.Pattern[str], str, str]] = [
         "The script lives at the repository root, not under src/.",
         "soft",
     ),
+    # CORRECTED 2026-10-07 by live measurement: the SDK reports 20 qubits for
+    # garnet (both backend.num_qubits and backend.target.num_qubits agree).
+    # An earlier "correction" to 19Q was itself wrong — it had come from a
+    # remembered value, not from a measurement. Do not reinstate it.
     (
         "garnet-qubit-count",
-        re.compile(r"(?:Garnet|garnet)[^\n]{0,40}?\b20\s*Q\b", re.I),
-        "The measured Garnet backend has 19 qubits, not 20.",
+        re.compile(r"(?:Garnet|garnet)[^\n]{0,40}?\b19\s*Q\b", re.I),
+        "The live SDK reports 20 qubits for garnet. This was measured, not "
+        "remembered; the 19Q figure was a propagation error.",
         "hard",
     ),
     (

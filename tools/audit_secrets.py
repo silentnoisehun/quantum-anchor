@@ -58,7 +58,7 @@ TOKEN_CHARS = re.compile(r"^[A-Za-z0-9_\-]{16,}$")
 #   matryoshka_db2viifr11fs7397i3e0_20261007T074831Z.json
 #   iqm_anchor_01a1162c-717c-...-90ed16c0e591_20261007T114508Z.json
 _IBM_JOB = r"db2[0-9a-z]{17}"
-_IQM_JOB = r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+_IQM_JOB = r"[0-9a-f]{8}(?:-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})?"
 _STAMP = r"[0-9]{8}t[0-9]{6}z"
 _SEGMENT = rf"(?:[a-z_]+|{_IBM_JOB}|{_IQM_JOB}|{_STAMP})"
 

@@ -172,7 +172,7 @@ MEASURED_ACCESS_DENIAL = (
 )
 
 # A mért eszköz: IQM Garnet, 19 qubit (VALIDATION.md §7.8.1).
-MEASURED_DEVICE = "IQM Resonance — Garnet 19Q"
+MEASURED_DEVICE = "IQM Resonance — Garnet 20Q"
 MEASURED_DEVICE_QUBITS = 19
 
 
@@ -737,7 +737,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--url", default=os.getenv("IQM_URL", "https://resonance.iqm.tech"),
                    help="IQM Resonance URL")
     p.add_argument("--backend", default="garnet", choices=["garnet", "crystal"],
-                   help="Backend: garnet (19Q) vagy crystal")
+                   help="Backend: garnet (20Q) vagy crystal")
     p.add_argument("--shots", type=int, default=1024, help="Kért shotok száma")
     p.add_argument("--duration", type=int, default=37, help="Pulse hossz (ns)")
     p.add_argument("--freq", type=float, default=4.11,
