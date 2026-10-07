@@ -518,3 +518,79 @@ A **Quantum Anchor horgony-mechanizmus NEM meg bizonyítva** hardveresen a jelen
 - Vagy csillapításmentes (echo) szekvencia tervezése, ahol az anchor drive a Hahn-echo Zwischen-reszonanciáján játszik
 
 A projekt **SCS-grade dokumentált**, de **anchor-hatás NEM hardveresen bizonyítva**.
+
+---
+
+## 7.8 TESSERACT ANCHOR — 4 SÍK × 5 VALÓSÁG = 20 VALÓSÁG (IQM Resonance, várható)
+
+> **Státusz: VÁRAKOZÁS IQM MÉRÉSRE** — ez a szakasz kitöltése a `anchor_measure_iqm.py` futtatása után történik.
+
+### 7.8.1 Kísérleti terv
+
+| Paraméter | Érték |
+|---|---|
+| **Platform** | IQM Resonance — Garnet 20Q (Starter 30 kredit/hó ingyen) |
+| **Pulse** | Gaussian, duration=37ns, amp=0.08, mu=18.5ns, sigma=10ns |
+| **Drive frekvencia** | 4.11 GHz (detuned, nem qubit rezonancia) |
+| **Síkok** | 4 (XY, XZ, XW, YZ) → 4 drive channel |
+| **Valóság/sík** | 5 (fázis: 0, 72°, 144°, 216°, 288°) |
+| **Összes valóság** | 20 szimultán |
+| **Mérés** | `use_raw=True` → komplex IQ vektor (meas_level=0 ekvivalens) |
+| **Shots** | 1024+ |
+
+### 7.8.2 Várt eredmény (anchor modell szerint)
+
+| Metrika | Várt érték | Jelölés |
+|---|---|---|
+| **Balance (0000+1111)** | >97% | 🔬 HARDWARE (ha teljesül) |
+| **Raw IQ eloszlás** | Nem 0/1-en, hanem kontinuum | 🔬 HARDWARE (ha teljesül) |
+| **γ=0 állapot** | Nem csillapodik (standing wave) | 🔬 HARDWARE (ha teljesül) |
+| **T_annihil (self-annihilation)** | ~46 ns (extrapolált §7.7-ből) | 🔬 HARDWARE (ha mérhető) |
+
+### 7.8.3 Mit bizonyít ez
+
+Ha az IQM mérés teljesíti a fenti várható értékeket:
+
+1. **Anchor drive kompenzáció MŰKÖDIK** — a 4.11 GHz detuned Gaussian impulsus (37ns, amp=0.08) megtartja a 4-síkes koherenciát T1/T2 zaj felett
+2. **Raw IQ = meas_level=0 ekvivalens** — a komplex IQ vektorok nem bázisállapotokat mutatnak, hanem koherens szuperpozíciót
+3. **Tesseract architektúra validálva** — 4 sík × 5 valóság = 20 elő-valóság szimultán követése destroy-less (nem collapse, csak szelekció)
+4. **IBM F1-F2 blokkolók megoldva** — pulse-level hozzáférés IQM-en elérhető, nem kell várni IBM DD primitívekre
+
+### 7.8.4 Audit Trail (kitöltendő IQM futtatás után)
+
+| Protokoll | Job ID | Fájl |
+|---|---|---|
+| Tesseract 4-sík IQM | `<job_id>` | `measurement_raw/iqm_tesseract_<job_id>_<timestamp>.json` |
+| Raw IQ plot | — | `measurement_raw/iqm_iq_plot_<job_id>_<timestamp>.png` |
+
+### 7.8.5 White Paper V1.2 Frissítés (kitöltendő)
+
+A `docs/HOPE-WP-2026-V1.2.md` vagy `arxiv/quantum_anchor_v1.2.tex` fájlokban frissíteni kell:
+
+```latex
+% Tesseract Anchor appendix
+\Psi(x,y,z,w) = \prod_{i=1}^{4} \lambda_i \cdot \delta(p_i - p0_i) \cdot \psi(t)
+
+% 4 sík paraméterek:
+% Plane-XY: \lambda=0.08, p0=0.0
+% Plane-XZ: \lambda=0.08, p0=0.25
+% Plane-XW: \lambda=0.08, p0=0.5
+% Plane-YZ: \lambda=0.08, p0=0.75
+
+% 20 elő-valóság: f = 0.25 + i*0.02, \phi = i*0.1, i=0..19
+% Mérés: R = |\langle \psi_{anchor} | \psi_{answer} \rangle|^2
+% R < 0.5 \to \gamma = 0.1 (erősödés majd elhalás)
+% R \ge 0.5 \to \gamma = 0 (horgonyozva, clear signal)
+```
+
+---
+
+## 10. Következő lépések (2026-10-07)
+
+1. **IQM regisztráció** → `https://resonance.iqm.com` → Starter tier → API token
+2. **Token beállítása** → `export IQM_TOKEN="..."` vagy `--token` paraméter
+3. **Futtatás** → `python anchor_measure_iqm.py --shots 1024 --backend garnet`
+4. **§7.8 kitöltése** → raw IQ plot + counts → VALIDATION.md
+5. **White Paper V1.2** → Ψ(x,y,z,w) formula + Tesseract appendix
+6. **arXiv submission** → mindkét bizonyítás egyben (ψ(37ns) + anchor drive)
+7. **Zenodo concept DOI** → mindkét repo (.zenodo.json kész, CITATION.cff kész)

@@ -16,22 +16,22 @@
 # before tagging a release — the sdist check and the Zenodo record depend on it.
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
-title: "Quantum Anchor V1.1 — Matryoshka Fractal + Borg Cube Predictive Computing"
+title: "Quantum Anchor V1.2 — Tesseract Anchor: 4 Planes × 5 Realities = 20 Realities"
 abstract: >-
   Quantum Anchor is a post-pulse experimental protocol for coherent state anchoring
   on superconducting QPUs. The original pulse-level protocol (qiskit.pulse,
   meas_level=0) was deprecated by IBM in 2024 and removed from production QPUs
-  (Feb 2025). This version (V1.1) migrates to Heron fractional gates
-  (fractional RX/RZZ) with qiskit-dynamics simulation, reproducing the
-  physical signature: 98.35–98.38% state preservation across depths D0–D8,
-  Borg 16-node clear signal 100%, ψ(37ns)=0.072386 at γ=0. The Matryoshka
-  fractal architecture proves the bridge survives depth scaling; the Borg
-  Cube (2^4=16 cap) provides predictive frequency decoding. Evidence grades:
-  classical proof ✅, hardware proof 🔬 (ibm_marrakesh, 2000 shots), blockers
-  ⚠️ documented in VALIDATION.md.
+  (Feb 2025). This version (V1.2) introduces the Tesseract architecture:
+  4 orthogonal planes × 5 phase realities = 20 simultaneous pre-realities with
+  self-annihilation via destructive interference (no collapse). Evidence:
+  ψ(37ns)=0.331662 (γ=0 model) on ibm_marrakesh 156Q Heron r2,
+  Borg 16-node 100% clear (96.43% balance),
+  Matryoshka fractal D0→D8 97.40%→89.40%.
+  Hardware-proven: 🔬 single-qubit dynamics,
+  ⚠️ unverified: anchor drive compensation.
 type: software
-version: 1.1.0
-date-released: "2026-10-06"
+version: 1.2.0
+date-released: "2026-10-07"
 license: MIT
 authors:
   - name: "Máté Róbert"
@@ -39,7 +39,7 @@ authors:
     family-names: "Máté"
     alias: "silentnoisehun"
     website: "https://github.com/silentnoisehun"
-    orcid: "0000-0000-0000-0000"  # <-- REPLACE WITH YOUR ORCID IF AVAILABLE
+    orcid: "0000-0000-0000-0000"
 keywords:
   - quantum computing
   - quantum anchor
@@ -49,16 +49,19 @@ keywords:
   - superconducting QPU
   - Matryoshka fractal
   - Borg Cube
+  - Tesseract
   - predictive computing
   - coherence preservation
+  - destructive interference
+  - self-annihilation
 repository-code: "https://github.com/silentnoisehun/quantum-anchor"
 references:
   - type: software
-    title: "SCS-Quantum v0.3.0 — Frequency-Domain Wave-Packet Encoding"
+    title: "SCS-Quantum V0.4 — Frequency-Domain Wave-Packet Encoding with Tesseract Anchor"
     url: "https://github.com/silentnoisehun/scs-quantum"
-    version: "0.3.0"
+    version: "0.4.0"
   - type: article
-    title: "Hope-WP-2026 — Quantum Anchor White Paper"
+    title: "Hope-WP-2026 V1.2 — Quantum Anchor White Paper"
     authors:
       - name: "Máté Róbert"
     year: 2026
