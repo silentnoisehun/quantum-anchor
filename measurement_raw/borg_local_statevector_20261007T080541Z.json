@@ -1,0 +1,212 @@
+{
+  "protocol": "borg",
+  "timestamp_utc": "2026-10-07T08:05:41Z",
+  "metadata": {
+    "protocol": "borg",
+    "wavepacket": {
+      "amplitude": 1.0,
+      "gamma": 0.5,
+      "frequency": 0.25,
+      "phase": 0.0
+    },
+    "replicas": 16,
+    "shots": 2000,
+    "backend": "local",
+    "evidence_grade": "local",
+    "fractional_gates": true
+  },
+  "results": [
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "00": 999,
+        "01": 514,
+        "10": 0,
+        "11": 485
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    },
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "00": 999,
+        "01": 279,
+        "10": 0,
+        "11": 720
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    },
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "00": 999,
+        "01": 185,
+        "10": 0,
+        "11": 814
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    },
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "00": 999,
+        "01": 139,
+        "10": 0,
+        "11": 860
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    },
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "00": 998,
+        "01": 110,
+        "10": 1,
+        "11": 889
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    },
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "00": 997,
+        "01": 89,
+        "10": 2,
+        "11": 910
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    },
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "00": 997,
+        "01": 72,
+        "10": 2,
+        "11": 927
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    },
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "00": 996,
+        "01": 60,
+        "10": 3,
+        "11": 939
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    },
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "00": 999,
+        "01": 514,
+        "10": 0,
+        "11": 485
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    },
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "00": 999,
+        "01": 279,
+        "10": 0,
+        "11": 720
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    },
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "00": 999,
+        "01": 185,
+        "10": 0,
+        "11": 814
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    },
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "00": 999,
+        "01": 139,
+        "10": 0,
+        "11": 860
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    },
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "00": 998,
+        "01": 110,
+        "10": 1,
+        "11": 889
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    },
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "00": 997,
+        "01": 89,
+        "10": 2,
+        "11": 910
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    },
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "00": 997,
+        "01": 72,
+        "10": 2,
+        "11": 927
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    },
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "00": 996,
+        "01": 60,
+        "10": 3,
+        "11": 939
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    }
+  ]
+}

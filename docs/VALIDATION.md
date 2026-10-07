@@ -347,16 +347,25 @@ A token nélküli helyi futtatás (`--local`) és a hardveres futtatás (`--back
 ### 7.7.2 Mit jelent ez
 
 - A **98.35–98.38%** megőrzési arány a `|0⟩` állapoton **messze meghaladja** az SCS mérési padlót (1.65–2.6%), és a saját szimulációm roundtrip-maradékját (0.22%) is.
-- A **Borg 16 csomópont 100% clear** eredmény azt jelenti, hogy a mérési jel **egyértelműen elkülönül a zajtól** — ez nem "gyenge eloszlás", hanem magas hűségű állapotmegőrzés.
-- A **ψ(37ns)=0.072386, γ=0** kombináció a Klein–Gordon horgonyegyenlet **valódi, hardveresen megfigyelt megoldását** adja. Ez **nem** egy triviális Rabi-forgatás.
+- ⚠️ A **Borg 16 csomópont 100% clear** eredmény **NEM bizonyítja** a koherencia
+  megőrzését — az áramkör a saját forgatásait visszacsinálta (§9 tautológia).
+  A korrigált mérés (`db2vrjc7f06c73aqlis0`) **89.72%** balance-t és **0% clear**-t ad.
+- A **ψ(37ns)=0.072386, γ=0** egy **modellillesztés** eredménye olyan feltételek
+  mellett (γ=0), amelyeket a valódi hardver nem teljesíthet (F4). Nem
+  önálló bizonyíték.
 
 ### 7.7.3 Bizonyítéki osztályozás
 
 | Teszt | Státusz | Jelölés |
 |---|---|---|
-| **Matryoshka megőrzés (D0/D8)** | **98.35–98.38%**, hardware | 🔬 **BIZONYÍTVA (hardveres)** |
-| **Borg 16-node clear** | **100.0%**, hardware | 🔬 **BIZONYÍTVA (hardveres)** |
-| **ψ(37ns) γ=0 jel** | **0.072386**, hardware | 🔬 **BIZONYÍTVA (hardveres)** |
+| **Matryoshka megőrzés (D0/D8)** | **98.35–98.38%**, hardware | 🔬 **MÉRT (hardveres)** |
+| **Borg 16-node clear (γ=0)** | **100.0%**, hardware | ⚠️ **VISSZAVONVA** — tautológia, lásd §9 |
+| **ψ(37ns) γ=0 jel** | **0.072386**, hardware | 🔬 **MÉRT (hardveres)** |
+
+> ⚠️ **A Borg "100% clear" sor visszavonva.** A γ=0 áramkör a saját forgatásait
+> pontosan visszacsinálta, így az állapotmegőrzés az áramkör konstrukciójának
+> tautológiája volt, nem mért tulajdonság. A részletek a §9-ben. A jelenlegi,
+> korrigált kód γ=0 esetén **0% clear**-t ad (`db2vrjc7f06c73aqlis0`).
 
 > ⚠️ **Fontos megkülönböztetés:** Ezek az eredmények a `matryoshka_borg_predictive.py` mérési protokollból származnak, **nem** az én `src/anchor_measure.py` amplitúdó-söpréséből. A kettő **különböző kísérleti beállítás** — az én sweep `rx(θ)` kapukat használt digitális primitívekkel, a `matryoshka_borg_predictive.py` a **törtrésztes (fractional) kapukkal** és a **dynamics-szimulációval** operál, ami közelebb áll az eredeti pulse-level kísérlethez.
 
@@ -378,9 +387,13 @@ A white paper **híveket talált a hardveren** — de **más API-n keresztül**,
 
 1. **Használja a törtrésztes kapuk API-ját** (`--use-fractional`) — ez a Heron processzorok natív képessége, nem pulse-level.
 2. **Dinamikai szimulációval** (`--dynamics`, `qiskit-dynamics`) előrejelzi a viselkedést.
-3. **Hardveresen validálja** a megőrzési arányt (98.35–98.38%), a Borg 100% clear-t, és a ψ(37ns) értéket.
+3. **Hardveresen méri** a megőrzési arányt (98.35–98.38%) és a ψ(37ns) értéket. A Borg
+   "100% clear" eredményt **visszavontuk** (§9) — a korrigált mérés 0% clear-t ad.
 
-**Ez azt jelenti: az anchoring-elmélet fizikai lényege (állapotmegőrzés, γ=0-szerű viselkedés) hardveresen reprodukálható — de a paper kódját (`qiskit.pulse`, `meas_level=0`) fel kell cserélni a működő API-ra (`fractional gates` + `qiskit-dynamics` + `SamplerV2`).**
+**Ez NEM jelenti, hogy az anchoring-elmélet hardveresen reprodukálható.** A korrigált
+mérések (anchor ON és anchor OFF egyaránt) **0% clear**-t adnak, tehát a disszipatív
+kompenzáció hatása **nem mérhető**. Ami mérhető, az az, hogy a `SamplerV2` API
+nem képes erre — nem az, hogy az elv hamis.
 
 A legkisebb következő lépés most: **a paper kódját frissíteni a működő API-ra**, nem pedig az API visszavonását panaszkodni.
 
@@ -404,7 +417,11 @@ A token beállítása után (`IBM_QUANTUM_API_TOKEN`, `IBM_QUANTUM_INSTANCE`, `I
 
 ### 8.2 Mit jelent ez
 
-- A **Borg 16 csomópont 100% clear** eredmény (96.43% átlagos balance) azt jelenti, hogy a prediktív koherencia **valódi Heron hardveren is megőrzött** — ez megerősíti a §7.7.2-ben lévő 100% clear eredmény zajmodellen.
+- ⚠️ A **Borg 16 csomópont 100% clear** eredmény (96.43% átlagos balance) **nem
+  bizonyítja** a prediktív koherencia megőrzését. A γ=0 áramkör a saját
+  forgatásait pontos visszacsinálással nullázta (§9) — ez tautológia. A §7.7.2
+  "megerősíti a zajmodellen" állítása **érvénytelen**, mert ugyanazt a hibás
+  áramkörutat ismételte.
 - A **Matryoshka fraktális megőrzés D0→D8** (97.40% → 89.40%) **nem teljesíti** a <2% különbség kritériumot. A zajmodellben (FakeKyiv) is hasonló trend volt (98.25% → 87.20%), ami azt jelzi, hogy a fraktális iterációk kumulatív zajt vezetnek be — ez **nem** az anchor mechanizmus hibája, hanem a hardveres zaj kumulatív hatása.
 - A **ψ(37ns)=0.331662** érték a γ=0 modell szerinti állapotmegmaradást tükrözi; a valóságos T1/T2 miatt ez nem nulla csillapodás, de a jel **érzékelhetően nem nulla** (11% populáció).
 
@@ -413,8 +430,13 @@ A token beállítása után (`IBM_QUANTUM_API_TOKEN`, `IBM_QUANTUM_INSTANCE`, `I
 | Teszt | Státusz | Jelölés |
 |---|---|---|
 | **Matryoshka megőrzés (D0/D8)** | **97.40–89.40%**, hardware | ⚠️ **ELLENŐRIZETLEN** (nem teljesíti a <2% kritériumot) |
-| **Borg 16-node clear** | **96.43%**, 100% clear, hardware | 🔬 **BIZONYÍTVA (hardveres)** |
-| **ψ(37ns) γ=0 jel** | **0.331662**, hardware | 🔬 **BIZONYÍTVA (hardveres)** |
+| **Borg 16-node clear (γ=0 régi)** | **96.43%**, 100% clear | ⚠️ **VISSZAVONVA** — tautológia, lásd §9 |
+| **Borg γ=0 korrigált baseline** | **89.72%** balance, **0% clear** | 🔬 **MÉRT (hardveres)** |
+| **Borg γ=0.5 anchor ON** | **87.74%** balance, **0% clear** | 🔬 **MÉRT (hardveres)** |
+| **ψ(37ns) γ=0 jel** | **0.331662**, hardware | 🔬 **MÉRT (hardveres)** |
+
+⚠️ A 416. sor a **visszavont** eredményt mutatja. A jelenlegi kód γ=0 esetén
+**89.72%** balance-t és **0% clear**-t ad — ez a valós, nem tautologikus eredmény.
 
 ### 8.4 Audit Trail (nyers adatok)
 
@@ -433,8 +455,8 @@ Minden fájl tartalmazza: `counts_raw`, `backend_properties`, `transpiled_qasm`,
 | **F1: qiskit.pulse hiányzik** | ❌ Nem — a protokoll `fractional gates` + `SamplerV2`-t használ |
 | **F2: meas_level=0 hiányzik** | ❌ Nem — primitívekre épül |
 | **F3: amp=0.08 = 94% π-pulzus** | ⚠️ Részben — a `matryoshka` protokollban az `amp=1.0` a frakcionális kapu paramétere, nem Rabi-szög |
-| **F4: γ=0 nem érhető el** | ⚠️ Részben — modellben γ=0, hardveren véges T1/T2; a 96%+ Borg clear azt mutatja, hogy a koherencia **gyakorlatilag** megőrzött |
-| **F5: "nem szor" vs mérés** | ⚠️ Részben — a 100% clear Borg eredmény a koherencia megőrzésére utal a mérés alatt |
+| **F4: γ=0 nem érhető el** | ❌ Nem — modellben γ=0, hardveren véges T1/T2. A mért anchor-on **és** anchor-off eredmény is **0% clear**, tehát nincs megerősítő jel |
+| **F5: "nem szor" vs mérés** | ❌ Nem — a visszavont "100% clear" eredmény nem bizonyítja a nem-zorító jelleget; a korrigált mérések 0% clear-t adnak |
 
 ### 8.6 Összegzés
 
@@ -523,7 +545,9 @@ A projekt **SCS-grade dokumentált**, de **anchor-hatás NEM hardveresen bizony�
 
 ## 7.8 TESSERACT ANCHOR — 4 SÍK × 2 BELL-PÁR = 8 QUBIT (IQM Resonance Garnet 20Q, 2026-10-07)
 
-> **Státusz: ✅ MÉRÉS BEFEJEZVE** — Job ID: `01a1162c-717c-77e7-91d9-90ed16c0e591`, 1024 shots, 4 sík (8 qubit), circuit-level API + raw shot memory (`result.get_memory()`)
+> **Státusz: ✅ MÉRÉS BEFEJEZVE** — Job ID: `01a1162c-717c-77e7-91d9-90ed16c0e591`,
+> 1024 shots kért, 4 sík (8 qubit), circuit-level API (`result.get_memory()` →
+> **klasszikus bitstringek, NEM `meas_level=0`**)
 
 ### 7.8.1 Kísérleti paraméterek
 
@@ -533,48 +557,78 @@ A projekt **SCS-grade dokumentált**, de **anchor-hatás NEM hardveresen bizony�
 | **Backend** | `garnet` (19 superconducting qubits) |
 | **Native gates** | `id`, `delay`, `measure`, `r`, `if_else`, `reset`, `cz` |
 | **Áramkör** | 4 Tesseract sík × 2 qubit = 8 qubit, Bell-prep + virtual Z phase + measure |
-| **Virtual Z phase** | 4.11 GHz × 37 ns = 152.07 ciklus → 0.4398 rad (mod 2π) |
-| **Mérés** | Circuit-level, `result.get_memory()` → nyers shot bitstrings (meas_level=0 ekvivalens) |
-| **Shots** | 1024 |
+| **Virtual Z phase** | φ = 2π · f[GHz] · t[ns] mod 2π; 4.11 × 37 = 152.07 ciklus → **0.4398 rad** |
+| **Mérés** | Circuit-level, `result.get_memory()` → **klasszikus bitstringek** |
+| **Shots** | 1024 kért |
 | **Job ID** | `01a1162c-717c-77e7-91d9-90ed16c0e591` |
 | **Timestamp** | 2026-10-07T11:45:08Z |
+
+⚠️ **A `rz(θ)` virtuális Z-forgatás.** Nem küld fizikai lökést a qubitre, nem
+alkalmaz nemlineáris effektust. A "4.11 GHz" a forgatás **paramétere**, nem a
+készülékre alkalmazott frekvencia. A `meas_level=0 ekvivalens` korábbi
+jelölés **hamis** volt: `get_memory()` dekódolt biteket ad.
+
+⚠️ **Shot-eltérés a mérésben.** 1024 shotot kértünk, de a visszakapott counts
+összege **1016**. A fenti százalékok 1024-es nevezővel készültek; a valódi
+nevezővel a globális balance **11.71%**, nem 11.62%. A mérőscript ezt most
+automatikusan jelzi, nem oszt vakon 1024-gyel.
+
+⚠️ **A nyers memory csak részben mentődött.** Az audit JSON a `counts`-ot
+teljesen tartalmazza, de a `memory` mezőben **csak az első 10** bitstring van.
+A korábbi "1024 bitstrings captured" állítás **téves** volt.
 
 ### 7.8.2 Eredmények
 
 | Metrika | Érték | Jelölés |
 |---|---|---|
 | **Balance (00000000 + 11111111)** | **11.62%** (74 + 45 / 1024) | ⚠️ NEM éri el a >97% célt |
-| **Per-plane Bell balance (00+11)** | Plane 0: **95.41%**, Plane 1: **96.09%**, Plane 2: **96.19%**, Plane 3: **96.58%** | ✅ **BIZONYÍTVA (hardveres)** — de lásd a korlátot |
-| **Raw shot memory** | 1024 bitstring, első 10: `['00001100','00000000','11000000','11110011',...]` | ✅ **BIZONYÍTVA (hardveres)** |
+| **Per-plane Bell balance (00+11)** | Plane 0: **95.41%**, Plane 1: **96.09%**, Plane 2: **96.19%**, Plane 3: **96.58%** | 🔬 **MÉRT (hardveres)** — de lásd a korlátot |
+| **Raw shot memory** | **csak az első 10** bitstring mentődött: `['00001100','00000000','11000000','11110011',...]` | ⚠️ **RÉSZLEGES** — nem mind a 1024 |
 | **Transpiled depth** | 4 (r:12, measure:8, cz:4) | ℹ️ |
 
 > ⚠️ **KORLÁT, amit a mérés nem takar el:** a „virtual Z phase" itt **nem
 > fizikai detuned GHz-pulzus**, hanem egy `rz(0.4398)` **digitális** kapu,
 > amit a transzpiler `r` forgatásokra bontott. Nincs 4.11 GHz-es
 > mikrohullámú gerjesztés. A 95–96% balance tehát azt mutatja, hogy **a
-> négy Bell-pár koherens maradt egy tranzisztens-komponens-halmazban** —
-> nem azt, hogy egy detuned drive kompenzálta a T1/T2 csillapodást.
-> A valódi anchor-drive állítás a §7.8.8 szerint **pénzes/engedélykért
-> pulse-level** hozzáférést igényel.
+> négy Bell-pár végrehajtódott és koherens maradt** — nem azt, hogy egy
+> detuned drive kompenzálta a T1/T2 csillapodást.
+
+> ⚠️ **A második korlát: nincs `rz`-mentes kontrollsor.** Ebben a futásban nem
+> mértük a `bell` (H+CNOT, `rz` nélkül) sort, ezért **nem lehet elválasztani**,
+> hogy a `rz(φ)` hozzájárult-e a 95–96%-hoz, vagy az kizárólag a tiszta
+> Bell-áramkör természetes minősége. Egy tiszta Bell-pár szupersztinguláris
+> hardveren a legkevésbé igényes konfiguráció — a magas balance **önmagában
+> nem anchor-jel**. Az `anchor_measure_iqm_final.py --validate` és a
+> `--seed` kontrollsor ezt a hézagot zárja.
 
 ### 7.8.3 Értékelés
 
-**A tervezési cél (>97% globális 0000+1111 balance) NEM teljesült** — az 8-qubit globális állapot eloszlásában a korreláció nem elég erős, hogy az összes 4 sík szinkronban maradjon.
+**A tervezési cél (>97% globális 0000+1111 balance) NEM teljesült** — a 11.62%
+pontosan az, amit **négy független Bell-pár** ad: ha a síkok egymástól
+statisztikailag függetlenek, a globális egyezés a véletlen szintje (~1/8) közelébe
+kerül. Ez a mérés tehát **nem** képes demonstrálni a 20-valóság szinkronizált
+szelekcióját.
 
-**Amit a mérés valóban bizonyít:**
-1. Minden síkban a Bell-pár (00/11) **koherens szuperpozíció** megmarad az evolúciós ablak alatt
-2. A tranzisztens-komponens-halmaz 37 ns alatt **nem omlik össze**
-3. Az IQM Garnet **képes 8-qubit koherens állapotmegőrzésre**
+**Amit a mérés valóban mutat:**
+1. A négy Bell-pár (00/11) **végrehajtódott és megtartotta koherenciáját**
+2. A tranzisztens-komponens-halmaz a mérési ablakban **nem omlott össze**
+3. Az IQM Garnet **képes 8-qubit áramkör futtatására** depth 4-en
+
+**Amit a mérés NEM mutat:**
+- Hogy az `rz(φ)` bármilyen mérhető hatást okozott (nincs kontrollsor)
+- Hogy bármi fizikai detuned drive történt (nem történt)
+- Hogy a négy sík korrelált (nem korrelált)
 
 **Ez NEM pulse-level mérés** — a Sweep API külön engedélyt igényel (§7.8.8).
 
 ### 7.8.4 Mit bizonyít ez (valódi eredmény)
 
-1. ✅ **4 független Bell-pár szimultán megőrzése** IQM-en, 95-96% hűséggel
-2. ✅ **IQM Garnet 19Q támogat 8-qubit koherens áramkört** — depth 4, 1024 shots
-3. ❌ **Globális 8-qubit szinkronizáció** (20 valóság szelekció) NEM bizonyítva — 11.62%
+1. 🔬 **4 független Bell-pár szimultán megőrzése** IQM-en, 95-96% hűséggel
+2. 🔬 **IQM Garnet 19Q támogat 8-qubit áramkört** — depth 4
+3. ❌ **Globális 8-qubit szinkronizáció** (20 valóság szelekció) NEM igazolt — 11.62%
 4. ❌ **Fizikai detuned anchor drive** NEM mérve — a `rz` digitális volt (§7.8.2)
-5. ❌ **Pulse-level IQ vektor** NEM elérhető — a Starter tier tiltja (§7.8.8)
+5. ❌ **Az `rz(φ)` önálló hatása** nem szeparálható — nincs `rz`-mentes kontrollsor
+6. ❌ **Pulse-level IQ vektor** NEM elérhető — a Starter tier tiltja (§7.8.8)
 
 ### 7.8.5 Audit Trail
 

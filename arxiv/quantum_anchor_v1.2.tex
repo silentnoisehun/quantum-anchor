@@ -1,3 +1,10 @@
+% Quantum Anchor V1.2: Tesseract Architecture for Coherent State Selection
+% on Superconducting QPUs
+%
+% AUTHOR METADATA NOTE: the email address below must be confirmed by the
+% author before submission, and an ORCID should be added if one exists.
+% The placeholder address is NOT a verified contact.
+
 \documentclass[11pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -9,14 +16,14 @@
 \geometry{margin=2.5cm}
 
 \title{Quantum Anchor V1.2: Tesseract Architecture for Coherent State Selection on Superconducting QPUs}
-\author{Máté Róbert\\Hope Ecosystem\\\texttt{robert.mate@hope-ecosystem.org}}
+\author{M\'at\'e R\'obert\\Hope Ecosystem}
 \date{2026-10-07}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-We present Quantum Anchor V1.2 (Tesseract Anchor), a post-pulse experimental protocol for coherent state anchoring on superconducting quantum processors. The original pulse-level protocol (\texttt{qiskit.pulse}, \texttt{meas\_level=0}) was deprecated by IBM in 2025. V1.2 migrates to working APIs and reports evidence grades honestly. We achieve three hardware-proven results on IBM \texttt{ibm\_marrakesh} (156Q Heron r2): (1) $\psi(37\text{ns}) = 0.331662$ single-qubit dynamics with $\gamma=0$ model, (2) Borg 16-node predictive coherence at 100\% clear, 96.43\% balance, (3) Tesseract 4-plane architecture validated on IQM Resonance Garnet 19Q with 95-96\% per-plane Bell balance using virtual Z phase (4.11 GHz $\times$ 37 ns = 0.4398 rad). Global 8-qubit synchronization (11.62\%) requires pulse-level access for true IQ vector measurement. We retract a previous false positive (tautological circuit reversal) and document five blockers preventing the original protocol. The Tesseract architecture extends to 20 pre-realities via soft selection $R = |\langle\psi_{\text{anchor}}|\psi_{\text{answer}}\rangle|^2$ without wavefunction collapse.
+We present Quantum Anchor V1.2 (Tesseract Anchor), a post-pulse experimental protocol for coherent state anchoring on superconducting quantum processors. The original pulse-level protocol (\texttt{qiskit.pulse}, \texttt{meas\_level=0}) was deprecated by IBM in 2025. V1.2 migrates to working APIs and reports evidence grades honestly. We report hardware measurements on IBM \texttt{ibm\_marrakesh} (156Q Heron r2) and on IQM Resonance Garnet 19Q. On IBM we measure single-qubit dynamics $\psi(37\text{ns}) = 0.331662$ under a $\gamma=0$ model, and we show that both the $\gamma=0$ baseline (89.72\% balance) and the $\gamma=0.5$ anchor-on condition (87.74\%) yield \textbf{0\% clear}. On IQM we measure four independent Bell pairs at 95--96\% per-plane balance using a virtual Z rotation of $0.4398$ rad. We \textbf{retract} an earlier positive result that we show to be a circuit tautology. The global 8-qubit correlation was 11.62\%, consistent with statistically independent planes, so the 20-reality synchronized-selection claim is \textbf{not demonstrated}. The physical anchor-drive compensation effect is \textbf{not proven by any measurement in this work}; pulse-level access required to test it was measured to be unavailable on our IQM account tier.
 \end{abstract}
 
 \section{Introduction}
@@ -79,14 +86,26 @@ Metric & Value & Grade \\
 D0 avg & 97.40\% & $\mathfrak{H}$ \\
 D4 avg & 93.10\% & $\triangle$ \\
 D8 avg & 89.40\% & $\triangle$ \\
-Borg 16 nodes avg & 96.43\% & $\mathfrak{H}$ \\
-clear & 100.0\% & $\mathfrak{H}$ \\
+preserved (D0 vs D8 $<$ 2\%) & False & $\triangle$ \\
+Borg 16 nodes avg & 96.43\% & $\triangle$ (retracted) \\
+Borg clear & 100.0\% & $\triangle$ (retracted) \\
 $\psi(37\text{ns})$ & 0.331662 ($\gamma=0$) & $\mathfrak{H}$ \\
+\midrule
+Borg $\gamma=0$ corrected & 89.72\% balance, 0\% clear & $\mathfrak{H}$ \\
+Borg $\gamma=0.5$ anchor ON & 87.74\% balance, 0\% clear & $\mathfrak{H}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textbf{Interpretation:} Borg 100\% clear proves predictive coherence survives measurement. $\psi(37\text{ns})$ is not trivial Rabi oscillation. Matryoshka decay is cumulative noise. Anchor drive compensation: 0\% clear (SamplerV2 cannot implement dissipative compensation).
+\textbf{Interpretation.} The $\gamma=0$ and $\gamma=0.5$ anchor rows are the
+central negative result: \textbf{0\% clear in both conditions}, so no anchor
+compensation was observed. The 96.43\% Borg figure and its 100\% clear reading
+are \textbf{retracted}: the $\gamma=0$ circuit reversed its own rotations, so
+state preservation was a tautology of the circuit construction rather than a
+measured property. The Matryoshka decay (97.4\% $\to$ 89.4\%) is cumulative
+noise from fractional gate depth, and the ``preserved'' criterion evaluated to
+False. $\psi(37\text{ns})$ is a fit under a $\gamma=0$ model that real qubits
+cannot satisfy (F4).
 
 \section{Retraction: False Positive}
 
@@ -145,6 +164,15 @@ From Matryoshka D0$\to$D8 decay: $T_{\text{annihil}} \approx 46\text{ ns}$ ($\ga
 
 \section{IQM Resonance Measurement}
 
+\subsection{Scope of this measurement}
+
+This is a \textbf{circuit-level} measurement. The returned data are classical
+bitstrings, \emph{not} analog IQ vectors; this is not $\texttt{meas\_level=0}$.
+The $\texttt{rz}(\theta)$ gate is a \textbf{virtual Z rotation} applied in
+software: it sends no physical pulse and drives no nonlinear effect. The value
+$\phi = 0.4398$ rad is a \emph{parameter} of that rotation, not a frequency that
+was ever applied to the device.
+
 \subsection{Parameters}
 \begin{table}[h]
 \centering
@@ -153,13 +181,18 @@ From Matryoshka D0$\to$D8 decay: $T_{\text{annihil}} \approx 46\text{ ns}$ ($\ga
 Platform & IQM Resonance Garnet 19Q (Starter tier) \\
 Native gates & \texttt{id, delay, measure, r, if\_else, reset, cz} \\
 Circuit & 4 planes $\times$ 2 qubits = 8 qubits \\
-Virtual Z phase & $4.11\text{ GHz} \times 37\text{ ns} = 0.4398\text{ rad}$ \\
-Measurement & \texttt{result.get\_memory()} (raw bitstrings) \\
-Shots & 1024 \\
+Phase formula & $\phi = 2\pi \cdot f[\text{GHz}] \cdot t[\text{ns}] \bmod 2\pi$ \\
+Phase value & $4.11 \times 37 = 152.07$ cycles $\to 0.4398$ rad \\
+Measurement & \texttt{result.get\_memory()} (classical bitstrings) \\
+Shots & 1024 requested \\
 Job ID & \texttt{01a1162c-717c-77e7-91d9-90ed16c0e591} \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+Since $\text{GHz}\times\text{ns}$ is already dimensionless, no $10^{-9}$
+factor applies; an earlier draft that multiplied by $10^{-9}$ obtained
+$1.37\times10^{-7}$ rad instead of $0.4398$ rad.
 
 \subsection{Results}
 
@@ -173,15 +206,37 @@ Plane 0 (q0,q1) Bell balance & 95.41\% & $\mathfrak{H}$ \\
 Plane 1 (q2,q3) Bell balance & 96.09\% & $\mathfrak{H}$ \\
 Plane 2 (q4,q5) Bell balance & 96.19\% & $\mathfrak{H}$ \\
 Plane 3 (q6,q7) Bell balance & 96.58\% & $\mathfrak{H}$ \\
-Global 00000000 + 11111111 & 11.62\% & $\times$ \\
-Raw shot memory & 1024 bitstrings & $\mathfrak{H}$ \\
+Global $00000000 + 11111111$ & 11.62\% & $\times$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textbf{Per-plane 95-96\% proves:} coherent superposition maintained, virtual Z phase non-destructive, IQM Garnet supports 8-qubit depth-4 circuits.
+\paragraph{Count discrepancy.} 1024 shots were requested but the returned
+counts sum to 1016. The tabulated percentages use a 1024 denominator; with the
+true denominator the global balance is 11.71\%. We report both and flag the
+discrepancy rather than silently adopting either value.
 
-\textbf{Global 11.62\% fails:} insufficient correlation for 20-reality selection. Pulse-level IQ vectors needed.
+\paragraph{What the per-plane result shows.} Four Bell pairs execute correctly
+on Garnet at transpiled depth 4, and the virtual Z rotation did not break them.
+A clean Bell pair is the least demanding configuration on a superconducting
+QPU, so a high balance is the expected outcome of any working entangling gate.
+No $\texttt{rz}$-free control row was measured in this run, so the contribution
+of $\texttt{rz}(\phi)$ cannot be separated from the Bell circuit's intrinsic
+quality.
+
+\paragraph{What the global result shows.} At 11.62\% the four planes behave as
+statistically independent, which is exactly what four separate Bell pairs on
+separate qubits produce. This circuit therefore cannot demonstrate the
+20-reality synchronized selection.
+
+\subsection{Blocked: pulse-level access}
+
+A pulse-level Sweep job built with all five required \texttt{SweepDefinition}
+fields was rejected by the server with
+\emph{``Personal account does not have pulse-level access enabled required to
+submit this job''}. The client, the 82 exposed channels, and the playlist
+structure were all validated; the refusal is an account entitlement, not a
+client error. No offline change can circumvent it.
 
 \section{What Is / Is Not Proven}
 
@@ -191,12 +246,13 @@ Raw shot memory & 1024 bitstrings & $\mathfrak{H}$ \\
 \toprule
 Claim & Status & Evidence \\
 \midrule
-Tesseract 4-plane valid & $\checkmark$ & Per-plane 95-96\% \\
-Virtual Z non-destructive & $\checkmark$ & Phase 0.4398 rad preserves \\
-IQM 8-qubit coherence & $\checkmark$ & Depth 4, 1024 shots \\
+4 Bell pairs execute on Garnet & $\mathfrak{H}$ & Per-plane 95--96\% \\
+Virtual Z does not break a Bell pair & $\mathfrak{H}$ (weak) & Same circuit \\
+$\texttt{rz}(\phi)$ has distinct effect & $\triangle$ & No $\texttt{rz}$-free control \\
 Global 20-reality sync & $\times$ & 11.62\% global \\
 Pulse-level IQ vector & $\times$ & Circuit-level only \\
-Anchor compensates T1/T2 & $\times$ & Needs pulse/DD \\
+Physical detuned drive applied & $\times$ & $\texttt{rz}$ is virtual \\
+Anchor compensates T1/T2 & $\times$ & 0\% clear on IBM \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -204,10 +260,18 @@ Anchor compensates T1/T2 & $\times$ & Needs pulse/DD \\
 \section{Next Steps}
 
 \begin{enumerate}
-\item Pulse-level Sweep API (IQM): 5 params (\texttt{sweep\_id, dut\_label, settings, sweeps, return\_parameters})
-\item Braket Pulse (Rigetti Ankaa-3): \texttt{GaussianWaveform}, ~\$0.36/1024 shots
-\item IBM Dynamical Decoupling primitives (expected 2025 H2)
-\item Direct $T_{\text{annihil}}$ measurement (~46 ns)
+\item \textbf{Bell control matrix (free, runnable now).} Measure four rows
+      --- \texttt{zero}, \texttt{h}, \texttt{bell} (no $\texttt{rz}$), and
+      \texttt{anchor} (with $\texttt{rz}(\phi)$) --- on IQM Starter credits.
+      If the last two agree, as physics predicts, the high balance is not an
+      anchor effect. This converts the present ambiguity into a documented
+      negative result.
+\item \textbf{Pulse-level Sweep API --- BLOCKED.} Requires an IQM account
+      entitlement absent from the free Starter tier (measured; see above).
+\item \textbf{Direct $T_{\text{annihil}}$ measurement} --- blocked on the same
+      entitlement.
+\item \textbf{Paid QPU routes} (Braket on Rigetti Ankaa-3) are documented but
+      deliberately not pursued.
 \end{enumerate}
 
 \section{Data Availability}

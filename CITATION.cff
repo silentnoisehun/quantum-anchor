@@ -1,34 +1,43 @@
 # Citation metadata for Quantum Anchor.
 #
-# ⚠️ BEFORE PUBLISHING — two things here must be decided by a human, not by
-# the tooling:
+# BEFORE PUBLISHING — two things here must be decided by a human, not by the
+# tooling:
 #
-# 1. The AUTHOR LIST. The entry below is the named author, confirmed by the
+# 1. THE AUTHOR LIST. The entry below is the named author, confirmed by the
 #    project owner. A Zenodo DOI is permanent and public, and it cannot be
 #    quietly reassigned later — being named on it is a public, citable
 #    attribution, so anyone added later must agree to be named.
 #
 # 2. THE DOI. Zenodo mints it on the first upload. Put the CONCEPT DOI here (the
 #    one covering all versions), not the version DOI: the concept DOI always
-#    resolves to the latest release.
+#    resolves to the latest release. No DOI is listed below yet, because
+#    inventing a placeholder identifier risks it being copied into a real
+#    citation. Add it after the first successful Zenodo upload.
 #
-# The repository URL below is the intended public location. Confirm it resolves
+# The ORCID below is an all-zero placeholder, which is the conventional
+# "no ORCID" sentinel. Replace it with a real one, or delete the field — do
+# not leave a fabricated identifier in place.
+#
+# The repository URL is the intended public location. Confirm it resolves
 # before tagging a release — the sdist check and the Zenodo record depend on it.
+#
+# The abstract deliberately states the negative results. If you shorten it to a
+# positive summary, it will misrepresent the work.
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
-title: "Quantum Anchor V1.2 — Tesseract Anchor: 4 Planes × 5 Realities = 20 Realities"
+title: "Quantum Anchor V1.2 — Tesseract Anchor Protocol and Measurement Ledger"
 abstract: >-
-  Quantum Anchor is a post-pulse experimental protocol for coherent state anchoring
-  on superconducting QPUs. The original pulse-level protocol (qiskit.pulse,
-  meas_level=0) was deprecated by IBM in 2024 and removed from production QPUs
-  (Feb 2025). This version (V1.2) introduces the Tesseract architecture:
-  4 orthogonal planes × 5 phase realities = 20 simultaneous pre-realities with
-  self-annihilation via destructive interference (no collapse). Evidence:
-  ψ(37ns)=0.331662 (γ=0 model) on ibm_marrakesh 156Q Heron r2,
-  Borg 16-node 100% clear (96.43% balance),
-  Matryoshka fractal D0→D8 97.40%→89.40%.
-  Hardware-proven: 🔬 single-qubit dynamics,
-  ⚠️ unverified: anchor drive compensation.
+  An experimental protocol for coherent state anchoring on superconducting QPUs,
+  together with the measurement ledger that tests it. The original pulse-level
+  protocol (qiskit.pulse, meas_level=0) was deprecated by IBM in 2024 and removed
+  from production QPUs in February 2025. V1.2 migrates to working APIs and reports
+  evidence grades honestly. Measured: single-qubit dynamics psi(37ns)=0.331662
+  under a gamma=0 model on ibm_marrakesh; four independent Bell pairs at 95-96%
+  per-plane balance on IQM Resonance Garnet 19Q. Documented negative results: the
+  anchor-on and anchor-off conditions both yield 0% clear, and the global 8-qubit
+  correlation is 11.62%, consistent with statistically independent planes. The
+  physical anchor-drive compensation effect is NOT proven by any measurement in
+  this work. An earlier positive result is retracted as a circuit tautology.
 type: software
 version: 1.2.0
 date-released: "2026-10-07"
@@ -43,17 +52,14 @@ authors:
 keywords:
   - quantum computing
   - quantum anchor
-  - fractional gates
-  - qiskit-dynamics
-  - Heron processor
+  - coherent state anchoring
   - superconducting QPU
-  - Matryoshka fractal
-  - Borg Cube
-  - Tesseract
-  - predictive computing
-  - coherence preservation
-  - destructive interference
-  - self-annihilation
+  - IBM Quantum
+  - IQM Resonance
+  - Bell state
+  - negative result
+  - reproducibility
+  - measurement ledger
 repository-code: "https://github.com/silentnoisehun/quantum-anchor"
 references:
   - type: software

@@ -5,7 +5,7 @@
 **Version:** 1.2 (Tesseract Anchor)  
 **Date:** 2026-10-07  
 **Authors:** Máté Róbert, Hope Ecosystem  
-**Status:** HARDWARE VALIDATED (partial) — see Evidence Grades  
+**Status:** MEASURED, CLAIM NOT PROVEN — see §8  
 **Repositories:** `quantum-anchor` (protocol), `scs-quantum` (bridge)  
 **DOI (concept):** pending Zenodo registration
 
@@ -21,14 +21,26 @@ The original pulse-level protocol (`qiskit.pulse`, `meas_level=0`) was **depreca
 
 | Test | Result | Grade | Platform |
 |---|---|---|---|
-| **ψ(37ns) single-qubit dynamics** | 0.331662 (γ=0 model) | 🔬 **HARDWARE PROVEN** | IBM `ibm_marrakesh` (156Q Heron r2) |
-| **Borg 16-node clear signal** | 100% clear, 96.43% balance | 🔬 **HARDWARE PROVEN** | IBM `ibm_marrakesh` |
+| **ψ(37ns) single-qubit dynamics** | 0.331662 (γ=0 model) | 🔬 **HARDWARE MEASURED** | IBM `ibm_marrakesh` (156Q Heron r2) |
+| **Borg 16-node clear signal** | 100% clear, 96.43% balance | ⚠️ **RETIRED** (tautology, §5) | IBM `ibm_marrakesh` |
 | **Matryoshka D0→D8 preservation** | 97.40% → 89.40% | ⚠️ UNVERIFIED | Cumulative noise, not anchor failure |
-| **Tesseract 4-plane anchor (IQM Garnet)** | Per-plane 95-96%, Global 11.62% | 🔬 **PARTIAL** | IQM Resonance Garnet 19Q |
+| **Borg γ=0 corrected baseline** | 89.72% balance, 0% clear | 🔬 **HARDWARE MEASURED** | IBM `ibm_marrakesh` |
+| **Borg γ=0.5 anchor ON** | 87.74% balance, 0% clear | 🔬 **HARDWARE MEASURED** | IBM `ibm_marrakesh` |
+| **Tesseract 4-plane (IQM Garnet)** | Per-plane 95-96%, Global 11.62% | 🔬 **HARDWARE MEASURED** | IQM Resonance Garnet 19Q |
+
+**The central claim — that a weak drive can compensate T1/T2 dissipation — is
+NOT proven by any measurement in this paper.** The two anchor-on/off rows above
+both yield 0% clear. The IQM row shows clean Bell-pair execution, not anchor
+compensation.
 
 **Key insight:** The SamplerV2 API (IBM's current primitive) only supports coherent gates. It **cannot** implement dissipative noise compensation (T1/T2) that the anchor drive requires. This is why anchor drive compensation shows 0% clear on IBM hardware even at γ=0.
 
-**IQM Result:** Circuit-level raw shot memory (`result.get_memory()`) achieves 95-96% per-plane Bell balance with virtual Z phase (4.11 GHz × 37 ns = 0.4398 rad). Global 8-qubit sync (11.62%) requires pulse-level access (Sweep API) for true IQ vector measurement.
+**IQM Result:** Circuit-level `result.get_memory()` returns **classical bitstrings**, not complex IQ vectors. Four independent Bell pairs each retained 95-96% balance (per-plane). The measured `rz(0.4398)` is a **Qiskit virtual Z rotation** — a phase parameter applied in software, **not** a physical 4.11 GHz drive, and **not** `meas_level=0`. Global 8-qubit correlation was 11.62%, so the 20-reality synchronized-selection claim is **not** supported.
+
+**Pulse-level access: DENIED (measured).** A validated Sweep API job was
+rejected with `Personal account does not have pulse-level access enabled
+required to submit this job`. The free IQM Starter tier permits circuit-level
+jobs only. See §9.
 
 ---
 
@@ -39,11 +51,11 @@ The Quantum Anchor hypothesis: a weak, non-destructive pulse acts as an "anchor"
 **This paper does NOT prove that hypothesis on IBM hardware.** Instead, it:
 
 1. **Documents the blockers** (F1–F5) why the original pulse-level protocol cannot run
-2. **Migrates to working APIs** (fractional gates + qiskit-dynamics + SamplerV2 on IBM; circuit-level + raw shot memory on IQM)
+2. **Migrates to working APIs** (fractional gates + qiskit-dynamics + SamplerV2 on IBM; circuit-level bitstrings on IQM)
 3. **Measures what IS measurable** on real hardware and reports evidence grades honestly
-4. **Prepares the true anchor test** on IQM Resonance (pulse-level access available)
+4. **Documents the measured denial** of IQM pulse-level access, which blocks the true anchor test
 
-The Tesseract architecture extends the single-anchor concept to **4 planes × 5 realities = 20 pre-realities**, with soft selection via `R = |⟨ψ_anchor|ψ_answer⟩|²` instead of wavefunction collapse.
+The Tesseract architecture extends the single-anchor concept to **4 planes × 5 realities = 20 pre-realities**, with soft selection via `R = |⟨ψ_anchor|ψ_answer⟩|²` instead of wavefunction collapse. **This architecture is a design proposal; the 20-reality synchronized selection has not been demonstrated.**
 
 ---
 
@@ -101,16 +113,24 @@ python -m src.matryoshka_borg_predictive \
 | **D4 avg** | 93.10% | ⚠️ |
 | **D8 avg** | 89.40% | ⚠️ |
 | **preserved (D0 vs D8 < 2%)** | False | ⚠️ |
-| **Borg 16 nodes avg** | 96.43% | 🔬 |
-| **clear** | 100.0% | 🔬 |
+| **Borg 16 nodes avg** | 96.43% | ⚠️ **RETIRED** |
+| **Borg clear** | 100.0% | ⚠️ **RETIRED** — tautology, see §5 |
 | **ψ(37ns)** | 0.331662 (γ=0 model) | 🔬 |
 
 ### 4.3 Interpretation
 
-- **Borg 100% clear (96.43% balance)**: Predictive coherence survives measurement on real Heron hardware
-- **ψ(37ns)=0.331662**: Single-qubit dynamics with γ=0 model fit — NOT trivial Rabi oscillation
-- **Matryoshka D0→D8 decay (97.4%→89.4%)**: Cumulative noise from fractional gate depth, not anchor failure
-- **Anchor drive compensation**: 0% clear on hardware (γ=0 and γ=0.5 both) — SamplerV2 cannot implement dissipative compensation
+- **Borg 100% clear (96.43% balance)**: ⚠️ **RETRACTED — this is not evidence of
+  predictive coherence.** The γ=0 circuit reversed its own rotations, making
+  state preservation a tautology of the circuit construction. See §5. The
+  96.43% figure is real hardware output, but it does not measure the property
+  it was claimed to measure.
+- **ψ(37ns)=0.331662**: Single-qubit dynamics with γ=0 model fit. Note this is
+  a fit under a model that real qubits cannot satisfy (§F4).
+- **Matryoshka D0→D8 decay (97.4%→89.4%)**: Cumulative noise from fractional
+  gate depth. The "preserved" criterion (D0 vs D8 < 2%) evaluated to **False**.
+- **Anchor drive compensation**: 0% clear on hardware (γ=0 and γ=0.5 both) —
+  SamplerV2 cannot implement dissipative compensation. **This is the central
+  negative result of the paper.**
 
 ### 4.4 Audit Trail (IBM Jobs)
 
@@ -196,7 +216,21 @@ Requires pulse-level measurement for direct verification.
 
 ---
 
-## 7. IQM Resonance Measurement — Circuit-Level Raw Shot Memory
+## 7. IQM Resonance Measurement — Circuit-Level Bitstrings
+
+### 7.0 What this measurement IS and IS NOT
+
+| | |
+|---|---|
+| **IS** | Circuit-level measurement of 4 independent Bell pairs, 1024 shots requested |
+| **IS NOT** | `meas_level=0` — no analog IQ data was returned |
+| **IS NOT** | A physical 4.11 GHz detuned drive — `rz()` is a software virtual rotation |
+| **IS NOT** | An anchor compensation measurement — no pulse-level access was available |
+
+The `rz(θ)` gate in Qiskit applies a phase in software by transforming subsequent
+Z-basis rotations. It sends **no physical pulse** to the qubit and drives **no
+nonlinear effect**. The "4.11 GHz × 37 ns" calculation is the *parameter* fed to
+that rotation, not a frequency that was ever applied.
 
 ### 7.1 Experimental Parameters
 
@@ -206,18 +240,23 @@ Requires pulse-level measurement for direct verification.
 | **Backend** | `garnet` (19 superconducting qubits) |
 | **Native gates** | `id`, `delay`, `measure`, `r`, `if_else`, `reset`, `cz` |
 | **Circuit** | 4 Tesseract planes × 2 qubits = 8 qubits, Bell-prep + virtual Z + measure |
-| **Virtual Z phase** | 4.11 GHz × 37 ns = 152.07 cycles → 0.4398 rad (mod 2π) |
-| **Measurement** | Circuit-level, `result.get_memory()` → raw shot bitstrings (meas_level=0 equivalent) |
-| **Shots** | 1024 |
+| **Phase formula** | φ = 2π · f[GHz] · t[ns] mod 2π |
+| **Phase value** | 4.11 GHz × 37 ns = 152.07 cycles → **0.4398 rad** |
+| **Measurement** | Circuit-level `result.get_memory()` → classical bitstrings |
+| **Shots** | 1024 requested |
 | **Job ID** | `01a1162c-717c-77e7-91d9-90ed16c0e591` |
 | **Timestamp** | 2026-10-07T11:45:08Z |
+
+**Formula note:** The phase formula is `2π·f_GHz·t_ns`. Because GHz×ns is already
+dimensionless cycles, multiplying by `1e-9` (as an earlier draft did) is wrong
+and yields 1.37e-7 rad instead of 0.4398 rad.
 
 ### 7.2 Circuit Construction
 
 ```python
-# 4 planes, each prepares Bell pair + virtual Z phase
+# 4 planes, each prepares a Bell pair + virtual Z phase
 qc = QuantumCircuit(8, 8)
-phase = 2 * π * 4.11 * 37e-9  # 0.4398 rad
+phase = 2 * pi * 4.11 * 37  % (2 * pi)   # 0.4398 rad — NO 1e-9 factor
 
 for plane in range(4):
     q0, q1 = plane*2, plane*2+1
@@ -240,25 +279,43 @@ qc.measure(range(8), range(8))
 | **Plane 2 (q4,q5) Bell balance** | 96.19% (463+522/1024) | 🔬 |
 | **Plane 3 (q6,q7) Bell balance** | 96.58% (602+387/1024) | 🔬 |
 | **Global 00000000 + 11111111** | 11.62% (74+45/1024) | ❌ |
-| **Raw shot memory** | 1024 bitstrings captured | 🔬 |
 
-**Raw memory sample (first 10):**
+**Raw memory sample (first 10 of the stored audit file):**
 ```
 ['00001100', '00000000', '11000000', '11110011', 
  '00001100', '00000011', '00000011', '00111100', 
  '11111100', '11110011']
 ```
 
+⚠️ **Shot-count discrepancy:** 1024 shots were requested, but the returned
+counts sum to **1016**. The percentages above use a 1024 denominator; with the
+true 1016 denominator the global balance is **11.71%**, not 11.62%. The
+measurement script now detects and reports this rather than silently trusting
+the requested shot count.
+
+⚠️ **Raw memory truncation:** the audit JSON stores `counts` in full but only
+the **first 10** bitstrings of `memory`. The earlier claim "1024 bitstrings
+captured" was wrong. Full-memory capture is implemented in
+`anchor_measure_iqm_final.py` but has not yet been re-run.
+
 ### 7.4 Evaluation
 
-**Design goal (>97% global 0000+1111 balance) NOT achieved** — 8-qubit global state correlation insufficient for 20-reality selection.
+**Design goal (>97% global 0000+1111 balance) NOT achieved.** At 11.62% global
+correlation the four planes behave as statistically independent — which is
+exactly what four *separate* Bell pairs on separate qubits produce. This
+circuit therefore **cannot** demonstrate 20-reality synchronized selection.
 
-**BUT the design WORKS per-plane:** 95-96% Bell balance proves:
-1. Each plane maintains coherent superposition during evolution window
-2. Virtual Z phase (4.11 GHz detuned drive) is **non-destructive**
-3. IQM Garnet 19Q supports 8-qubit coherent circuits (depth 4)
+**What the 95-96% per-plane result actually shows:**
+1. Each Bell pair retained coherence across the circuit depth
+2. The transpiled circuit executed correctly on Garnet (depth 4, 8 qubits)
+3. The virtual Z rotation did not break the Bell pairs
 
-**Limitation:** Circuit-level API returns bitstrings, not complex IQ vectors. True `meas_level=0` requires Sweep API.
+**What it does NOT show:** anything about anchor compensation. A clean Bell
+pair is the *least demanding* configuration on a superconducting QPU — a high
+Bell balance is the expected outcome of any working entangling gate. No
+`bell`-without-`rz` control row was measured in this run, so the `rz(φ)`
+contribution cannot be separated from the Bell circuit's natural quality.
+`anchor_measure_iqm_final.py` now runs that control matrix.
 
 ### 7.5 Audit Trail
 
@@ -272,35 +329,75 @@ qc.measure(range(8), range(8))
 
 | Claim | Status | Evidence |
 |---|---|---|
-| Tesseract 4-plane architecture valid | ✅ | Per-plane 95-96% Bell balance |
-| Virtual Z phase non-destructive | ✅ | Phase 0.4398 rad preserves coherence |
-| IQM Garnet 8-qubit coherence | ✅ | Depth 4, 1024 shots |
-| Global 20-reality sync | ❌ | 11.62% global balance |
-| Pulse-level IQ vector | ❌ | Circuit-level only |
-| Anchor drive compensates T1/T2 | ❌ | Requires pulse-level / DD primitives |
+| 4 Bell pairs execute on Garnet at depth 4 | 🔬 HARDWARE | Per-plane 95-96% balance |
+| Virtual Z rotation does not break a Bell pair | 🔬 HARDWARE (weak) | Same circuit, rz present |
+| IQM Garnet 8-qubit circuit execution | 🔬 HARDWARE | Depth 4, transpiled OK |
+| `rz(φ)` has a distinct measurable effect | ⚠️ UNVERIFIED | No rz-free control row in this run |
+| Global 20-reality sync | ❌ NOT SHOWN | 11.62% global balance |
+| Pulse-level IQ vector | ❌ NOT OBTAINED | Circuit-level only |
+| Physical detuned drive applied | ❌ NOT MEASURED | `rz` is a virtual rotation |
+| Anchor drive compensates T1/T2 | ❌ NOT PROVEN | Requires pulse-level / DD |
 
 ---
 
 ## 9. Next Steps for Full Tesseract Validation
 
-### 9.1 Pulse-Level Sweep API (IQM)
+### 9.0 What is blocked, and what is not (MEASURED 2026-10-07)
+
+| Route | Status | Evidence |
+|---|---|---|
+| IQM pulse-level Sweep API | ❌ **DENIED** | Server returned `Personal account does not have pulse-level access enabled required to submit this job` |
+| IQM circuit-level | ✅ Available | 30 credits/month, Starter tier |
+| Offline validation of the anchor claim | ✅ Available, **done** | `anchor_measure_iqm_final.py --validate` |
+
+The Sweep API client itself was validated successfully: `submit_sweep` was
+reachable, 82 channels were exposed, and a complete `SweepDefinition` was
+constructed with all five required fields. **The rejection is a server-side
+account entitlement, not a Python or playlist error.** No offline code change
+can work around it.
+
+### 9.1 Bell Control Matrix (FREE — runnable now)
+
+This is the highest-value next measurement and it costs only Starter credits.
+`anchor_measure_iqm_final.py` runs four rows:
+
+| Row | Circuit | Question it answers |
+|---|---|---|
+| `zero` | no gates | What is the measurement floor? |
+| `h` | H on all 8 | Is the register uniform as expected? |
+| `bell` | H+CNOT, **no rz** | What does a clean Bell pair score? |
+| `anchor` | H+CNOT+rz(φ) | Does rz(φ) change anything? |
+
+If `anchor` and `bell` are equal — which physics predicts — then the high
+balance is **not** an anchor effect. This is the single measurement that turns
+the current ambiguity into a documented negative result.
+
+```bash
+$env:IQM_TOKEN = '<your token>'
+python anchor_measure_iqm_final.py --shots 1024 --backend garnet --seed 42
+```
+
+### 9.2 Pulse-Level Sweep (BLOCKED — requires entitlement)
+
 Implement `SweepDefinition` with 5 required params:
 - `sweep_id`, `dut_label`, `settings`, `sweeps`, `return_parameters`
-- Returns complex IQ vectors → true `meas_level=0` equivalent
+- Would return complex IQ vectors — a true analog measurement
+- **Blocked on IQM account entitlement; the Starter tier does not include it.**
 
-### 9.2 Braket Pulse (Rigetti Ankaa-3 / Cepheus)
-Secondary validation:
+### 9.3 Braket Pulse (Rigetti Ankaa-3 / Cepheus) — PAID, not pursued
+
 ```python
 from braket.pulse import GaussianWaveform
 GaussianWaveform(length=37e-9, width=10e-9, amp=0.08)
 ```
-Cost: ~$0.36 / 1024 shots
 
-### 9.3 IBM Dynamical Decoupling Primitives
-Expected 2025 H2 — would enable `meas_level=0` equivalent on Heron
+This route is documented for completeness and **deliberately not pursued** —
+it requires a paid QPU allocation.
 
 ### 9.4 T_annihil Direct Measurement
-Pulse-level access needed to measure self-annihilation time ~46 ns
+
+Requires pulse-level access to measure the extrapolated self-annihilation time
+(~46 ns). **Blocked** for the same reason as §9.2.
 
 ---
 
@@ -315,16 +412,26 @@ Pulse-level access needed to measure self-annihilation time ~46 ns
 % Plane-XZ (q2,q3): \lambda=0.08, p0=0.25, balance=96.09%
 % Plane-XW (q4,q5): \lambda=0.08, p0=0.5,  balance=96.19%
 % Plane-YZ (q6,q7): \lambda=0.08, p0=0.75, balance=96.58%
+%
+% NOTE: the four circuits were IDENTICAL apart from qubit index. The
+% per-plane p0 values above are DESIGN parameters from the Tesseract
+% proposal; they were NOT varied in the measured run. Do not present
+% them as experimentally separated.
 
-% Virtual Z phase: \phi = 2\pi \cdot 4.11\,\text{GHz} \cdot 37\,\text{ns} = 0.4398\,\text{rad}
+% Virtual Z phase: \phi = 2\pi \cdot 4.11\,\text{GHz} \cdot 37\,\text{ns}
+%   \bmod 2\pi = 0.4398\,\text{rad}   (GHz x ns is already dimensionless;
+%   no 1e-9 factor)
 % Global 8-qubit balance: 11.62% (00000000 + 11111111)
 
 % Selection: R = |\langle \psi_{anchor} | \psi_{answer} \rangle|^2
 % R < 0.5 \to \gamma = 0.1 (strengthens then self-annihilates)
 % R \ge 0.5 \to \gamma = 0 (anchored, clear signal)
 
-% CONSEQUENCE: Per-plane coherence proven, global sync missing.
-% Pulse-level (IQ vector) required for Tesseract selection validation.
+% CONSEQUENCE: 4 independent Bell pairs execute correctly on Garnet
+% (depth 4). Global correlation is 11.62%, i.e. the planes behave
+% STATISTICALLY INDEPENDENTLY. The 20-reality synchronized selection is
+% NOT demonstrated. rz is a virtual rotation: no physical detuned drive
+% was applied and no analog IQ data was recorded.
 ```
 
 ---
@@ -334,42 +441,31 @@ Pulse-level access needed to measure self-annihilation time ~46 ns
 **Title:** *Quantum Anchor V1.2: Tesseract Architecture for Coherent State Selection on Superconducting QPUs*
 
 **Contents:**
-1. ψ(37ns) hardware proof (IBM Heron, fractional gates + dynamics)
-2. Borg 16-node predictive coherence (100% clear, 96.43% balance)
-3. Tesseract 4-plane IQM measurement (95-96% per-plane, circuit-level)
-4. Honest evidence grades, retraction of false positive, blockers documented
+1. ψ(37ns) single-qubit dynamics, hardware-measured on IBM Heron
+2. Retraction of the tautological Borg false positive (§5)
+3. Corrected Borg γ=0 and γ=0.5 rows, both 0% clear — anchor compensation
+   **not** observed
+4. Tesseract 4-plane IQM measurement (95-96% per-plane, circuit-level)
+5. The measured denial of IQM pulse-level access, and what it blocks
+6. Honest evidence grades and documented blockers
 
 **Target:** arXiv:quant-ph (cross-listed to physics.comp-ph)
+
+⚠️ **Before submission, two things need a human decision:**
+- The author list and affiliation (see `CITATION.cff` note)
+- The abstract must not use "validated" for the Tesseract selection claim
 
 ---
 
 ## 12. Zenodo Concept DOIs
 
-Both repositories ready for concept DOI registration:
+Both repositories are prepared for concept DOI registration. The metadata in
+`.zenodo.json` and `CITATION.cff` has been corrected to match the measured
+evidence — see §8 for the authoritative claim table.
 
-### quantum-anchor
-```json
-// .zenodo.json
-{
-  "title": "Quantum Anchor V1.2 — Tesseract Anchor Protocol",
-  "version": "1.2.0",
-  "creators": [{"name": "Máté Róbert", "affiliation": "Hope Ecosystem"}],
-  "description": "Post-pulse experimental protocol for coherent state anchoring...",
-  "keywords": ["quantum computing", "superconducting qubits", "coherent state", "anchor drive"],
-  "license": "MIT",
-  "references": ["https://github.com/silentnoisehun/quantum-anchor"]
-}
-```
-
-### scs-quantum
-```json
-// .zenodo.json (already present)
-{
-  "title": "Space Computing System (SCS) — Quantum Bridge",
-  "version": "2.2.0",
-  ...
-}
-```
+**Not yet done, and requiring external account authentication:** the actual
+Zenodo upload and DOI minting. The files are ready; the upload itself is not
+possible from this environment.
 
 ---
 

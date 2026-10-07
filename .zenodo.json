@@ -1,20 +1,18 @@
 {
-  "title": "Quantum Anchor V1.2 — Tesseract Anchor: 4 Planes × 5 Realities = 20 Realities",
-  "description": "Quantum Anchor is a post-pulse experimental protocol for coherent state anchoring on superconducting QPUs. The original pulse-level protocol (qiskit.pulse, meas_level=0) was deprecated by IBM in 2024 and removed from production QPUs (Feb 2025). This version (V1.2) introduces the Tesseract architecture: 4 orthogonal planes × 5 phase realities = 20 simultaneous pre-realities with self-annihilation via destructive interference (no collapse). Evidence: ψ(37ns)=0.331662 (γ=0 model) on ibm_marrakesh 156Q Heron r2, Borg 16-node 100% clear (96.43% balance), Matryoshka fractal D0→D8 97.40%→89.40%. Hardware-proven: 🔬 single-qubit dynamics, ⚠️ unverified: anchor drive compensation. Zenodo concept DOI for citation stability.",
+  "title": "Quantum Anchor V1.2 — Tesseract Anchor Protocol and Measurement Ledger",
+  "description": "Experimental protocol for coherent state anchoring on superconducting QPUs, together with the measurement ledger that tests it. The original pulse-level protocol (qiskit.pulse, meas_level=0) was deprecated by IBM in 2024 and removed from production QPUs in February 2025. V1.2 migrates to working APIs and reports evidence grades honestly. MEASURED RESULTS: single-qubit dynamics psi(37ns)=0.331662 under a gamma=0 model on ibm_marrakesh (156Q Heron r2); four independent Bell pairs at 95-96% per-plane balance on IQM Resonance Garnet 19Q using a virtual Z rotation of 0.4398 rad. NEGATIVE RESULTS, documented in full: the corrected anchor-on (gamma=0.5) and anchor-off (gamma=0) conditions both yield 0% clear, and the global 8-qubit correlation is 11.62%, consistent with statistically independent planes. The physical anchor-drive compensation effect is NOT proven by any measurement in this work; pulse-level access required to test it was measured to be unavailable on the account tier used. An earlier positive result is retracted as a circuit tautology. The Tesseract architecture (4 planes x 5 phase realities = 20 pre-realities) is a design proposal whose synchronized selection has NOT been demonstrated.",
   "keywords": [
     "quantum computing",
     "quantum anchor",
-    "fractional gates",
-    "qiskit-dynamics",
-    "Heron processor",
+    "coherent state anchoring",
     "superconducting QPU",
-    "Matryoshka fractal",
-    "Borg Cube",
-    "Tesseract",
-    "predictive computing",
-    "coherence preservation",
-    "destructive interference",
-    "self-annihilation"
+    "IBM Quantum",
+    "IQM Resonance",
+    "Heron processor",
+    "Bell state",
+    "negative result",
+    "reproducibility",
+    "measurement ledger"
   ],
   "license": "MIT",
   "version": "1.2.0",
@@ -38,15 +36,12 @@
       "relation": "isSupplementTo",
       "identifier": "https://github.com/silentnoisehun/quantum-anchor",
       "resource_type": "software"
-    },
-    {
-      "relation": "references",
-      "identifier": "https://doi.org/10.5281/zenodo.XXXXXXX",
-      "resource_type": "publication"
     }
   ],
   "references": [
-    "VALIDATION.md §7.7–§7.8 hardware results on ibm_marrakesh",
-    "CITATION.cff for formal citation metadata"
+    "docs/HOPE-WP-2026-V1.2.md — White Paper with the full evidence grade table",
+    "docs/VALIDATION.md — complete measurement ledger including the retracted false positive",
+    "measurement_raw/ — raw job outputs with job IDs, counts, and transpiled circuits",
+    "CITATION.cff — formal citation metadata"
   ]
 }

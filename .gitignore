@@ -30,3 +30,16 @@ _stdcheck.py
 
 # CI scratch output
 out.txt
+
+# Captured CI logs. These are transcripts of a workflow run, not project
+# artifacts — they reference action versions and runner internals that go
+# stale immediately and make the repo look like it ships CI output.
+runlog*.txt
+*.log
+
+# Editor / tooling scratch
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.bak
+*.orig

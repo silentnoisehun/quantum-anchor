@@ -17,12 +17,20 @@ import argparse
 import json
 import sys
 import os
+import time
 
 try:
     from iqm.qiskit_iqm import IQMProvider
-    from iqm.pulse import Gaussian
-    from qiskit import QuantumCircuit
-    from qiskit.pulse import Schedule, Play, DriveChannel
+    from iqm.iqm_client import IQMClient
+    from iqm.iqm_server_client.iqm_server_client import SweepDefinition
+    from iqm.models.playlist import Playlist, Segment, Instruction
+    from iqm.models.playlist.instructions import IQPulse, Wait, ReadoutTrigger
+    from iqm.models.playlist.waveforms import Samples
+    from iqm.models.playlist.channel_descriptions import (
+        ChannelDescription, IQChannelConfig, ReadoutChannelConfig
+    )
+    from iqm.models.playlist.instructions import ComplexIntegration
+    import numpy as np
 except ImportError as e:
     print(f"IQM dependencies not installed: {e}")
     print("Run: pip install iqm-client iqm-qiskit-iqm qiskit")
@@ -103,110 +111,319 @@ def both_proofs_status():
 
 IQM_CODE_TEMPLATE = '''
 from iqm.qiskit_iqm import IQMProvider
-from iqm.pulse import Gaussian
-from qiskit import QuantumCircuit
-from qiskit.pulse import Schedule, Play, DriveChannel
+from iqm.iqm_client import IQMClient
+from iqm.iqm_server_client.iqm_server_client import SweepDefinition
+from iqm.models.playlist import Playlist, Segment, Instruction
+from iqm.models.playlist.instructions import IQPulse, Wait, ReadoutTrigger
+from iqm.models.playlist.waveforms import Samples
+from iqm.models.playlist.channel_descriptions import (
+    ChannelDescription, IQChannelConfig, ReadoutChannelConfig
+)
+from iqm.models.playlist.instructions import ComplexIntegration
+import numpy as np
 
 # --- Te paramétereid ---
-DURATION = 37
+DURATION = 37  # ns
 AMP = 0.08
-SIGMA = 10
-FREQ = 4.11e9
+SIGMA = 0.1
+FREQ = 4.11  # GHz
 
-# IQM provider — resonance.iqm.com-ról jön a URL és token
-provider = IQMProvider("{iqm_url}")
-backend = provider.get_backend("{backend_name}")  # 20Q free tier
+# IQM provider
+client = IQMProvider("{iqm_url}", token="YOUR_TOKEN", quantum_computer="{backend_name}")
+server_client = client._iqm_server_client
+props = server_client.get_channel_properties()
 
-# Gaussian — IQM normalizált [-1.0, 1.0] mu, sigma
-gauss = Gaussian(duration=DURATION, amp=AMP, mu=DURATION/2, sigma=SIGMA)
+# Gaussian samples
+n_samples = int(DURATION * 1e-9 * 2e9)
+n_samples = (n_samples // 8) * 8
+t = np.linspace(-0.5, 0.5, n_samples)
+samples = np.exp(-0.5 * (t / SIGMA)**2)
+samples = samples / np.max(samples)
+samp = Samples(samples=samples)
 
-# Schedule — 4.11 GHz drive channel
-sched = Schedule(name="anchor_drive_compensation_4_11GHz")
-sched += Play(gauss, DriveChannel(0))
+# Anchor drive pulse (detuned)
+pulse = IQPulse(
+    wave_i=samp, wave_q=samp, scale_i=AMP, scale_q=0.0,
+    phase=0.0, modulation_frequency=FREQ * 1e9, phase_increment=0.0
+)
 
-# Tesseract 4 sík — 4 drive channel
-sched_tesseract = Schedule(name="tesseract_4plane")
+# Build segments for 4 planes + readout
+segments = []
+channel_descriptions = {{}}
 for ch in range(4):
-    gauss_ch = Gaussian(duration=DURATION, amp=0.08, mu=DURATION/2, sigma=10)
-    sched_tesseract += Play(gauss_ch, DriveChannel(ch))
+    ch_name = f'QB{{ch+1}}__drive.awg'
+    if ch_name in props:
+        prop = props[ch_name]
+        channel_descriptions[ch_name] = ChannelDescription(
+            channel_config=IQChannelConfig(sampling_rate=prop.sampling_rate),
+            controller_name='awg'
+        )
 
-# Mérés raw IQ — meas_level=0 ekvivalens
-qc = QuantumCircuit(4, 4)
-qc.append(sched_tesseract, [0,1,2,3])
-qc.measure([0,1,2,3], [0,1,2,3])
+# Readout
+ro_name = 'PL-1__readout'
+if ro_name in props:
+    prop = props[ro_name]
+    channel_descriptions[ro_name] = ChannelDescription(
+        channel_config=ReadoutChannelConfig(sampling_rate=prop.sampling_rate),
+        controller_name='readout'
+    )
 
-job = backend.run(qc, shots={shots}, use_raw=True)
-result = job.result()
-iq_data = result.get_memory()  # komplex IQ vektorok!
-counts = result.get_counts()
+# Segment: pulse on all drives, then measure
+wait_samples = 100
+drive_instrs = []
+for ch in range(4):
+    ch_name = f'QB{{ch+1}}__drive.awg'
+    if ch_name in channel_descriptions:
+        drive_instrs.append(Instruction(duration_samples=n_samples, operation=pulse))
+        drive_instrs.append(Instruction(duration_samples=wait_samples, operation=Wait()))
 
-print(f"Anchor: {{DURATION}}ns / {{FREQ/1e9}}GHz / amp={{AMP}}")
-print(f"Counts: {{counts}}")
-print(f"Raw IQ sample: {{iq_data[:5]}}")
-print(f"Balance: {{(counts.get('0000',0)+counts.get('1111',0))/{shots}*100:.2f}}%")
-# Várt: balance >97% + IQ nem 0/1-en
+# Readout trigger
+probe_pulse = Instruction(duration_samples=wait_samples, operation=Wait())
+weight_samp = Samples(samples=np.ones(n_samples))
+acquisition = ComplexIntegration(
+    weights=IQPulse(wave_i=weight_samp, wave_q=weight_samp, scale_i=1.0, scale_q=0.0,
+                  phase=0.0, modulation_frequency=0.0, phase_increment=0.0)
+)
+readout_trigger = ReadoutTrigger(probe_pulse=probe_pulse, acquisitions=(acquisition,))
+readout_instrs = [
+    Instruction(duration_samples=n_samples + wait_samples, operation=Wait()),
+    Instruction(duration_samples=wait_samples, operation=readout_trigger)
+]
+
+seg_instrs = {{}}
+for ch in range(4):
+    ch_name = f'QB{{ch+1}}__drive.awg'
+    if ch_name in channel_descriptions:
+        seg_instrs[ch_name] = drive_instrs
+if readout_instrs:
+    seg_instrs[ro_name] = readout_instrs
+
+segments.append(Segment(instructions=seg_instrs))
+
+# Add instructions to channel descriptions
+for seg in segments:
+    for ch_name, instr_list in seg.instructions.items():
+        if ch_name in channel_descriptions:
+            for instr in instr_list:
+                channel_descriptions[ch_name].add_instruction(instr)
+
+# Submit sweep
+playlist = Playlist(channel_descriptions=channel_descriptions, segments=segments)
+sweep_def = SweepDefinition(playlist=playlist)
+job = server_client.submit_sweep(sweep_def)
+print(f"Job ID: {{job.id}}")
+
+# Wait and get results
+# ... wait loop ...
+sweep_results = server_client.get_job_artifact_sweep_results(job.id)
+counts = client.get_job_measurement_counts(job.id)
 '''
 
 
-def run_iqm_measurement(iqm_url: str, backend_name: str, shots: int = 1024):
-    """Futtatja az anchor drive kompenzáció mérést IQM-en."""
+def build_anchor_playlist(client: IQMClient, duration_ns: int = 37, amp: float = 0.08,
+                           sigma: float = 0.1, freq_ghz: float = 4.11, n_planes: int = 4):
+    """Build a Tesseract 4-plane anchor drive playlist."""
+    server_client = client._iqm_server_client
+    props = server_client.get_channel_properties()
+
+    # Calculate samples: 37ns at 2GHz = 74 samples, round to multiple of 8
+    sampling_rate = 2e9  # 2 GHz from channel properties
+    n_samples = int(duration_ns * 1e-9 * sampling_rate)
+    n_samples = (n_samples // 8) * 8  # Round to granularity
+    if n_samples < 8:
+        n_samples = 8
+
+    # Create Gaussian samples
+    t = np.linspace(-0.5, 0.5, n_samples)
+    samples = np.exp(-0.5 * (t / sigma)**2)
+    samples = samples / np.max(samples)
+    samp = Samples(samples=samples)
+
+    # Create anchor drive pulse (detuned)
+    pulse = IQPulse(
+        wave_i=samp,
+        wave_q=samp,
+        scale_i=amp,
+        scale_q=0.0,
+        phase=0.0,
+        modulation_frequency=freq_ghz * 1e9,
+        phase_increment=0.0
+    )
+
+    # Build segments for n_planes drive channels + readout
+    segments = []
+    channel_descriptions = {}
+
+    # Drive channels
+    for ch in range(n_planes):
+        channel_name = f'QB{ch+1}__drive.awg'
+        if channel_name in props:
+            prop = props[channel_name]
+            cd = ChannelDescription(
+                channel_config=IQChannelConfig(sampling_rate=prop.sampling_rate),
+                controller_name='awg'
+            )
+            channel_descriptions[channel_name] = cd
+        else:
+            print(f"WARNING: Drive channel {channel_name} not found")
+
+    # Readout channels (need at least one for measurement)
+    for pl in range(1, 4):
+        channel_name = f'PL-{pl}__readout'
+        if channel_name in props:
+            prop = props[channel_name]
+            cd = ChannelDescription(
+                channel_config=ReadoutChannelConfig(sampling_rate=prop.sampling_rate),
+                controller_name='readout'
+            )
+            channel_descriptions[channel_name] = cd
+
+    # Create segment: anchor pulse on all drive channels, then measure
+    wait_samples = 100
+    drive_instructions = []
+    for ch in range(n_planes):
+        channel_name = f'QB{ch+1}__drive.awg'
+        if channel_name in channel_descriptions:
+            drive_instructions.append(
+                Instruction(duration_samples=n_samples, operation=pulse)
+            )
+            drive_instructions.append(
+                Instruction(duration_samples=wait_samples, operation=Wait())
+            )
+
+    # Readout: wait for pulse, then trigger
+    readout_name = 'PL-1__readout'
+    if readout_name in channel_descriptions:
+        # Need probe pulse for readout
+        probe_pulse = Instruction(
+            duration_samples=wait_samples,
+            operation=Wait()
+        )
+        # Simple acquisition
+        weight_samples = np.ones(n_samples)
+        weight_samp = Samples(samples=weight_samples)
+        acquisition = ComplexIntegration(
+            label="readout",
+            delay_samples=0,
+            weights=IQPulse(wave_i=weight_samp, wave_q=weight_samp, scale_i=1.0, scale_q=0.0,
+                          phase=0.0, modulation_frequency=0.0, phase_increment=0.0)
+        )
+        readout_trigger = ReadoutTrigger(
+            probe_pulse=probe_pulse,
+            acquisitions=(acquisition,)
+        )
+        readout_instructions = [
+            Instruction(duration_samples=n_samples + wait_samples, operation=Wait()),
+            Instruction(duration_samples=wait_samples, operation=readout_trigger)
+        ]
+    else:
+        readout_instructions = []
+
+    # Build segment
+    seg_instructions = {}
+    for ch in range(n_planes):
+        channel_name = f'QB{ch+1}__drive.awg'
+        if channel_name in channel_descriptions:
+            seg_instructions[channel_name] = drive_instructions
+    if readout_instructions:
+        seg_instructions[readout_name] = readout_instructions
+
+    segments.append(Segment(instructions=seg_instructions))
+
+    # Add all instructions to channel descriptions
+    for seg in segments:
+        for ch_name, instr_list in seg.instructions.items():
+            if ch_name in channel_descriptions:
+                for instr in instr_list:
+                    channel_descriptions[ch_name].add_instruction(instr)
+
+    playlist = Playlist(channel_descriptions=channel_descriptions, segments=segments)
+    return playlist
+
+
+def run_iqm_measurement(iqm_url: str, backend_name: str, shots: int = 1024,
+                         duration_ns: int = 37, amp: float = 0.08,
+                         sigma: float = 0.1, freq_ghz: float = 4.11, n_planes: int = 4,
+                         token: str = None):
+    """Futtatja az anchor drive kompenzáció mérést IQM-en Sweep API-val."""
     print(f"Connecting to IQM: {iqm_url}")
-    provider = IQMProvider(iqm_url)
-    backend = provider.get_backend(backend_name)
+    client = IQMClient(iqm_url, token=token, quantum_computer=backend_name)
     print(f"Backend: {backend_name}")
 
-    # Paraméterek
-    DURATION = 37
-    AMP = 0.08
-    SIGMA = 10
-    FREQ = 4.11e9
+    # Build playlist
+    print("Building Tesseract anchor drive playlist...")
+    playlist = build_anchor_playlist(client, duration_ns, amp, sigma, freq_ghz, n_planes)
 
-    # Gaussian pulse
-    gauss = Gaussian(duration=DURATION, amp=AMP, mu=DURATION/2, sigma=SIGMA)
+    # Create sweep definition
+    sweep_def = SweepDefinition(playlist=playlist)
+    print("Submitting sweep job...")
 
-    # Tesseract 4 sík — 4 drive channel
-    sched_tesseract = Schedule(name="tesseract_4plane")
-    for ch in range(4):
-        gauss_ch = Gaussian(duration=DURATION, amp=0.08, mu=DURATION/2, sigma=10)
-        sched_tesseract += Play(gauss_ch, DriveChannel(ch))
+    # Submit sweep
+    server_client = client._iqm_server_client
+    job = server_client.submit_sweep(sweep_def)
+    print(f"Job ID: {job.id}")
 
-    # Mérés raw IQ
-    qc = QuantumCircuit(4, 4)
-    qc.append(sched_tesseract, [0, 1, 2, 3])
-    qc.measure([0, 1, 2, 3], [0, 1, 2, 3])
+    # Wait for completion
+    print("Waiting for job completion...")
+    while True:
+        job_data = server_client.get_job(job.id)
+        status = job_data.data.status
+        print(f"  Status: {status}")
+        if status.name in ('COMPLETED', 'FAILED', 'CANCELLED'):
+            break
+        time.sleep(5)
 
-    print(f"Submitting job: {shots} shots, 4 qubits, 4 planes")
-    job = backend.run(qc, shots=shots, use_raw=True)
-    print(f"Job ID: {job.job_id()}")
-    result = job.result()
+    if status.name != 'COMPLETED':
+        raise RuntimeError(f"Job failed: {status}")
 
-    iq_data = result.get_memory()  # komplex IQ vektorok!
-    counts = result.get_counts()
+    # Get sweep results
+    print("Retrieving sweep results...")
+    sweep_results = server_client.get_job_artifact_sweep_results(job.id)
 
-    print(f"Anchor: {DURATION}ns / {FREQ/1e9}GHz / amp={AMP}")
+    # Extract IQ data from sweep results
+    # The results contain raw IQ data from the acquisition
+    iq_data = []
+    if sweep_results and hasattr(sweep_results, 'results'):
+        for result in sweep_results.results:
+            if hasattr(result, 'acquisition_results'):
+                for acq in result.acquisition_results:
+                    if hasattr(acq, 'iq_data'):
+                        iq_data.extend(acq.iq_data)
+
+    # Also get counts from the job
+    counts = client.get_job_measurement_counts(job.id)
+
+    print(f"Anchor: {duration_ns}ns / {freq_ghz}GHz / amp={amp}")
     print(f"Counts: {counts}")
-    print(f"Raw IQ sample (first 5): {iq_data[:5]}")
+    print(f"Raw IQ samples: {len(iq_data)}")
 
-    balance = (counts.get('0000', 0) + counts.get('1111', 0)) / shots * 100
+    # Parse counts for balance
+    total_shots = shots
+    balance = 0.0
+    if counts:
+        # Counts is a list of CircuitMeasurementCounts
+        for c in counts:
+            if hasattr(c, 'counts'):
+                cnt = c.counts
+                zeros = cnt.get('0', 0) + cnt.get('0000', 0)
+                ones = cnt.get('1', 0) + cnt.get('1111', 0)
+                if total_shots > 0:
+                    balance = (zeros + ones) / total_shots * 100
+
     print(f"Balance: {balance:.2f}%")
 
-    # Raw IQ plot data
-    iq_real = [complex(x).real for x in iq_data]
-    iq_imag = [complex(x).imag for x in iq_data]
-
     return {
-        "job_id": job.job_id(),
+        "job_id": str(job.id),
         "shots": shots,
-        "counts": counts,
+        "counts": str(counts),
         "iq_data": iq_data,
-        "iq_real": iq_real,
-        "iq_imag": iq_imag,
         "balance": balance,
         "params": {
-            "duration_ns": DURATION,
-            "amp": AMP,
-            "sigma": SIGMA,
-            "freq_ghz": FREQ / 1e9,
+            "duration_ns": duration_ns,
+            "amp": amp,
+            "sigma": sigma,
+            "freq_ghz": freq_ghz,
+            "n_planes": n_planes,
             "backend": backend_name,
         }
     }
@@ -258,7 +475,7 @@ def plot_iq_data(result: dict, out_dir: str = "measurement_raw"):
 
 def main():
     parser = argparse.ArgumentParser(description="Anchor drive kompenzáció mérése IQM Resonance-on")
-    parser.add_argument("--url", default=os.getenv("IQM_URL", "https://cocos.iqm.fi"), help="IQM Resonance URL")
+    parser.add_argument("--url", default=os.getenv("IQM_URL", "https://resonance.iqm.tech"), help="IQM Resonance URL")
     parser.add_argument("--token", default=os.getenv("IQM_TOKEN"), help="IQM API token (vagy IQM_TOKEN env)")
     parser.add_argument("--backend", default="garnet", choices=["garnet", "crystal"], help="Backend: garnet (20Q free) vagy crystal (54Q)")
     parser.add_argument("--shots", type=int, default=1024, help="Shots per measurement")
@@ -277,11 +494,8 @@ def main():
         print("Get token from https://resonance.iqm.com after registration")
         return 1
 
-    # Set token for provider
-    os.environ["IQM_TOKEN"] = args.token
-
     try:
-        result = run_iqm_measurement(args.url, args.backend, args.shots)
+        result = run_iqm_measurement(args.url, args.backend, args.shots, token=args.token)
 
         if args.json:
             print(json.dumps(result, indent=2))
