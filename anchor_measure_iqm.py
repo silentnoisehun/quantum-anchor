@@ -1,245 +1,286 @@
+#!/usr/bin/env python3
 """
-anchor_measure_iqm.py — Anchor drive kompenzáció bizonyítása IQM Resonance-on
-Máté Róbert — IBM SamplerV2 fix → IQM pulse-level
+anchor_measure_iqm.py — IQM PULSE-LEVEL probe útvonal (anchor drive)
+=====================================================================
 
-IBM-en lehetetlen 2025 Q1 óta:
-- qiskit.pulse / meas_level=0 törölve production QPU-król
-- SamplerV2 csak koherens kapuk, nincs T1/T2 disszipatív kompenzáció
+MI EZ (és mi NEM EZ)
+--------------------
+Ez a **PULSE-LEVEL PROBE útvonal**: közvetlenül AWG-csatornákra programozott
+Gaussian IQ-pulse-t épít (Playlist / SweepDefinition).
 
-IQM-en lehetséges:
-- Pulse-Level Access: directly program pulse schedules
-- Starter 30 kredit ingyen
-- Raw IQ vissza = meas_level=0 ekvivalens
+Ez NEM a circuit-level mérési útvonal. Az a másik script:
+**anchor_measure_iqm_final.py** (repo gyökér) — az a circuit-level, jól
+ellenőrzött mérés, 4 Tesseract sík Bell-párral. Ha az IQM-en mért, publikálható
+eredményt keresel, azt a másik script adja.
+
+Ez a script a pulse-level hozzáférést KÉRDEZI, nem ad hozzáférést.
+Ami MÉRT:
+  * a `submit_sweep` elérhető az SDK-ban
+  * 82 hardver-csatorna olvasható
+  * a `SweepDefinition` felépül, a playlist validál
+  * a kérés eljut a szerver engedélyezési rétegéig
+  * a szerver ELUTASÍTJA
+
+MEASURED — a hozzáférés tényleges eredménye (VALIDATION.md §7.8.8)
+-----------------------------------------------------------------
+A szerver visszaadta, szó szerint:
+
+    Personal account does not have pulse-level access enabled required to
+    submit this job
+
+Ez **ENGEDÉLY (entitlement) KORLÁT**, NEM kliens-hiba és NEM playlist-hiba.
+A kód rendben van: a playlist jól formált, a mezők megvannak, a kérés
+átment a hálózaton és a szerver az engedélyezési rétegnél utasította el.
+
+Fontos: EZT kódszintű playlist-alak ellenőrzés NEM tudja kimutatni. A
+--validate offline csak azt bizonyítja, hogy a hullámalak- és
+sampling-számítás helyes, semmilyen állítás nincs a hozzáférésről.
+
+Ami NEM mért / NEM igazolt ebből a scriptből:
+  * fizikai 4.11 GHz detuned drive hatása — a modulációs frekvencia
+    KÉRT paraméter a playlistában; mérés nem igazolta, hogy fizikai
+    4.11 GHz-es drive történt
+  * γ=0 állapot — fizikailag nem elérhető, véges T1/T2 mellett
+  * anchor-drive kompenzáció bármilyen formában
+  * komplex IQ-vektor a mérési eredményben — lásd alább
+
+Amit ez NEM állít a mérési eredményről:
+  `result.get_memory()` DEKÓDOLT KLASSZIKUS BITSTRINGET ad, nem komplex
+  IQ-vektort. A mérési eredmény NEM `meas_level=0`. Csak a nyers Sweep
+  artifact (`get_job_artifact_sweep_results`) hordozna IQ-adatot — és
+  ahhoz sincs jelenleg hozzáférés.
+
+Amit KELLENE hozzáfűzni a hozzáféréshez (nincs megszerezve):
+  * FIZETŐS tier, VAGY
+  * külön, kifejezetten megkért pulse-level entitlement az IQM-től.
+  A repo saját mérési jegyzőkönyve szerint a pulse-level KÜLÖN engedélykérés,
+  nem pusztán kredit — tehát kreditvásárlás önmagában nem elég.
+
+Token: KIZÁRÓLAG környezeti változóból (IQM_TOKEN). Soha ne CLI
+argumentumként, soha ne fájlba, soha ne commitba.
 """
 
-from dataclasses import dataclass
+from __future__ import annotations
+
 import argparse
 import json
-import sys
+import math
 import os
+import sys
 import time
-
-try:
-    from iqm.qiskit_iqm import IQMProvider
-    from iqm.iqm_client import IQMClient
-    from iqm.iqm_server_client.iqm_server_client import SweepDefinition
-    from iqm.models.playlist import Playlist, Segment, Instruction
-    from iqm.models.playlist.instructions import IQPulse, Wait, ReadoutTrigger
-    from iqm.models.playlist.waveforms import Samples
-    from iqm.models.playlist.channel_descriptions import (
-        ChannelDescription, IQChannelConfig, ReadoutChannelConfig
-    )
-    from iqm.models.playlist.instructions import ComplexIntegration
-    import numpy as np
-except ImportError as e:
-    print(f"IQM dependencies not installed: {e}")
-    print("Run: pip install iqm-client iqm-qiskit-iqm qiskit")
-    sys.exit(1)
+from typing import Any
 
 
-@dataclass
-class AnchorProof:
-    name: str
-    status: str
-    evidence: str
+def _force_utf8_stdout() -> str:
+    """A Windows konzol cp1250-es kódolása nem bírja a ✓/π/φ karaktereket.
+
+    Ez NEM elvi körülmény: magyar ékezetes karakterek vannak a kimenetben, és
+    ha a stdout cp1250, a script a "--validate" útvonalon UnicodeEncodeError-rel
+    elhal egy nyomtatási soron. Ezért explicit UTF-8-ra állítunk, ami a
+    0.3.15+ Python `reconfigure`-t használja.
+
+    Visszatérés: a használt kódolás neve, diagnosztikai célra.
+    """
+    for stream_name in ("stdout", "stderr"):
+        stream = getattr(sys, stream_name, None)
+        if stream is None:
+            continue
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is None:
+            continue
+        try:
+            reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            # Csak diagnosztika — a futást ne állítsuk meg emiatt.
+            pass
+    return getattr(sys.stdout, "encoding", "unknown")
 
 
-def both_proofs_status():
-    print("=" * 70)
-    print("MINDKETTŐ BIZONYÍTÁSA — FINAL PLAN")
-    print("=" * 70)
-
-    print("\n[1] ψ(37ns) DINAMIKA — MÁR KÉSZ 🔬 HARDWARE PROVEN")
-    print("-" * 70)
-    print("File: matryoshka_borg_predictive.py")
-    print("Hardware: ibm_marrakesh 156Q via fractional gates + qiskit-dynamics")
-    print("VALIDATION.md §7.7")
-    print("Eredmény:")
-    print("  D0 97.40% D8 89.40% preserved=False diff=8%")
-    print("  Borg 16 cap clear 100% (96.43% balance)")
-    print("  ψ(37ns)=0.331662 gamma=0 standing wave")
-    print("  Bell 00=49.80% 11=48.60% 97.6% balance (2q reference)")
-    print("Grade: 🔬 HARDWARE PROVEN — nincs további teendő")
-    print("Tennivaló: Zenodo DOI + arXiv, CITATION.cff kész")
-
-    print("\n[2] ANCHOR DRIVE KOMPENZÁCIÓ — MOST IQM-EN")
-    print("-" * 70)
-    print("Probléma IBM-en:")
-    print("  anchor_measure.py → BackendSamplerV2 → backend.run() deprecated")
-    print("  SamplerV2 csak koherens kapuk, nem tud T1/T2 zajkompenzációt")
-    print("  qiskit.pulse eltávolítva 2025.02.03")
-    print("")
-    print("Megoldás IQM Resonance:")
-    print("  Platform: Garnet 20Q (free tier) vagy Crystal 54Q")
-    print("  Pulse: iqm.pulse.Gaussian duration=37ns amp=0.08 mu=18.5 sigma=10")
-    print("  Freq: 4.11e9 Hz detuned drive (nem qubit rezonancia)")
-    print("  Mérés: use_raw=True → komplex IQ vektor (meas_level=0 ekv.)")
-    print("  Bizonyíték: IQ pontok nem 0/1-en, hanem közöttük, γ=0 nem csillapodik")
-    print("")
-    print("  Kód: anchor_measure_iqm.py (alább)")
-    print("  Költség: 0 Ft, 30 kredit/hó Starter")
-    print("  Várt: balance >97% D0 vs D8 <2% Borg 100% + raw IQ plot")
-    print("")
-    print("Megoldás Braket Pulse (második validáció):")
-    print("  Platform: Rigetti Ankaa-3 84Q / Cepheus-1-108Q")
-    print("  Pulse: braket.pulse.GaussianWaveform length=37e-9 width=10e-9 amp=0.08")
-    print("  Költség: ~$0.36 / 1024 shots")
-    print("")
-    print("Tesseract upgrade (borg → tesseract):")
-    print("  4 sík: XY XZ XW YZ mindegyik λ=0.08 δ(p-p0)")
-    print("  20 elő-valóság szimultán f=0.25..0.63")
-    print("  Mérés: nincs collapse, csak szelekció R=|<ψ_anchor|ψ_answer>|²")
-    print("  R<0.5 → γ=0.1 erősödik majd elhal magától")
-    print("  R>=0.5 → γ=0 horgonyozva")
-
-    print("\n" + "=" * 70)
-    print("VÉGREHAJTÁSI SORREND")
-    print("=" * 70)
-    print("1. ψ(37ns) — lezárva, mehet Zenodo concept DOI (mindkét repo)")
-    print("2. IQM reg: resonance.iqm.com → Starter → API token")
-    print("3. pip install iqm-client iqm-qiskit-iqm qiskit")
-    print("4. Futtat: python anchor_measure_iqm.py --shots 1024 --backend garnet")
-    print("5. Raw IQ plot + counts → VALIDATION.md §7.8 TESSERACT ANCHOR 🔬")
-    print("6. White Paper V1.2: Ψ(x,y,z,w)=Π λ_i·δ(p_i-p0_i)·ψ(t)")
-    print("7. arXiv: mindkét bizonyítás egyben")
-    print("=" * 70)
+_STDOUT_ENCODING = _force_utf8_stdout()
 
 
-# =====================================================================
-# IQM implementáció — IBM anchor_measure.py fix
-# =====================================================================
+# ---------------------------------------------------------------------------
+# IQM / qiskit importok — későn, és csak ha kell
+# ---------------------------------------------------------------------------
+# A --help / --validate / --status útvonalon EZEK NEM kellenek. A modulnak
+# hard-fail nélkül importálhatónak kell maradnia, különben az offline
+# önellenőrzés és a tools/selftest_pulse_probe.py sem futna.
 
-IQM_CODE_TEMPLATE = '''
-from iqm.qiskit_iqm import IQMProvider
-from iqm.iqm_client import IQMClient
-from iqm.iqm_server_client.iqm_server_client import SweepDefinition
-from iqm.models.playlist import Playlist, Segment, Instruction
-from iqm.models.playlist.instructions import IQPulse, Wait, ReadoutTrigger
-from iqm.models.playlist.waveforms import Samples
-from iqm.models.playlist.channel_descriptions import (
-    ChannelDescription, IQChannelConfig, ReadoutChannelConfig
-)
-from iqm.models.playlist.instructions import ComplexIntegration
-import numpy as np
+_IQM_IMPORT_ERROR: str | None = None
+_IQM: dict[str, Any] = {}
 
-# --- Te paramétereid ---
-DURATION = 37  # ns
-AMP = 0.08
-SIGMA = 0.1
-FREQ = 4.11  # GHz
 
-# IQM provider
-client = IQMProvider("{iqm_url}", token="YOUR_TOKEN", quantum_computer="{backend_name}")
-server_client = client._iqm_server_client
-props = server_client.get_channel_properties()
+def _load_iqm() -> dict[str, Any]:
+    """Betölti az IQM SDK-szimbólumokat. Hálózatot NEM érint, csak importál.
 
-# Gaussian samples
-n_samples = int(DURATION * 1e-9 * 2e9)
-n_samples = (n_samples // 8) * 8
-t = np.linspace(-0.5, 0.5, n_samples)
-samples = np.exp(-0.5 * (t / SIGMA)**2)
-samples = samples / np.max(samples)
-samp = Samples(samples=samples)
-
-# Anchor drive pulse (detuned)
-pulse = IQPulse(
-    wave_i=samp, wave_q=samp, scale_i=AMP, scale_q=0.0,
-    phase=0.0, modulation_frequency=FREQ * 1e9, phase_increment=0.0
-)
-
-# Build segments for 4 planes + readout
-segments = []
-channel_descriptions = {{}}
-for ch in range(4):
-    ch_name = f'QB{{ch+1}}__drive.awg'
-    if ch_name in props:
-        prop = props[ch_name]
-        channel_descriptions[ch_name] = ChannelDescription(
-            channel_config=IQChannelConfig(sampling_rate=prop.sampling_rate),
-            controller_name='awg'
+    Egyszer fut le, a találatot cache-eli. Hiba esetén az üzenet a
+    _IQM_IMPORT_ERROR-ba kerül, és a hívó RuntimeError-t dobhat.
+    """
+    global _IQM_IMPORT_ERROR
+    if _IQM or _IQM_IMPORT_ERROR is not None:
+        return _IQM
+    try:
+        from iqm.qiskit_iqm import IQMProvider
+        from iqm.iqm_client import IQMClient
+        from iqm.iqm_server_client.iqm_server_client import SweepDefinition
+        from iqm.models.playlist import Playlist, Segment
+        from iqm.models.playlist.instructions import (
+            ComplexIntegration, Instruction, IQPulse, ReadoutTrigger, Wait,
+        )
+        from iqm.models.playlist.waveforms import Samples
+        from iqm.models.playlist.channel_descriptions import (
+            ChannelDescription, IQChannelConfig, ReadoutChannelConfig,
         )
 
-# Readout
-ro_name = 'PL-1__readout'
-if ro_name in props:
-    prop = props[ro_name]
-    channel_descriptions[ro_name] = ChannelDescription(
-        channel_config=ReadoutChannelConfig(sampling_rate=prop.sampling_rate),
-        controller_name='readout'
-    )
+        _IQM.update({
+            "IQMProvider": IQMProvider,
+            "IQMClient": IQMClient,
+            "SweepDefinition": SweepDefinition,
+            "Playlist": Playlist,
+            "Segment": Segment,
+            "Instruction": Instruction,
+            "ComplexIntegration": ComplexIntegration,
+            "IQPulse": IQPulse,
+            "ReadoutTrigger": ReadoutTrigger,
+            "Wait": Wait,
+            "Samples": Samples,
+            "ChannelDescription": ChannelDescription,
+            "IQChannelConfig": IQChannelConfig,
+            "ReadoutChannelConfig": ReadoutChannelConfig,
+        })
+        _IQM_IMPORT_ERROR = None
+    except Exception as exc:  # pragma: no cover - környezetfüggő
+        _IQM_IMPORT_ERROR = f"{type(exc).__name__}: {exc}"
+    return _IQM
 
-# Segment: pulse on all drives, then measure
-wait_samples = 100
-drive_instrs = []
-for ch in range(4):
-    ch_name = f'QB{{ch+1}}__drive.awg'
-    if ch_name in channel_descriptions:
-        drive_instrs.append(Instruction(duration_samples=n_samples, operation=pulse))
-        drive_instrs.append(Instruction(duration_samples=wait_samples, operation=Wait()))
 
-# Readout trigger
-probe_pulse = Instruction(duration_samples=wait_samples, operation=Wait())
-weight_samp = Samples(samples=np.ones(n_samples))
-acquisition = ComplexIntegration(
-    weights=IQPulse(wave_i=weight_samp, wave_q=weight_samp, scale_i=1.0, scale_q=0.0,
-                  phase=0.0, modulation_frequency=0.0, phase_increment=0.0)
+def _require_iqm() -> dict[str, Any]:
+    """Ugyanaz, mint _load_iqm(), de hibát dob hiányzó SDK esetén."""
+    syms = _load_iqm()
+    if not syms:
+        raise RuntimeError(
+            f"IQM SDK nem érhető el: {_IQM_IMPORT_ERROR}\n"
+            "Telepítés: pip install iqm-client iqm-qiskit-iqm qiskit"
+        )
+    return syms
+
+
+# A szerver ténylegesen ezt adta vissza (VALIDATION.md §7.8.8).
+MEASURED_ACCESS_DENIAL = (
+    "Personal account does not have pulse-level access enabled required to "
+    "submit this job"
 )
-readout_trigger = ReadoutTrigger(probe_pulse=probe_pulse, acquisitions=(acquisition,))
-readout_instrs = [
-    Instruction(duration_samples=n_samples + wait_samples, operation=Wait()),
-    Instruction(duration_samples=wait_samples, operation=readout_trigger)
-]
 
-seg_instrs = {{}}
-for ch in range(4):
-    ch_name = f'QB{{ch+1}}__drive.awg'
-    if ch_name in channel_descriptions:
-        seg_instrs[ch_name] = drive_instrs
-if readout_instrs:
-    seg_instrs[ro_name] = readout_instrs
-
-segments.append(Segment(instructions=seg_instrs))
-
-# Add instructions to channel descriptions
-for seg in segments:
-    for ch_name, instr_list in seg.instructions.items():
-        if ch_name in channel_descriptions:
-            for instr in instr_list:
-                channel_descriptions[ch_name].add_instruction(instr)
-
-# Submit sweep
-playlist = Playlist(channel_descriptions=channel_descriptions, segments=segments)
-sweep_def = SweepDefinition(playlist=playlist)
-job = server_client.submit_sweep(sweep_def)
-print(f"Job ID: {{job.id}}")
-
-# Wait and get results
-# ... wait loop ...
-sweep_results = server_client.get_job_artifact_sweep_results(job.id)
-counts = client.get_job_measurement_counts(job.id)
-'''
+# A mért eszköz: IQM Garnet, 19 qubit (VALIDATION.md §7.8.1).
+MEASURED_DEVICE = "IQM Resonance — Garnet 19Q"
+MEASURED_DEVICE_QUBITS = 19
 
 
-def build_anchor_playlist(client: IQMClient, duration_ns: int = 37, amp: float = 0.08,
-                           sigma: float = 0.1, freq_ghz: float = 4.11, n_planes: int = 4):
-    """Build a Tesseract 4-plane anchor drive playlist."""
+# ---------------------------------------------------------------------------
+# Tiszta számítás — IQM-független, offline ellenőrizhető
+# ---------------------------------------------------------------------------
+
+def virtual_z_phase(freq_ghz: float, duration_ns: float) -> float:
+    """φ = 2π · f[GHz] · t[ns]  (mod 2π).
+
+    ℹ️ KONVENCIÓ, NEM fizikai mérés. A frekvencia GHz-ben, az idő ns-ban
+    adott, ezért a szorzat dimenzió nélküli ciklusokat ad — NEM kell 1e-9-el
+    szorozni. A korábbi `2*pi*4.11*37e-9` képlet hét nagyságrenddel
+    kisebb radiánt adott (≈9.6e-7 helyett ≈0.44 rad), ami hibás volt.
+
+    Ez a pulse-level útvonalon csak JELZŐÉRTÉK (a kért modulációs frekvencia
+    ciklusszámának fázisa). Nem bizonyítja, hogy fizikai drive történt. A
+    circuit-level használata az anchor_measure_iqm_final.py-ban van, ahol a
+    `rz(phi)` szintén digitális.
+    """
+    return (2.0 * math.pi * freq_ghz * duration_ns) % (2.0 * math.pi)
+
+
+def sample_count(duration_ns: float, sampling_rate: float = 2e9) -> int:
+    """Mintaszám: duration_ns @ sampling_rate, 8-mas LE-felre kerekítve.
+
+    37 ns 2 GHz-en = 74 minta -> 72 (a 8-as granularitás miatt lefelé).
+    Ha a lefelé kerekítés nullát adna (granularitás alatti hossz), 8 marad,
+    mert üres hullámforma nem építhető.
+    """
+    n_samples = int(duration_ns * 1e-9 * sampling_rate)
+    n_samples = (n_samples // 8) * 8
+    return max(n_samples, 8)
+
+
+def compute_samples(duration_ns: float, sigma: float, sampling_rate: float = 2e9):
+    """Gaussian hullámforma-minták — TISZTA számítás, IQM-függés NÉLKÜL.
+
+    Ez az a függvény, amit a tools/selftest_pulse_probe.py offline tesztel.
+
+    Visszatérés: (n_samples, samples) — samples numpy 1-D tömb, pontosan
+    1.0-ra normálva, véges értékekkel.
+
+    A σ-os védőháló nem elvi körülmény: nagyon kis σ esetén az
+    exp(-0.5*(t/σ)²) mindenütt 0 alá csordul, és a `samples / np.max(samples)`
+    osztás 0/0 = NaN-t adna. Ez NaN hullámformát küldene a hardvernek.
+    """
+    import numpy as np
+
+    n_samples = sample_count(duration_ns, sampling_rate)
+    t = np.linspace(-0.5, 0.5, n_samples)
+
+    sigma = abs(float(sigma))
+    if sigma > 0.0:
+        samples = np.exp(-0.5 * (t / sigma) ** 2)
+    else:
+        samples = np.zeros(n_samples, dtype=float)
+
+    peak = float(np.max(samples)) if samples.size else 0.0
+    if not math.isfinite(peak) or peak <= 0.0:
+        # σ túl kicsi (alulcsordulás) vagy σ == 0: nincs normálható csúcs.
+        # Egyetlen egységnyi csúcsot adunk vissza üres Gaussian helyett, így
+        # a normalizáció sosem lesz 0/0.
+        samples = np.zeros(n_samples, dtype=float)
+        if n_samples:
+            samples[n_samples // 2] = 1.0
+        return n_samples, samples
+
+    samples = samples / peak
+    return n_samples, samples
+
+
+# ---------------------------------------------------------------------------
+# Playlist-építés — IQM-függő
+# ---------------------------------------------------------------------------
+
+def build_anchor_playlist(client: "IQMClient", duration_ns: int = 37,
+                          amp: float = 0.08, sigma: float = 0.1,
+                          freq_ghz: float = 4.11, n_planes: int = 4):
+    """Tesseract 4-síkos anchor drive playlist (pulse-level).
+
+    A hullámalak-számítás a tiszta `compute_samples`-ben történik; ez a
+    függvény csak az IQM objektumákká csomagolja.
+    """
+    syms = _require_iqm()
+    Playlist = syms["Playlist"]
+    Segment = syms["Segment"]
+    Instruction = syms["Instruction"]
+    IQPulse = syms["IQPulse"]
+    Wait = syms["Wait"]
+    ReadoutTrigger = syms["ReadoutTrigger"]
+    ComplexIntegration = syms["ComplexIntegration"]
+    Samples = syms["Samples"]
+    ChannelDescription = syms["ChannelDescription"]
+    IQChannelConfig = syms["IQChannelConfig"]
+    ReadoutChannelConfig = syms["ReadoutChannelConfig"]
+
+    import numpy as np
+
     server_client = client._iqm_server_client
     props = server_client.get_channel_properties()
 
-    # Calculate samples: 37ns at 2GHz = 74 samples, round to multiple of 8
-    sampling_rate = 2e9  # 2 GHz from channel properties
-    n_samples = int(duration_ns * 1e-9 * sampling_rate)
-    n_samples = (n_samples // 8) * 8  # Round to granularity
-    if n_samples < 8:
-        n_samples = 8
-
-    # Create Gaussian samples
-    t = np.linspace(-0.5, 0.5, n_samples)
-    samples = np.exp(-0.5 * (t / sigma)**2)
-    samples = samples / np.max(samples)
+    # Tiszta számítás — 37 ns @ 2 GHz = 74 -> 8-as granularitásra 72.
+    n_samples, samples = compute_samples(duration_ns, sigma)
     samp = Samples(samples=samples)
 
-    # Create anchor drive pulse (detuned)
+    # Anchor drive pulse. A modulation_frequency a KÉRT detuned drive
+    # frekvenciája; mérés nem igazolta, hogy ez fizikailag hatott.
     pulse = IQPulse(
         wave_i=samp,
         wave_q=samp,
@@ -247,42 +288,36 @@ def build_anchor_playlist(client: IQMClient, duration_ns: int = 37, amp: float =
         scale_q=0.0,
         phase=0.0,
         modulation_frequency=freq_ghz * 1e9,
-        phase_increment=0.0
+        phase_increment=0.0,
     )
 
-    # Build segments for n_planes drive channels + readout
     segments = []
-    channel_descriptions = {}
+    channel_descriptions: dict[str, Any] = {}
 
-    # Drive channels
     for ch in range(n_planes):
-        channel_name = f'QB{ch+1}__drive.awg'
+        channel_name = f"QB{ch + 1}__drive.awg"
         if channel_name in props:
             prop = props[channel_name]
-            cd = ChannelDescription(
+            channel_descriptions[channel_name] = ChannelDescription(
                 channel_config=IQChannelConfig(sampling_rate=prop.sampling_rate),
-                controller_name='awg'
+                controller_name="awg",
             )
-            channel_descriptions[channel_name] = cd
         else:
             print(f"WARNING: Drive channel {channel_name} not found")
 
-    # Readout channels (need at least one for measurement)
     for pl in range(1, 4):
-        channel_name = f'PL-{pl}__readout'
+        channel_name = f"PL-{pl}__readout"
         if channel_name in props:
             prop = props[channel_name]
-            cd = ChannelDescription(
+            channel_descriptions[channel_name] = ChannelDescription(
                 channel_config=ReadoutChannelConfig(sampling_rate=prop.sampling_rate),
-                controller_name='readout'
+                controller_name="readout",
             )
-            channel_descriptions[channel_name] = cd
 
-    # Create segment: anchor pulse on all drive channels, then measure
     wait_samples = 100
     drive_instructions = []
     for ch in range(n_planes):
-        channel_name = f'QB{ch+1}__drive.awg'
+        channel_name = f"QB{ch + 1}__drive.awg"
         if channel_name in channel_descriptions:
             drive_instructions.append(
                 Instruction(duration_samples=n_samples, operation=pulse)
@@ -291,38 +326,30 @@ def build_anchor_playlist(client: IQMClient, duration_ns: int = 37, amp: float =
                 Instruction(duration_samples=wait_samples, operation=Wait())
             )
 
-    # Readout: wait for pulse, then trigger
-    readout_name = 'PL-1__readout'
+    readout_name = "PL-1__readout"
     if readout_name in channel_descriptions:
-        # Need probe pulse for readout
-        probe_pulse = Instruction(
-            duration_samples=wait_samples,
-            operation=Wait()
-        )
-        # Simple acquisition
+        probe_pulse = Instruction(duration_samples=wait_samples, operation=Wait())
         weight_samples = np.ones(n_samples)
         weight_samp = Samples(samples=weight_samples)
         acquisition = ComplexIntegration(
             label="readout",
             delay_samples=0,
-            weights=IQPulse(wave_i=weight_samp, wave_q=weight_samp, scale_i=1.0, scale_q=0.0,
-                          phase=0.0, modulation_frequency=0.0, phase_increment=0.0)
+            weights=IQPulse(wave_i=weight_samp, wave_q=weight_samp, scale_i=1.0,
+                           scale_q=0.0, phase=0.0, modulation_frequency=0.0,
+                           phase_increment=0.0),
         )
-        readout_trigger = ReadoutTrigger(
-            probe_pulse=probe_pulse,
-            acquisitions=(acquisition,)
-        )
+        readout_trigger = ReadoutTrigger(probe_pulse=probe_pulse,
+                                         acquisitions=(acquisition,))
         readout_instructions = [
             Instruction(duration_samples=n_samples + wait_samples, operation=Wait()),
-            Instruction(duration_samples=wait_samples, operation=readout_trigger)
+            Instruction(duration_samples=wait_samples, operation=readout_trigger),
         ]
     else:
         readout_instructions = []
 
-    # Build segment
     seg_instructions = {}
     for ch in range(n_planes):
-        channel_name = f'QB{ch+1}__drive.awg'
+        channel_name = f"QB{ch + 1}__drive.awg"
         if channel_name in channel_descriptions:
             seg_instructions[channel_name] = drive_instructions
     if readout_instructions:
@@ -330,197 +357,435 @@ def build_anchor_playlist(client: IQMClient, duration_ns: int = 37, amp: float =
 
     segments.append(Segment(instructions=seg_instructions))
 
-    # Add all instructions to channel descriptions
     for seg in segments:
         for ch_name, instr_list in seg.instructions.items():
             if ch_name in channel_descriptions:
                 for instr in instr_list:
                     channel_descriptions[ch_name].add_instruction(instr)
 
-    playlist = Playlist(channel_descriptions=channel_descriptions, segments=segments)
-    return playlist
+    return Playlist(channel_descriptions=channel_descriptions, segments=segments)
+
+
+def measure_balance(counts: Any, n_qubits: int) -> tuple[float, int]:
+    """Balance a TÉNYLEGESEN visszakapott shotokból — tiszta számítás.
+
+    Két korábbi hiba javítása:
+
+    1. A denominator NEM a kért shot-szám, hanem `sum(counts.values())`.
+       A 2026-10-07-i IQM futás 1024 shotot kért, de 1016 jött vissza;
+       1024-gyel osztva a balance hamisan magasabb (11.62% a valós 11.71%
+       helyett).
+    2. A '0'/'1' kulcsok CSAK 1 qubit-es áramkörnél léteznek. 4 qubit-es
+       futáson azok nullát adtak, ami elrontotta az összeget. Ezért a
+       keresés kizárólag `n_qubits` hosszú, csupa 0 / csupa 1 kulcsra keyed.
+
+    `counts` lehet dict, vagy több CircuitMeasurementCounts-t tartalmazó lista;
+    a lista esetén AZ OSSZES circuit eredménye adja a nevezőt (nem csak az
+    utolsó).
+
+    Visszatérés: (balance_pct, actual_total_shots). Üres counts esetén
+    (0.0, 0).
+    """
+    merged: dict[str, int] = {}
+    if hasattr(counts, "counts"):
+        items = [counts]
+    elif isinstance(counts, dict):
+        items = [counts]
+    else:
+        items = list(counts or [])
+
+    for entry in items:
+        raw = entry.counts if hasattr(entry, "counts") else entry
+        if not raw:
+            continue
+        for key, value in raw.items():
+            merged[key] = merged.get(key, 0) + int(value)
+
+    actual_total = sum(merged.values())
+    if actual_total <= 0:
+        return 0.0, 0
+
+    key_zero = "0" * n_qubits
+    key_one = "1" * n_qubits
+    zeros = merged.get(key_zero, 0)
+    ones = merged.get(key_one, 0)
+    return (zeros + ones) / actual_total * 100.0, actual_total
 
 
 def run_iqm_measurement(iqm_url: str, backend_name: str, shots: int = 1024,
                          duration_ns: int = 37, amp: float = 0.08,
-                         sigma: float = 0.1, freq_ghz: float = 4.11, n_planes: int = 4,
-                         token: str = None):
-    """Futtatja az anchor drive kompenzáció mérést IQM-en Sweep API-val."""
+                         sigma: float = 0.1, freq_ghz: float = 4.11,
+                         n_planes: int = 4):
+    """Anchor drive mérés a Sweep API-val.
+
+    A token KIZÁRÓLAG a IQM_TOKEN környezeti változóból jön — nincs CLI
+    paraméter hozzá, szándékosan.
+
+    Ez a függvény JELENLEG nem tud lefutni: a fiók pulse-level
+    entitlementje nélkül a `submit_sweep` elutasítja a kérést (lásd a
+    modul docstringjét és a MEASURED_ACCESS_DENIAL állandót).
+    """
+    syms = _require_iqm()
+    IQMClient = syms["IQMClient"]
+    SweepDefinition = syms["SweepDefinition"]
+
+    token = os.getenv("IQM_TOKEN")
+    if not token:
+        raise RuntimeError("IQM_TOKEN környezeti változó nincs beállítva")
+
     print(f"Connecting to IQM: {iqm_url}")
     client = IQMClient(iqm_url, token=token, quantum_computer=backend_name)
     print(f"Backend: {backend_name}")
 
-    # Build playlist
     print("Building Tesseract anchor drive playlist...")
-    playlist = build_anchor_playlist(client, duration_ns, amp, sigma, freq_ghz, n_planes)
+    playlist = build_anchor_playlist(client, duration_ns, amp, sigma,
+                                     freq_ghz, n_planes)
 
-    # Create sweep definition
     sweep_def = SweepDefinition(playlist=playlist)
     print("Submitting sweep job...")
-
-    # Submit sweep
     server_client = client._iqm_server_client
     job = server_client.submit_sweep(sweep_def)
     print(f"Job ID: {job.id}")
 
-    # Wait for completion
     print("Waiting for job completion...")
+    status = None
     while True:
         job_data = server_client.get_job(job.id)
         status = job_data.data.status
         print(f"  Status: {status}")
-        if status.name in ('COMPLETED', 'FAILED', 'CANCELLED'):
+        if status.name in ("COMPLETED", "FAILED", "CANCELLED"):
             break
         time.sleep(5)
 
-    if status.name != 'COMPLETED':
+    if status.name != "COMPLETED":
         raise RuntimeError(f"Job failed: {status}")
 
-    # Get sweep results
     print("Retrieving sweep results...")
     sweep_results = server_client.get_job_artifact_sweep_results(job.id)
 
-    # Extract IQ data from sweep results
-    # The results contain raw IQ data from the acquisition
-    iq_data = []
-    if sweep_results and hasattr(sweep_results, 'results'):
+    # IQ-adat kizárólag a NYERS Sweep artifactból jöhet. A get_memory()
+    # dekódolt bitstringet ad, nem IQ-vektort.
+    iq_data: list[Any] = []
+    if sweep_results and hasattr(sweep_results, "results"):
         for result in sweep_results.results:
-            if hasattr(result, 'acquisition_results'):
-                for acq in result.acquisition_results:
-                    if hasattr(acq, 'iq_data'):
-                        iq_data.extend(acq.iq_data)
+            for acq in getattr(result, "acquisition_results", []) or []:
+                raw = getattr(acq, "iq_data", None)
+                if raw:
+                    iq_data.extend(raw)
 
-    # Also get counts from the job
     counts = client.get_job_measurement_counts(job.id)
 
-    print(f"Anchor: {duration_ns}ns / {freq_ghz}GHz / amp={amp}")
+    n_qubits = n_planes * 2
+    balance, actual_total = measure_balance(counts, n_qubits)
+
+    print(f"Anchor: {duration_ns}ns / {freq_ghz}GHz (KÉRT paraméter) / amp={amp}")
     print(f"Counts: {counts}")
     print(f"Raw IQ samples: {len(iq_data)}")
-
-    # Parse counts for balance
-    total_shots = shots
-    balance = 0.0
-    if counts:
-        # Counts is a list of CircuitMeasurementCounts
-        for c in counts:
-            if hasattr(c, 'counts'):
-                cnt = c.counts
-                zeros = cnt.get('0', 0) + cnt.get('0000', 0)
-                ones = cnt.get('1', 0) + cnt.get('1111', 0)
-                if total_shots > 0:
-                    balance = (zeros + ones) / total_shots * 100
-
-    print(f"Balance: {balance:.2f}%")
+    print(f"Balance: {balance:.2f}%  (nevező: {actual_total} ténylegesen "
+          f"visszakapott shot, kérés: {shots})")
 
     return {
         "job_id": str(job.id),
-        "shots": shots,
+        "shots_requested": shots,
+        "shots_actual": actual_total,
         "counts": str(counts),
         "iq_data": iq_data,
-        "balance": balance,
+        "balance_pct": balance,
         "params": {
             "duration_ns": duration_ns,
             "amp": amp,
             "sigma": sigma,
             "freq_ghz": freq_ghz,
+            "modulation_freq_is_requested_not_demonstrated": True,
             "n_planes": n_planes,
+            "n_qubits": n_qubits,
             "backend": backend_name,
-        }
+        },
     }
 
 
-def save_results(result: dict, out_dir: str = "measurement_raw"):
-    """Mentés JSON formátumban audit trail-hez."""
+# ---------------------------------------------------------------------------
+# Mentés és ábrázolás
+# ---------------------------------------------------------------------------
+
+def save_results(result: dict[str, Any], out_dir: str = "measurement_raw") -> str:
+    """Mentés JSON formátumban audit trail-hez (explicit UTF-8)."""
     os.makedirs(out_dir, exist_ok=True)
-    import time
-    timestamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
-    filename = f"iqm_anchor_{result['job_id']}_{timestamp}.json"
-    filepath = os.path.join(out_dir, filename)
-    with open(filepath, 'w') as f:
-        json.dump(result, f, indent=2)
-    print(f"Raw data saved: {filepath}")
-    return filepath
+    ts = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+    path = os.path.join(out_dir, f"iqm_anchor_{result['job_id']}_{ts}.json")
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump(result, fh, indent=2, ensure_ascii=False, default=str)
+    print(f"Raw data saved: {path}")
+    return path
 
 
-def plot_iq_data(result: dict, out_dir: str = "measurement_raw"):
-    """Raw IQ scatter plot mentése."""
+def plot_iq_data(result: dict[str, Any], out_dir: str = "measurement_raw"):
+    """Raw IQ scatter plot mentése — VÉDTEN.
+
+    A `run_iqm_measurement` CSAK `result['iq_data']`-t állít be: egy lapos
+    lista, aminek nincs `.real` / `.imag` attribútuma. A korábbi kód
+    `result['iq_real']` / `result['iq_imag']`-t olvasott, ami MINDEN sikeres
+    futáson KeyError-t dobott.
+
+    Elfogadott input-formák:
+      * lapos komplex lista  -> valós / képzetes rész
+      * (N, 2) alakú tömb   -> I, Q oszlopok
+    Ha egyik sem használható, KIÍRJA, hogy nincs használható IQ-adat, és
+    None-t ad vissza — nem dob kivételt.
+    """
+    try:
+        import numpy as np
+    except ImportError as exc:
+        print(f"numpy not available, skipping IQ plot: {exc}")
+        return None
+
+    raw = result.get("iq_data")
+    if raw is None or len(raw) == 0:
+        print("Nincs IQ-adat ebben a futásban (iq_data üres) — IQ plot kihagyva.")
+        print("  A mérési eredmény dekódolt bitstring, NEM komplex IQ-vektor;")
+        print("  IQ-adat csak a nyers Sweep artifactból érkezhetne.")
+        return None
+
+    try:
+        arr = np.asarray(raw, dtype=complex)
+    except (TypeError, ValueError):
+        print(f"Az iq_data nem alakítható komplex tömbre — IQ plot kihagyva. "
+              f"Típus: {type(raw).__name__}")
+        return None
+
+    if arr.ndim == 2 and arr.shape[1] == 2:
+        iq_real, iq_imag = arr[:, 0], arr[:, 1]
+    elif arr.ndim == 1:
+        iq_real, iq_imag = arr.real, arr.imag
+    else:
+        print(f"Ismeretlen iq_data alak: {arr.shape} — IQ plot kihagyva.")
+        return None
+
+    mask = np.isfinite(iq_real) & np.isfinite(iq_imag)
+    if int(mask.sum()) < 2:
+        print("Az iq_data nem tartalmaz 2 vagy több véges pontot — "
+              "IQ plot kihagyva.")
+        return None
+    iq_real, iq_imag = iq_real[mask], iq_imag[mask]
+
     try:
         import matplotlib.pyplot as plt
-        os.makedirs(out_dir, exist_ok=True)
-
-        iq_real = result['iq_real']
-        iq_imag = result['iq_imag']
-
-        plt.figure(figsize=(6, 6))
-        plt.scatter(iq_real, iq_imag, alpha=0.5, s=10)
-        plt.axhline(y=0, color='k', linestyle='--', alpha=0.3)
-        plt.axvline(x=0, color='k', linestyle='--', alpha=0.3)
-        plt.xlabel('I (Real)')
-        plt.ylabel('Q (Imag)')
-        plt.title(f'IQM Anchor Drive — Raw IQ ({result["params"]["backend"]}, {result["shots"]} shots)')
-        plt.grid(True, alpha=0.3)
-        plt.axis('equal')
-
-        import time
-        timestamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
-        plot_path = os.path.join(out_dir, f"iqm_iq_plot_{result['job_id']}_{timestamp}.png")
-        plt.savefig(plot_path, dpi=150)
-        plt.close()
-        print(f"IQ plot saved: {plot_path}")
-        return plot_path
     except ImportError:
         print("matplotlib not available, skipping IQ plot")
         return None
 
+    os.makedirs(out_dir, exist_ok=True)
+    backend = result.get("params", {}).get("backend", "?")
+    plt.figure(figsize=(6, 6))
+    plt.scatter(iq_real, iq_imag, alpha=0.5, s=10)
+    plt.axhline(y=0, color="k", linestyle="--", alpha=0.3)
+    plt.axvline(x=0, color="k", linestyle="--", alpha=0.3)
+    plt.xlabel("I (Real)")
+    plt.ylabel("Q (Imag)")
+    plt.title(f"IQM Anchor Drive — Raw IQ ({backend})")
+    plt.grid(True, alpha=0.3)
+    plt.axis("equal")
 
-def main():
-    parser = argparse.ArgumentParser(description="Anchor drive kompenzáció mérése IQM Resonance-on")
-    parser.add_argument("--url", default=os.getenv("IQM_URL", "https://resonance.iqm.tech"), help="IQM Resonance URL")
-    parser.add_argument("--token", default=os.getenv("IQM_TOKEN"), help="IQM API token (vagy IQM_TOKEN env)")
-    parser.add_argument("--backend", default="garnet", choices=["garnet", "crystal"], help="Backend: garnet (20Q free) vagy crystal (54Q)")
-    parser.add_argument("--shots", type=int, default=1024, help="Shots per measurement")
-    parser.add_argument("--status", action="store_true", help="Csak a terv kiírása")
-    parser.add_argument("--json", action="store_true", help="JSON output")
-    args = parser.parse_args()
+    ts = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+    plot_path = os.path.join(out_dir, f"iqm_iq_plot_{result['job_id']}_{ts}.png")
+    plt.savefig(plot_path, dpi=150)
+    plt.close()
+    print(f"IQ plot saved: {plot_path}")
+    return plot_path
+
+
+# ---------------------------------------------------------------------------
+# Státusz — a MÉRT állapot, nem a régi terv
+# ---------------------------------------------------------------------------
+
+def both_proofs_status():
+    """Kiírja a két mérési utat a JELENLEG ismert, mért állapotával.
+
+    Ez NEM tartalmaz visszavont eredményt állításként. A Borg-téma
+    kizárólag visszavonva említődik.
+    """
+    print("=" * 74)
+    print("IQM — PULSE-LEVEL PROBE (nem circuit-level)")
+    print("=" * 74)
+
+    print("\n[1] ψ(37ns) DINAMIKA — hardveres mérés, gyökérfüggvény nélkül")
+    print("-" * 74)
+    print("  Bell referencia (2q): 00=49.80% 11=48.60% -> 97.6% balance")
+    print("  D0 97.40% / D8 89.40% megőrzés, diff 8% — a <2% kritériumot NEM")
+    print("    teljesíti (kumulatív zaj)")
+    print("  Borg '100% clear': ⚠️ VISSZAVONVA. A γ=0 áramkör pontosan")
+    print("    visszacsinálta a saját forgatásait, ezért az állapotmegőrzés")
+    print("    TAUTOLÓGIA volt, nem hardveres eredmény. A javított áramkör")
+    print("    γ=0 és γ=0.5 mellett egyaránt 0% clear-t ad.")
+    print("  Anchor-drive kompenzáció: ❌ NEM igazolt.")
+    print("  γ=0 állapot: ❌ nem elérhető, véges T1/T2 mellett fizikailag")
+    print("    lehetetlen — nem mért eredmény.")
+    print("  ℹ️ A circuit-level IQM mérés a anchor_measure_iqm_final.py-ban van.")
+
+    print("\n[2] ANCHOR DRIVE — IQM PULSE-LEVEL HOZZÁFÉRÉS: ELUTASÍTVA")
+    print("-" * 74)
+    print(f"  Eszköz          : {MEASURED_DEVICE} ({MEASURED_DEVICE_QUBITS} qubit)")
+    print("  Csatornák       : 82 olvasható volt")
+    print("  Playlist        : helyesen felépül, validál")
+    print("  Szerver válasz  :")
+    print(f"    {MEASURED_ACCESS_DENIAL}")
+    print("  Osztályozás     : ENGEDÉLY (entitlement) KORLÁT — nem kliens-hiba,")
+    print("                    nem playlist-hiba, nem Python-hiba.")
+    print("  Amit a kód bizonyít : semmit a hozzáférésről. Egy kódszintű")
+    print("                    playlist-alak ellenőrzés NEM tudja kimutatni ezt:")
+    print("                    a playlist jó, a fiók jogosultsága hiányzik.")
+    print("  Amit a mérési eredmény NEM ad:")
+    print("    * a get_memory() dekódolt bitstring, NEM komplex IQ-vektor")
+    print("    * NEM meas_level=0")
+    print(f"    * a {4.11} GHz moduláció KÉRT paraméter; mérés nem igazolta,")
+    print("      hogy fizikai detuned drive hatott")
+    print("  Amin kellene változtatni : fizetős tier VAGY külön pulse-level")
+    print("    entitlement. Egyik sincs megszerezve.")
+
+    print("\n[3] Tesseract upgrade — NEM mért, hipotézis")
+    print("-" * 74)
+    print("  4 sík: XY XZ XW YZ, λ=0.08, δ(p-p0)")
+    print("  HIPOTÉZIS (falszifikálható, nem eredmény): a PÁROZOTT kontrollsor")
+    print("  meg tudja cáfolni. Az alábbiak mérési terv, nem állítás:")
+    print("    anchor-on és anchor-off azonos szelekció  -> a hipotézis HAMIS")
+    print("    anchor-on szignifikánsan magasabb szelekció -> további kontroll kell")
+    print("  Nincs mérés, amely bármelyik ágat megerősítette volna.")
+
+    print("\n" + "=" * 74)
+    print("KÖVETKEZŐ LÉPÉS")
+    print("=" * 74)
+    print("1. Circuit-level mérés: anchor_measure_iqm_final.py (az elérhető út)")
+    print("2. Pulse-level: entitlement kérés, vagy fizetős tier — mérés előtt")
+    print("   nem tekinthető adottnak")
+    print("3. Publication claims: lásd docs/VALIDATION.md §7.8 és §9")
+    print("=" * 74)
+
+
+# ---------------------------------------------------------------------------
+# Offline validáció — token és hálózat nélkül
+# ---------------------------------------------------------------------------
+
+def validate_offline(freq_ghz: float = 4.11, duration_ns: int = 37,
+                     n_planes: int = 4) -> int:
+    """Ugyanazok a tiszta száítási ellenőrzések, mint a self-test futtatja."""
+    try:
+        import numpy as np
+    except ImportError as exc:
+        print(f"[HIBA] numpy nem érhető el: {exc}")
+        return 1
+
+    print(f"stdout encoding: {_STDOUT_ENCODING}")
+    print(f"IQM SDK         : {'elérhető' if _load_iqm() else 'nincs (nem kell itt)'}"
+          + (f" — {_IQM_IMPORT_ERROR}" if _IQM_IMPORT_ERROR else ""))
+
+    # 1. sampling-számítás
+    assert sample_count(37, 2e9) == 72, sample_count(37, 2e9)
+    assert sample_count(1, 2e9) == 8, "granularitás alatti hossz nem védve"
+    print(f"[OK] 37 ns @ 2 GHz = 74 minta -> 8-as granularitásra {sample_count(37, 2e9)}")
+
+    # 2. normalizálás + végesség σ-szélsőértékeknél
+    n, samples = compute_samples(37, 0.1)
+    assert samples.size == n and n > 0
+    assert np.isfinite(samples).all()
+    assert abs(float(np.max(samples)) - 1.0) < 1e-12
+    for sigma in (1e-9, 1e-12, 0.0, -0.1, 1e6):
+        n2, s2 = compute_samples(37, sigma)
+        assert s2.size == n2 and n2 >= 8
+        assert np.isfinite(s2).all(), f"NaN/inf sigma={sigma}"
+        assert abs(float(np.max(s2)) - 1.0) < 1e-12, f"nem normált sigma={sigma}"
+    print("[OK] Gaussian véges és 1.0-ra normált, σ szélsőértékeknél is")
+
+    # 3. fázisszámítás
+    phi = virtual_z_phase(freq_ghz, duration_ns)
+    assert abs(phi - 0.4398) < 1e-3, phi
+    assert 0.0 <= phi < 2.0 * math.pi
+    wrong = 2 * math.pi * freq_ghz * duration_ns * 1e-9
+    assert abs(phi - wrong) > 1e-6, "a 1e-9 hiba-faktor visszatért"
+    print(f"[OK] fázisszámítás: 2π·{freq_ghz}·{duration_ns} = {phi:.4f} rad")
+
+    # 4. balance: tényleges nevező + n_qubits-hosszú kulcsok
+    n_qubits = n_planes * 2
+    bal, total = measure_balance({"0" * n_qubits: 100, "1" * n_qubits: 19}, n_qubits)
+    assert total == 119
+    assert abs(bal - (119 / 119) * 100) < 1e-9, bal
+    # Több circuit: az OSSZES a nevező, nem csak az utolsó.
+    bal2, total2 = measure_balance([{"0" * n_qubits: 10}, {"1" * n_qubits: 5}],
+                                   n_qubits)
+    assert total2 == 15 and abs(bal2 - 100.0) < 1e-9, (bal2, total2)
+    # '0'/'1' kulcs 1 qubit-es áramkörön sem szabad beleszámolnia 4 qubitbe.
+    _, total3 = measure_balance({"0" * n_qubits: 4, "0": 999}, n_qubits)
+    assert total3 == 1003
+    assert measure_balance({}, n_qubits) == (0.0, 0)
+    print(f"[OK] balance a tényleges nevezővel ({total} és {total2} shot), "
+          f"{n_qubits} qubit-es kulcsokkal")
+
+    print("\n[OK] OFFLINE VALIDÁCIÓ MINDEN TESZTEN ÁTMENT")
+    print("[MEGBEGBYEZVE] A pulse-level hozzáférést ez NEM bizonyítja:")
+    print("  a szerver elutasítása entitlement-korlát, kódszinten nem látható.")
+    print(f"  {MEASURED_ACCESS_DENIAL}")
+    return 0
+
+
+# ---------------------------------------------------------------------------
+# CLI
+# ---------------------------------------------------------------------------
+
+def build_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(
+        description="IQM pulse-level anchor drive probe (jogosultság-ellenőrzés). "
+                    "A circuit-level mérés az anchor_measure_iqm_final.py-ban van.")
+    p.add_argument("--url", default=os.getenv("IQM_URL", "https://resonance.iqm.tech"),
+                   help="IQM Resonance URL")
+    p.add_argument("--backend", default="garnet", choices=["garnet", "crystal"],
+                   help="Backend: garnet (19Q) vagy crystal")
+    p.add_argument("--shots", type=int, default=1024, help="Kért shotok száma")
+    p.add_argument("--duration", type=int, default=37, help="Pulse hossz (ns)")
+    p.add_argument("--freq", type=float, default=4.11,
+                   help="KÉRT modulációs frekvencia (GHz) — mérés által nem "
+                        "igazolt fizikai drive")
+    p.add_argument("--planes", type=int, default=4, help="Tesseract síkok száma")
+    p.add_argument("--status", action="store_true", help="A mért állapot kiírása")
+    p.add_argument("--validate", action="store_true",
+                   help="Offline ellenőrzés, IQM token és hálózat nélkül")
+    return p
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
 
     if args.status:
         both_proofs_status()
-        print("\n--- IQM KÓD SABLON ---\n")
-        print(IQM_CODE_TEMPLATE.format(iqm_url=args.url, backend_name=args.backend, shots=args.shots))
         return 0
 
-    if not args.token:
-        print("ERROR: IQM_TOKEN environment variable or --token required")
-        print("Get token from https://resonance.iqm.com after registration")
+    if args.validate:
+        return validate_offline(args.freq, args.duration, args.planes)
+
+    if not os.getenv("IQM_TOKEN"):
+        print("[HIBA] IQM_TOKEN környezeti változó nincs beállítva.")
+        print("   A token soha ne menjen CLI argumentumként vagy fájlba.")
+        print("   PowerShell:  $env:IQM_TOKEN = '...'")
         return 1
 
     try:
-        result = run_iqm_measurement(args.url, args.backend, args.shots, token=args.token)
-
-        if args.json:
-            print(json.dumps(result, indent=2))
-
-        # Save raw data
+        result = run_iqm_measurement(args.url, args.backend, args.shots,
+                                     args.duration, amp=0.08, sigma=0.1,
+                                     freq_ghz=args.freq, n_planes=args.planes)
         save_results(result)
-
-        # Plot IQ
         plot_iq_data(result)
 
-        # Summary
-        print("\n" + "=" * 70)
+        print("\n" + "=" * 74)
         print("ÖSSZEFOGLALÓ")
-        print("=" * 70)
-        print(f"Balance: {result['balance']:.2f}%")
-        if result['balance'] > 97:
-            print("✅ Sikeres: >97% balance — anchor drive kompenzáció MŰKÖDIK")
-        else:
-            print("⚠️ Alacsony balance — anchor drive NEM kompenzálja a zajt")
-        print("=" * 70)
-
+        print("=" * 74)
+        print(f"Balance: {result['balance_pct']:.2f}% "
+              f"({result['shots_actual']} ténylegesen visszakapott shot)")
+        print("[!] Ez a pulse-level probe. A kapott balance önmagában SEMMIT")
+        print("    nem mond az anchor hatásáról: nincs anchor-on/anchor-off")
+        print("    párosított kontrollsor, így a magas érték a tiszta áramkör")
+        print("    természetes minősége lehet.")
+        print("=" * 74)
         return 0
-
-    except Exception as e:
-        print(f"ERROR: {e}")
+    except Exception as exc:
+        print(f"[HIBA] {type(exc).__name__}: {exc}")
         import traceback
         traceback.print_exc()
         return 1

@@ -109,7 +109,40 @@ RULES: list[tuple[str, re.Pattern[str], str, str]] = [
         "The script lives at the repository root, not under src/.",
         "soft",
     ),
+    (
+        "garnet-qubit-count",
+        re.compile(r"(?:Garnet|garnet)[^\n]{0,40}?\b20\s*Q\b", re.I),
+        "The measured Garnet backend has 19 qubits, not 20.",
+        "hard",
+    ),
+    (
+        "gamma-zero-reachable",
+        re.compile(r"(?:gamma|γ)\s*=\s*0\s+(?:hardver|hardware)(?:en|es)?\s*(?:elér|achiev|reach)", re.I),
+        "gamma=0 is not an established hardware state; finite T1/T2 make it "
+        "physically unreachable.",
+        "hard",
+    ),
 ]
+
+# Numbers that are only correct WITH their stated denominator. A bare figure is
+# not a defect; a bare figure presented as THE result is. These fire when the
+# documented value is quoted without the caveat that makes it interpretable.
+CONTEXTUAL_RULES: list[tuple[str, re.Pattern[str], str]] = [
+    (
+        "11.62-without-denominator",
+        re.compile(r"11[.,]62\s*%"),
+        "The 11.62% figure divides by the REQUESTED 1024 shots; the counts "
+        "actually summed to 1016, which gives 11.71%. Quote the denominator "
+        "alongside it.",
+    ),
+    (
+        "11.71-without-denominator",
+        re.compile(r"11[.,]71\s*%"),
+        "The 11.71% figure is the correct one, but only against the 1016 "
+        "returned shots. State the denominator.",
+    ),
+]
+
 
 # Lines that legitimately discuss a retracted claim must still be allowed to
 # MENTION it, as long as they mark it as retracted. We detect the retraction
@@ -120,7 +153,11 @@ RETRACTION_MARKERS = re.compile(
     r"visszavon|retract|tautol|retrakt|hamis| téves|false positive|"
     r"RÉSZLEGES|NEM igazolt|NOT PROVEN|NOT SHOWN|NOT MEASURED|"
     r"What Was Claimed|Previous Claim|mi volt az állítás|"
-    r"korábbi állítás|a korábbi|Why It Was Wrong", re.I)
+    r"korábbi állítás|a korábbi|Why It Was Wrong|"
+    # A struck-through or explicitly-false quotation. A table that lists the
+    # OLD claim in the left column and the measured reality in the right is the
+    # corrected form; without this the scanner flags its own fix.
+    r"~~|—\s*false\b|\bfalse\b(?!\s*positive)|téves\s*\||_false_", re.I)
 
 # A rule fires on a phrase, but a phrase preceded by a negation is the OPPOSITE
 # of a defect: "NOT a meas_level=0 equivalent" is the corrected wording. Without
@@ -129,6 +166,16 @@ RETRACTION_MARKERS = re.compile(
 NEGATION = re.compile(
     r"\bnot\b|\bno\b|\bnever\b|\bincorrect\b|\bwrong\b|"
     r"is not|are not|cannot|must not|\bnem\b|\bnot(?:a| an| egy)\b", re.I)
+
+# A percentage that was computed against a stated denominator is fully
+# interpretable. These markers mean the reader is told what it was divided by —
+# which is the only thing that makes such a figure meaningful.
+DENOMINATOR_CONTEXT = re.compile(
+    r"denominator|nevező|osztó|1016|1024\s*(?:shot|mérés|requested|kért)|"
+    r"requested\s*shots?|actual\s*shots?|visszakapott|"
+    # A parenthesised arithmetic form: "(74+45/1024)". The denominator is stated,
+    # so the figure is fully interpretable even without the word "denominator".
+    r"/\s*(?:1024|1016)\b", re.I)
 
 
 def _is_negated(line: str, match: re.Match[str]) -> bool:
@@ -172,6 +219,23 @@ def scan_file(rel: str) -> list[tuple[str, int, str, str, str]]:
             if RETRACTION_MARKERS.search(window):
                 continue
             findings.append((name, idx, rel, why, severity))
+
+        for name, pattern, why in CONTEXTUAL_RULES:
+            match = pattern.search(line)
+            if not match:
+                continue
+            # The figure is only interpretable together with what it was
+            # divided by. If the denominator is stated anywhere in the
+            # surrounding text, the reader is not misled — so stay silent.
+            # This is the difference between "11.62% appears" (true, harmless)
+            # and "11.62% is presented as THE global balance" (misleading).
+            window = "\n".join(lines[max(0, idx - 4):idx + 5])
+            if DENOMINATOR_CONTEXT.search(window):
+                continue
+            if RETRACTION_MARKERS.search(window):
+                continue
+            findings.append((name, idx, rel, why, "soft"))
+
     return findings
 
 

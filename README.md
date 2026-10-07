@@ -45,8 +45,16 @@ The original white paper (HOPE-WP-2026) hypothesized: a weak, non-destructive pu
 | `src/anchor_model.py` | Classical anchor equation evaluation. Stdlib only. |
 | `src/anchor_measure.py` | Measurement layer: amplitude sweep, roundtrip, saturation. Simulation only. |
 | `anchor_measure_iqm_final.py` | **IQM circuit-level control matrix.** `zero`/`h`/`bell`/`anchor` sorok, shot-loss detekció, offline validáció. |
+| `anchor_measure_iqm.py` | **IQM pulse-level probe path.** Külön a circuit-level útvonaltól; a pulse-level hozzáférés a mért fiókon elutasítva van. |
+| `tools/run_checks.py` | **One command for every offline check.** 14 ellenőrzés; lásd [Verification](#verification). |
 | `tools/check_tex.py` | Static LaTeX structure check (environments, braces, math mode). No LaTeX toolchain needed. |
 | `tools/check_claims.py` | **Claim consistency scanner.** Kiszúrja a visszavont/hamis állításokat a publikációs fájlokból. |
+| `tools/selftest_claims.py` | A claim-scanner öntesztje: bizonyítja, hogy tüzel a hibára és csendes a javításra. |
+| `tools/check_audit_trail.py` | **Méri** a `measurement_raw/` teljességét, és összeveti a dokumentumok állításával. |
+| `tools/check_metadata.py` | `CITATION.cff` ↔ `.zenodo.json` konzisztencia; affiláció- és ORCID-ellentmondás. |
+| `tools/check_pulse_probe_claims.py` | A pulse-probe script szövegének őre (nincs `--token`, nincs visszavont állítás). |
+| `tools/audit_secrets.py` | Working-tree secret audit. |
+| `tools/audit_git_history.py` | Git-history secret audit. |
 | `src/check_no_dependencies.py` | Static dependency audit (AST-based). |
 | `tesseract_anchor.py` | Tesseract 4-plane × 5-reality = 20 pre-realities simulation. |
 | [`docs/HOPE-WP-2026-V1.2.md`](docs/HOPE-WP-2026-V1.2.md) | **White Paper V1.2.** Tesseract appendix, IQM results, retraction, LaTeX in `arxiv/`. |
@@ -120,9 +128,10 @@ still available.
 
 **Result (2026-10-07, prior run without controls):** Job `01a1162c-717c-77e7-91d9-90ed16c0e591`, 1024 shots requested, 4 planes (8 qubits)
 - Per-plane Bell balance: 95.41%, 96.09%, 96.19%, 96.58%
-- Global 00000000+11111111 balance: 11.62%
+- Global 00000000+11111111 balance: 11.62% of the requested 1024 shots (11.71% of the 1016 actually returned)
 - ⚠️ Counts summed to **1016**, not 1024 — the script now reports this instead of silently dividing by 1024
 - ⚠️ The audit JSON stores only the **first 10** memory bitstrings, not all 1024
+- ⚠️ That audit record also lacks `backend_properties` and `transpiled_qasm` — the saving code of that run wrote neither, so the transpiled circuit is not recoverable from it
 
 ⚠️ **The "virtual Z phase" is an `rz()` digital gate, not a 4.11 GHz physical drive.**
 Pulse-level Sweep API is **not included in the free tier** — measured rejection:
@@ -133,6 +142,61 @@ Pulse-level Sweep API is **not included in the free tier** — measured rejectio
 ```powershell
 python -m src.check_no_dependencies
 ```
+
+---
+
+## Verification
+
+Every offline check in one command — no hardware, no network, no token:
+
+```powershell
+python tools\run_checks.py
+```
+
+Current state: **13 of 14 PASS, 1 FAIL by design.**
+
+| # | Check | What it proves |
+|---|---|---|
+| 1 | IQM circuit validation | The control matrix builds and analyses correctly |
+| 2 | IQM pulse-probe offline validation | The playlist math is sound without an IQM account |
+| 3 | IQM pulse-probe self-test | Same, as assertions |
+| 4 | Pulse-probe wording | No `--token`, no retracted claim asserted |
+| 5 | LaTeX structure | Environments, braces, math mode balanced |
+| 6 | Claim consistency | No known-bad phrasing in published files |
+| 7 | Claim scanner self-test | The scanner fires on defects, stays silent on fixes |
+| 8 | Audit trail completeness | **Measures** `measurement_raw/`, does not trust the prose |
+| 9 | Audit trail self-test | That checker also fires both ways |
+| 10 | Publication metadata | `CITATION.cff` ↔ `.zenodo.json` agree |
+| 11 | Metadata self-test | Same, as assertions |
+| 12 | Working-tree secret audit | No credential material in the tree |
+| 13 | Git-history secret audit | No credential material in any committed blob |
+| 14 | Stdlib import smoke test | Offline modules import cleanly |
+
+⚠️ **Check 10 is expected to fail, and that is the correct behaviour.** It
+reports two publication decisions that no tool is entitled to make:
+
+1. **Affiliation conflict.** `docs/HOPE-WP-2026-V1.2.md` and
+   `arxiv/quantum_anchor_v1.2.tex` say **"Hope Ecosystem"**; `.zenodo.json`
+   and `CITATION.cff` say **"Independent"** for the same person. An affiliation
+   is an employment claim, and a Zenodo DOI is permanent and public. **A human
+   must pick one value and apply it to all four files.**
+2. **All-zero ORCID.** `0000-0000-0000-0000` is the conventional "no ORCID"
+   sentinel, not an identity. Replace it with a real ORCID or delete the field.
+
+The checker reports these; it never resolves them. Until both are settled, the
+repository is **not ready to publish**, and the suite says so out loud rather
+than passing quietly.
+
+### Measured, not asserted
+
+Two checks measure the artefacts instead of reading the prose about them,
+because prose review did not catch these:
+
+| Claim in the docs | Measured reality |
+|---|---|
+| ~~All raw data … with backend properties, transpiled QASM~~ — false | 27 of 28 records do; the IQM record has neither block |
+| ~~1024 bitstrings captured~~ — false | The IQM audit stores **10** of 1016 |
+| ~~Garnet 20Q~~ — false | The measured device is **19Q** |
 
 ---
 
@@ -157,16 +221,16 @@ python -m src.check_no_dependencies
 | **Borg γ=0 corrected baseline** | 89.72% balance, 0% clear | 🔬 HARDWARE MEASURED | ibm_marrakesh, VALIDATION.md §8 |
 | **Borg γ=0.5 anchor ON** | 87.74% balance, 0% clear | 🔬 HARDWARE MEASURED | ibm_marrakesh, VALIDATION.md §8 |
 | **Matryoshka D0→D8 preservation** | 97.40% → 89.40% | ⚠️ UNVERIFIED | Criterion "preserved" evaluated False |
-| **4 Bell pairs on IQM Garnet** | Per-plane 95-96%, global 11.62% | 🔬 HARDWARE MEASURED | Circuit-level; VALIDATION.md §7.8 |
+| **4 Bell pairs on IQM Garnet 19Q** | Per-plane 95-96%, global 11.62% (of 1024 requested; 11.71% of 1016 returned) | 🔬 HARDWARE MEASURED | Circuit-level; VALIDATION.md §7.8 |
 | **`rz(φ)` has a measurable effect** | — | ⚠️ UNVERIFIED | No rz-free control row in the prior run |
-| **Global 20-reality sync** | 11.62% | ❌ NOT SHOWN | Consistent with independent planes |
+| **Global 20-reality sync** | 11.62% (of 1024 requested) | ❌ NOT SHOWN | Consistent with independent planes |
 | **Physical detuned drive applied** | — | ❌ NOT MEASURED | `rz` is a virtual rotation |
 | **Anchor drive compensates T1/T2** | 0% clear both conditions | ❌ NOT PROVEN | SamplerV2 cannot do dissipative compensation |
 | **Pulse-level Sweep API** | Access denied on Starter tier | ❌ BLOCKED | Measured — `Personal account does not have pulse-level access enabled` |
 
 **Key insight:** The SamplerV2 API (IBM's current primitive) only supports coherent gates. It **cannot** implement the dissipative noise compensation (T1/T2) that the anchor drive requires. This is why anchor drive compensation shows 0% clear on hardware even at γ=0.
 
-**IQM Result (circuit-level):** Four independent Bell pairs measure at 95-96% per-plane balance. ⚠️ The `rz(0.4398)` was a **virtual Z rotation** — the transpiler emitted `r` rotations; no 4.11 GHz physical drive was applied. Global 8-qubit correlation (11.62%) is what four *independent* Bell pairs produce, so this circuit cannot demonstrate 20-reality selection.
+**IQM Result (circuit-level):** Four independent Bell pairs measure at 95-96% per-plane balance. ⚠️ The `rz(0.4398)` was a **virtual Z rotation** — the transpiler emitted `r` rotations; no 4.11 GHz physical drive was applied. Global 8-qubit correlation (11.62% of the requested 1024 shots; 11.71% of the 1016 shots actually returned) is what four *independent* Bell pairs produce, so this circuit cannot demonstrate 20-reality selection.
 
 **Pulse-level access is a separate entitlement from credits:** a minimal `submit_sweep` probe with a fully validated playlist was rejected by the server with `Personal account does not have pulse-level access enabled`. The client, the 82 channels, and the playlist structure were all valid — see VALIDATION.md §7.8.8.
 

@@ -24,6 +24,8 @@
       "orcid": "0000-0000-0000-0000"
     }
   ],
+  "_affiliation_unresolved": "BLOCKER: docs/HOPE-WP-2026-V1.2.md and arxiv/quantum_anchor_v1.2.tex both state the affiliation as 'Hope Ecosystem', while this record says 'Independent'. A Zenodo record is permanent and public. Pick ONE value, apply it to all three files, then delete this key. tools/check_metadata.py fails until this is resolved.",
+  "_orcid_unresolved": "BLOCKER: '0000-0000-0000-0000' is the conventional 'no ORCID' sentinel, not an identity. Replace it with a real ORCID or delete the field, then delete this key. tools/check_metadata.py fails until this is resolved.",
   "access_right": "open",
   "upload_type": "software",
   "related_identifiers": [
@@ -41,7 +43,7 @@
   "references": [
     "docs/HOPE-WP-2026-V1.2.md — White Paper with the full evidence grade table",
     "docs/VALIDATION.md — complete measurement ledger including the retracted false positive",
-    "measurement_raw/ — raw job outputs with job IDs, counts, and transpiled circuits",
+    "measurement_raw/ — raw job outputs with job IDs and counts. All 27 IBM records also carry backend properties and the transpiled circuit; the single IQM record does not, and its memory field holds only the first 10 of the returned bitstrings.",
     "CITATION.cff — formal citation metadata"
   ]
 }

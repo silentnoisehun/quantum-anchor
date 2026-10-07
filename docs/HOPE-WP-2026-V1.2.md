@@ -5,6 +5,10 @@
 **Version:** 1.2 (Tesseract Anchor)  
 **Date:** 2026-10-07  
 **Authors:** Máté Róbert, Hope Ecosystem  
+⚠️ **Unresolved before publication:** the affiliation above reads "Hope Ecosystem",
+but `.zenodo.json` and `CITATION.cff` state "Independent" for the same person.
+A Zenodo DOI is permanent, so one value must be chosen and applied to all four
+files. `tools/check_metadata.py` fails until this is settled.  
 **Status:** MEASURED, CLAIM NOT PROVEN — see §8  
 **Repositories:** `quantum-anchor` (protocol), `scs-quantum` (bridge)  
 **DOI (concept):** pending Zenodo registration
@@ -35,7 +39,7 @@ compensation.
 
 **Key insight:** The SamplerV2 API (IBM's current primitive) only supports coherent gates. It **cannot** implement dissipative noise compensation (T1/T2) that the anchor drive requires. This is why anchor drive compensation shows 0% clear on IBM hardware even at γ=0.
 
-**IQM Result:** Circuit-level `result.get_memory()` returns **classical bitstrings**, not complex IQ vectors. Four independent Bell pairs each retained 95-96% balance (per-plane). The measured `rz(0.4398)` is a **Qiskit virtual Z rotation** — a phase parameter applied in software, **not** a physical 4.11 GHz drive, and **not** `meas_level=0`. Global 8-qubit correlation was 11.62%, so the 20-reality synchronized-selection claim is **not** supported.
+**IQM Result:** Circuit-level `result.get_memory()` returns **classical bitstrings**, not complex IQ vectors. Four independent Bell pairs each retained 95-96% balance (per-plane). The measured `rz(0.4398)` is a **Qiskit virtual Z rotation** — a phase parameter applied in software, **not** a physical 4.11 GHz drive, and **not** `meas_level=0`. Global 8-qubit correlation was 11.62% of the requested 1024 shots (11.71% of the 1016 shots actually returned), so the 20-reality synchronized-selection claim is **not** supported.
 
 **Pulse-level access: DENIED (measured).** A validated Sweep API job was
 rejected with `Personal account does not have pulse-level access enabled
@@ -300,7 +304,8 @@ captured" was wrong. Full-memory capture is implemented in
 
 ### 7.4 Evaluation
 
-**Design goal (>97% global 0000+1111 balance) NOT achieved.** At 11.62% global
+**Design goal (>97% global 0000+1111 balance) NOT achieved.** At 11.62% of the
+requested 1024 shots — 11.71% of the 1016 shots actually returned — global
 correlation the four planes behave as statistically independent — which is
 exactly what four *separate* Bell pairs on separate qubits produce. This
 circuit therefore **cannot** demonstrate 20-reality synchronized selection.
@@ -421,14 +426,16 @@ Requires pulse-level access to measure the extrapolated self-annihilation time
 % Virtual Z phase: \phi = 2\pi \cdot 4.11\,\text{GHz} \cdot 37\,\text{ns}
 %   \bmod 2\pi = 0.4398\,\text{rad}   (GHz x ns is already dimensionless;
 %   no 1e-9 factor)
-% Global 8-qubit balance: 11.62% (00000000 + 11111111)
+% Global 8-qubit balance: 11.62% (00000000 + 11111111) over the requested
+% 1024 shots; 11.71% against the 1016 shots actually returned
 
 % Selection: R = |\langle \psi_{anchor} | \psi_{answer} \rangle|^2
 % R < 0.5 \to \gamma = 0.1 (strengthens then self-annihilates)
 % R \ge 0.5 \to \gamma = 0 (anchored, clear signal)
 
 % CONSEQUENCE: 4 independent Bell pairs execute correctly on Garnet
-% (depth 4). Global correlation is 11.62%, i.e. the planes behave
+% (depth 4). Global correlation is 11.62% of the requested 1024 shots
+% (11.71% of the 1016 returned), i.e. the planes behave
 % STATISTICALLY INDEPENDENTLY. The 20-reality synchronized selection is
 % NOT demonstrated. rz is a virtual rotation: no physical detuned drive
 % was applied and no analog IQ data was recorded.
@@ -484,4 +491,8 @@ See `docs/VALIDATION.md` for full measurement ledger including:
 - §7.8: IQM Garnet Tesseract measurement (this paper)
 - §10: Next steps for pulse-level validation
 
-**All raw data in `measurement_raw/` with job IDs, counts, backend properties, transpiled QASM.**
+**Raw data in `measurement_raw/` with job IDs and counts. All 27 IBM records
+additionally carry backend properties and the transpiled circuit. The IQM
+Garnet record is an exception: it stores job ID and counts, but its saving code
+did not write `backend_properties` or `transpiled_qasm`, and its `memory` field
+holds only the first 10 of the returned bitstrings.**

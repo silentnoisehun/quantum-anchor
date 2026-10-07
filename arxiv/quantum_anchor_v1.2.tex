@@ -1,9 +1,15 @@
 % Quantum Anchor V1.2: Tesseract Architecture for Coherent State Selection
 % on Superconducting QPUs
 %
-% AUTHOR METADATA NOTE: the email address below must be confirmed by the
-% author before submission, and an ORCID should be added if one exists.
-% The placeholder address is NOT a verified contact.
+% AUTHOR METADATA NOTE — TWO ITEMS NEED A HUMAN DECISION BEFORE SUBMISSION:
+%
+% 1. AFFILIATION INCONSISTENT. The \author{} line below says "Hope Ecosystem",
+%    but .zenodo.json and CITATION.cff both say "Independent" for the same
+%    person. An affiliation is an employment claim; the tool does not resolve
+%    it. Pick one value and apply it to all four files.
+% 2. ORCID. .zenodo.json and CITATION.cff carry 0000-0000-0000-0000, which is
+%    the conventional "no ORCID" sentinel, not an identity. Add a real one or
+%    delete the field. tools/check_metadata.py fails on both items.
 
 \documentclass[11pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
@@ -276,7 +282,7 @@ Anchor compensates T1/T2 & $\times$ & 0\% clear on IBM \\
 
 \section{Data Availability}
 
-All raw data in \texttt{measurement\_raw/} with job IDs, counts, backend properties, transpiled QASM. Repositories: \url{https://github.com/silentnoisehun/quantum-anchor}, \url{https://github.com/silentnoisehun/scs-quantum}.
+Raw data in \texttt{measurement\_raw/} with job IDs and counts. All 27 IBM records additionally carry backend properties and the transpiled circuit. The IQM Garnet record is an exception: it stores job ID and counts, but its saving code did not write \texttt{backend\_properties} or \texttt{transpiled\_qasm}, and its \texttt{memory} field holds only the first 10 of the returned bitstrings. Repositories: \url{https://github.com/silentnoisehun/quantum-anchor}, \url{https://github.com/silentnoisehun/scs-quantum}.
 
 \section*{Acknowledgments}
 

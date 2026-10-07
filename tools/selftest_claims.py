@@ -43,6 +43,35 @@ phase = 2 * pi * 4.11 * 37  # GHz*ns already dimensionless
 doi: omitted until Zenodo mints it
 """
 
+# Contextual rules: the same figure is a defect without its denominator and
+# acceptable with it. Both halves must be tested, or the rule is untested.
+BARE_FIGURE = """# Bare figure
+
+The global 8-qubit correlation is 11.62%, which is the headline number.
+"""
+
+QUALIFIED_FIGURE = """# Qualified figure
+
+The global correlation is 11.62% of the requested 1024 shots; against the
+1016 shots actually returned it is 11.71%.
+"""
+
+RETROACTIVE_RULE_FIXTURES = (
+    (
+        "garnet-qubit-count",
+        "The run used Garnet 20Q (free tier).\n",
+        # The scanner's negation guard reads the text BEFORE the match, so a
+        # genuinely corrected sentence has to carry its negation there. This is
+        # exactly the shape the real corrections in the docs take.
+        "The device has 19 qubits, not Garnet 20Q (free tier).\n",
+    ),
+    (
+        "gamma-zero-reachable",
+        "gamma=0 hardveren elérhető állapot.\n",
+        "It is true that gamma=0 is NOT a reachable hardware state.\n",
+    ),
+)
+
 
 def run(name: str, text: str) -> set[str]:
     with tempfile.TemporaryDirectory() as td:
@@ -89,6 +118,36 @@ def main() -> int:
         failures += 1
     else:
         print("  OK    no false positives on correctly-marked text")
+
+    print()
+    print("=== part 3: contextual rules (figure needs its denominator) ===")
+    bare = run("bare", BARE_FIGURE)
+    if "11.62-without-denominator" in bare:
+        print("  OK    flags a percentage quoted without its denominator")
+    else:
+        print(f"  FAIL  bare figure not flagged (got {sorted(bare)})")
+        failures += 1
+
+    qualified = run("qualified", QUALIFIED_FIGURE)
+    if not qualified:
+        print("  OK    silent when the denominator is stated")
+    else:
+        print(f"  FAIL  false positive on a qualified figure: {sorted(qualified)}")
+        failures += 1
+
+    print()
+    print("=== part 4: retroactive rules ===")
+    for rule, broken_text, corrected_text in RETROACTIVE_RULE_FIXTURES:
+        hit = rule in run("broken", broken_text)
+        quiet = rule not in run("corrected", corrected_text)
+        if hit and quiet:
+            print(f"  OK    {rule}: fires when asserted, silent when negated")
+        else:
+            if not hit:
+                print(f"  FAIL  {rule}: did not fire on the broken text")
+            if not quiet:
+                print(f"  FAIL  {rule}: fired on correctly-negated text")
+            failures += 1
 
     print()
     if failures:

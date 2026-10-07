@@ -446,7 +446,11 @@ A token beállítása után (`IBM_QUANTUM_API_TOKEN`, `IBM_QUANTUM_INSTANCE`, `I
 | Borg | `db2vimc2ljfc73d59c30` | `measurement_raw/borg_db2vimc2ljfc73d59c30_20261007T074854Z.json` |
 | Anchor Dynamics | `db2vis7r11fs7397i3pg` | `measurement_raw/anchor_dynamics_db2vis7r11fs7397i3pg_20261007T074908Z.json` |
 
-Minden fájl tartalmazza: `counts_raw`, `backend_properties`, `transpiled_qasm`, `job_id`, `timestamp`.
+Az IBM-fájlok mindegyike tartalmazza: `counts_raw`, `backend_properties`,
+`transpiled_qasm`, `job_id`, `timestamp`.
+
+⚠️ **Kivétel: az IQM auditfájl** nem tartalmaz `backend_properties`-t és
+`transpiled_qasm`-ot — lásd §7.8.5. A fenti mondat az IBM-rekordokra igaz.
 
 ### 8.5 Mit EZ old meg / nem old meg
 
@@ -543,7 +547,7 @@ A projekt **SCS-grade dokumentált**, de **anchor-hatás NEM hardveresen bizony�
 
 ---
 
-## 7.8 TESSERACT ANCHOR — 4 SÍK × 2 BELL-PÁR = 8 QUBIT (IQM Resonance Garnet 20Q, 2026-10-07)
+## 7.8 TESSERACT ANCHOR — 4 SÍK × 2 BELL-PÁR = 8 QUBIT (IQM Resonance Garnet 19Q, 2026-10-07)
 
 > **Státusz: ✅ MÉRÉS BEFEJEZVE** — Job ID: `01a1162c-717c-77e7-91d9-90ed16c0e591`,
 > 1024 shots kért, 4 sík (8 qubit), circuit-level API (`result.get_memory()` →
@@ -604,6 +608,7 @@ A korábbi "1024 bitstrings captured" állítás **téves** volt.
 ### 7.8.3 Értékelés
 
 **A tervezési cél (>97% globális 0000+1111 balance) NEM teljesült** — a 11.62%
+(azaz 74+45 a **kért 1024** shotból; a ténylegesen visszakapott 1016-tal 11.71%)
 pontosan az, amit **négy független Bell-pár** ad: ha a síkok egymástól
 statisztikailag függetlenek, a globális egyezés a véletlen szintje (~1/8) közelébe
 kerül. Ez a mérés tehát **nem** képes demonstrálni a 20-valóság szinkronizált
@@ -637,6 +642,21 @@ szelekcióját.
 | Tesseract 4-sík IQM | `01a1162c-717c-77e7-91d9-90ed16c0e591` | `measurement_raw/iqm_anchor_01a1162c-717c-77e7-91d9-90ed16c0e591_20261007T114508Z.json` |
 | Raw IQ plot | — | N/A (circuit-level, nincs IQ vektor) |
 
+⚠️ **Az IQM auditfájl nem tartalmaz `transpiled_qasm`-ot és nem tartalmaz
+`backend_properties`-t.** Ez NEM dokumentációs mulatság: a 2026-10-07-i IQM
+futtatás mentési kódja ezt a két blokkot nem írta ki, így a nyers rekord a
+transzpilált circuitot nem őrzi meg. A 27 IBM-fájllal szemben itt a
+transzpilált circuit **nem reprodukálható a mentett rekordból**.
+
+Ezért a §8.4 „minden fájl tartalmazza: `counts_raw`, `backend_properties`,
+`transpiled_qasm`" mondata **csak az IBM-fájlokra igaz**, és a repó-szintű
+állítások (White Paper, arXiv, Zenodo) pontosítva lettek.
+
+A javítás: `anchor_measure_iqm_final.py` most már mindkét blokkot menti
+(`transpiled_qasm`, `backend_properties`), tehát egy újabb futás már teljes
+audit trailt ad. A **jelenlegi** IQM-rekordot ez nem javítja meg — ahhoz
+új hardveres futás kell.
+
 ### 7.8.6 White Paper V1.2 Frissítés — Tesseract Appendix
 
 A `docs/HOPE-WP-2026-V1.2.md` vagy `arxiv/quantum_anchor_v1.2.tex` fájlokban:
@@ -652,7 +672,8 @@ A `docs/HOPE-WP-2026-V1.2.md` vagy `arxiv/quantum_anchor_v1.2.tex` fájlokban:
 % Plane-YZ (q6,q7): \lambda=0.08, p0=0.75, balance=96.58%
 
 % Virtual Z phase: \phi = 2\pi \cdot 4.11\,\text{GHz} \cdot 37\,\text{ns} = 0.4398\,\text{rad}
-% Global 8-qubit balance: 11.62% (00000000 + 11111111)
+% Global 8-qubit balance: 11.62% (00000000 + 11111111) over the requested
+% 1024 shots; 11.71% against the 1016 shots actually returned
 
 % Mérés: R = |\langle \psi_{anchor} | \psi_{answer} \rangle|^2
 % R < 0.5 \to \gamma = 0.1 (erősödés majd elhalás)

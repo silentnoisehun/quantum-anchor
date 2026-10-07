@@ -18,6 +18,13 @@
 # "no ORCID" sentinel. Replace it with a real one, or delete the field — do
 # not leave a fabricated identifier in place.
 #
+# The affiliation below is currently INCONSISTENT with the published documents:
+# this file and .zenodo.json say "Independent", while docs/HOPE-WP-2026-V1.2.md
+# and arxiv/quantum_anchor_v1.2.tex say "Hope Ecosystem". An affiliation is an
+# employment claim, and a Zenodo DOI is permanent and public. This is a human
+# decision; tools/check_metadata.py reports it and does not resolve it. Pick
+# one value and apply it to all four files before uploading.
+#
 # The repository URL is the intended public location. Confirm it resolves
 # before tagging a release — the sdist check and the Zenodo record depend on it.
 #

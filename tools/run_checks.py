@@ -12,6 +12,19 @@ Runs every offline check that does NOT need hardware, network, or a token:
   5. Working-tree secret leak audit (audit_secrets.py)
   6. Git-history secret leak audit (audit_git_history.py)
   7. Pure-stdlib import smoke test of the offline modules
+  8. Audit-trail completeness, measured against the actual JSON records
+  9. Audit-trail checker self-test
+ 10. Publication metadata consistency (CITATION.cff vs .zenodo.json)
+ 11. Metadata checker self-test
+ 12. IQM pulse-probe playlist shape, offline (anchor_measure_iqm.py --validate)
+ 13. IQM pulse-probe self-test (tools/selftest_pulse_probe.py)
+ 14. Pulse-probe wording (tools/check_pulse_probe_claims.py)
+
+EXPECTED FAILURE: check_metadata.py is meant to fail until a human resolves
+two publication decisions no tool is entitled to make — the author's
+affiliation (the documents disagree: "Hope Ecosystem" vs "Independent") and
+the all-zero ORCID sentinel. That failure is the correct behaviour, not a
+regression.
 
 Exit code is non-zero if ANY check fails. This is the command to run before
 tagging a release or claiming the repository is in a consistent state.
@@ -41,12 +54,26 @@ ROOT = Path(__file__).resolve().parent.parent
 CHECKS: list[tuple[str, list[str]]] = [
     ("IQM circuit validation",
      [sys.executable, "anchor_measure_iqm_final.py", "--validate"]),
+    ("IQM pulse-probe offline validation",
+     [sys.executable, "anchor_measure_iqm.py", "--validate"]),
+    ("IQM pulse-probe self-test",
+     [sys.executable, "tools/selftest_pulse_probe.py"]),
+    ("Pulse-probe wording",
+     [sys.executable, "tools/check_pulse_probe_claims.py"]),
     ("LaTeX structure",
      [sys.executable, "tools/check_tex.py"]),
     ("Claim consistency",
      [sys.executable, "tools/check_claims.py"]),
     ("Claim scanner self-test",
      [sys.executable, "tools/selftest_claims.py"]),
+    ("Audit trail completeness",
+     [sys.executable, "tools/check_audit_trail.py"]),
+    ("Audit trail self-test",
+     [sys.executable, "tools/check_audit_trail.py", "--selftest"]),
+    ("Publication metadata",
+     [sys.executable, "tools/check_metadata.py"]),
+    ("Metadata self-test",
+     [sys.executable, "tools/check_metadata.py", "--selftest"]),
     ("Working-tree secret audit",
      [sys.executable, "tools/audit_secrets.py"]),
     ("Git-history secret audit",

@@ -108,7 +108,7 @@ def virtual_z_phase(freq_ghz: float, duration_ns: float) -> float:
 
     A frekvencia GHz-ben, az idő ns-ban adott, ezért a szorzat dimenzió nélküli
     ciklusokat ad — NEM kell 1e-9-el szorozni. A korábbi `2*pi*f*37e-9` képlet
-    1.372e-7 radiánt adott, ami hibás volt.
+    9.555e-7 radiánt adott (≈0), ami hibás volt; a helyes érték 0.4398 rad.
 
     Ez EGY Z-FORGATÁSI PARAMÉTER. Nem bizonyítja, hogy 4.11 GHz-es fizikai
     drive történt.
@@ -435,7 +435,7 @@ def validate_offline(shots: int, freq_ghz: float, duration_ns: int,
     assert abs(phi - expect) < 1e-12
     print(f"[OK] fázisszámítás: 2π·{freq_ghz}·{duration_ns} = {phi:.4f} rad")
 
-    # Regressziós őr: a korábbi 37e-9 képlet 1.372e-7 rad-ot adott.
+    # Regressziós őr: a korábbi 37e-9 képlet 9.555e-7 rad-ot adott (~0), nem 0.4398.
     wrong = 2 * math.pi * freq_ghz * duration_ns * 1e-9
     assert abs(phi - wrong) > 1e-6, "a 1e-9 hiba faktor visszatért"
     print(f"[OK] regressziós őr: 1e-9-es hiba-faktor ({wrong:.3e}) nem lehet a képlet")
