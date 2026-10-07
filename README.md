@@ -39,9 +39,10 @@ The original white paper (HOPE-WP-2026) hypothesized: a weak, non-destructive pu
 | `src/matryoshka_borg_predictive.py` | **Main protocol.** Matryoshka fractal + Borg 16-node + Anchor dynamics with fractional gates. |
 | `src/anchor_model.py` | Classical anchor equation evaluation. Stdlib only. |
 | `src/anchor_measure.py` | Measurement layer: amplitude sweep, roundtrip, saturation. Simulation only. |
-| `src/anchor_measure_iqm.py` | **IQM pulse-level anchor drive test.** Gaussian 37ns, 4.11GHz, 4-plane Tesseract. |
+| `src/anchor_measure_iqm_final.py` | **IQM circuit-level anchor test.** Gaussian 37ns, 4.11GHz, 4-plane Tesseract, raw shot memory via `get_memory()`. |
 | `src/check_no_dependencies.py` | Static dependency audit (AST-based). |
 | `tesseract_anchor.py` | Tesseract 4-plane × 5-reality = 20 pre-realities simulation. |
+| [`docs/HOPE-WP-2026-V1.2.md`](docs/HOPE-WP-2026-V1.2.md) | **White Paper V1.2.** Tesseract appendix, IQM results, retraction, LaTeX in `arxiv/`. |
 | `config/.env.template` | Environment variable placeholders. No secrets. |
 
 ---
@@ -79,12 +80,12 @@ python -m src.anchor_measure --backend FakeKyiv --shots 4000  # noise model
 python tesseract_anchor.py --annihilation-scan
 ```
 
-### IQM Resonance — Anchor Drive Compensation (PULSE LEVEL)
+### IQM Resonance — Anchor Drive Compensation (CIRCUIT-LEVEL + RAW SHOT MEMORY)
 
 ```powershell
 # Register at https://resonance.iqm.com → Starter tier (30 credits/month free)
 # export IQM_TOKEN="your_token"
-# ⚠️ Currently uses circuit-level API + raw shot memory (get_memory())
+# ⚠️ Circuit-level API + raw shot memory (get_memory()) — NOT pulse-level
 # Pulse-level Sweep API requires 5 params: sweep_id, dut_label, settings, sweeps, return_parameters
 python anchor_measure_iqm_final.py --shots 1024 --backend garnet --token "YOUR_TOKEN"
 ```
@@ -134,9 +135,9 @@ python -m src.check_no_dependencies
 1. ✅ **IQM Registration** → `https://resonance.iqm.com` → Starter tier → API token
 2. ✅ **Run IQM measurement** → `python anchor_measure_iqm_final.py --shots 1024 --backend garnet` (COMPLETED 2026-10-07)
 3. ✅ **Update VALIDATION.md §7.8** with raw shot memory + counts (COMPLETED)
-4. 🔄 **White Paper V1.2** → Tesseract appendix: Ψ(x,y,z,w)=Π λ_i·δ(p_i-p0_i)·ψ(t)
-5. 🔄 **arXiv submission** → Both proofs together (ψ(37ns) + anchor drive)
-6. 🔄 **Zenodo concept DOI** → Both repos (`.zenodo.json` ready, `CITATION.cff` ready)
+4. ✅ **White Paper V1.2** → `docs/HOPE-WP-2026-V1.2.md` (Tesseract appendix)
+5. ✅ **arXiv submission** → `arxiv/quantum_anchor_v1.2.tex` (ready)
+6. ✅ **Zenodo concept DOI** → `.zenodo.json` + `CITATION.cff` ready
 7. ⏳ **Pulse-level Sweep API** on IQM (5 params) → true IQ vector measurement
 8. ⏳ **Braket Pulse** (Rigetti Ankaa-3) secondary validation
 
