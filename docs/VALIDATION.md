@@ -544,28 +544,37 @@ A projekt **SCS-grade dokumentált**, de **anchor-hatás NEM hardveresen bizony�
 | Metrika | Érték | Jelölés |
 |---|---|---|
 | **Balance (00000000 + 11111111)** | **11.62%** (74 + 45 / 1024) | ⚠️ NEM éri el a >97% célt |
-| **Per-plane Bell balance (00+11)** | Plane 0: **95.41%**, Plane 1: **96.09%**, Plane 2: **96.19%**, Plane 3: **96.58%** | 🔬 **BIZONYÍTVA (hardveres)** |
-| **Raw shot memory** | 1024 bitstring, első 10: `['00001100','00000000','11000000','11110011',...]` | 🔬 **BIZONYÍTVA (hardveres)** |
-| **Transpiled depth** | 4 (r:12, measure:8, cz:4) | — |
+| **Per-plane Bell balance (00+11)** | Plane 0: **95.41%**, Plane 1: **96.09%**, Plane 2: **96.19%**, Plane 3: **96.58%** | ✅ **BIZONYÍTVA (hardveres)** — de lásd a korlátot |
+| **Raw shot memory** | 1024 bitstring, első 10: `['00001100','00000000','11000000','11110011',...]` | ✅ **BIZONYÍTVA (hardveres)** |
+| **Transpiled depth** | 4 (r:12, measure:8, cz:4) | ℹ️ |
+
+> ⚠️ **KORLÁT, amit a mérés nem takar el:** a „virtual Z phase" itt **nem
+> fizikai detuned GHz-pulzus**, hanem egy `rz(0.4398)` **digitális** kapu,
+> amit a transzpiler `r` forgatásokra bontott. Nincs 4.11 GHz-es
+> mikrohullámú gerjesztés. A 95–96% balance tehát azt mutatja, hogy **a
+> négy Bell-pár koherens maradt egy tranzisztens-komponens-halmazban** —
+> nem azt, hogy egy detuned drive kompenzálta a T1/T2 csillapodást.
+> A valódi anchor-drive állítás a §7.8.8 szerint **pénzes/engedélykért
+> pulse-level** hozzáférést igényel.
 
 ### 7.8.3 Értékelés
 
 **A tervezési cél (>97% globális 0000+1111 balance) NEM teljesült** — az 8-qubit globális állapot eloszlásában a korreláció nem elég erős, hogy az összes 4 sík szinkronban maradjon.
 
-**HOGYANIS A TERV SZERINT MŰKÖDIK:** A **per-plane Bell balance 95-96%** azt bizonyítja, hogy:
+**Amit a mérés valóban bizonyít:**
 1. Minden síkban a Bell-pár (00/11) **koherens szuperpozíció** megmarad az evolúciós ablak alatt
-2. A virtual Z phase (0.4398 rad, 4.11 GHz detuned drive) **nem destruktív** — a síkon belüli koherencia megvan
-3. Az IQM Garnet **képes 8-qubit koherens állapotmegőrzésre** 37ns evolúciós időben
+2. A tranzisztens-komponens-halmaz 37 ns alatt **nem omlik össze**
+3. Az IQM Garnet **képes 8-qubit koherens állapotmegőrzésre**
 
-**Ez NEM pulse-level mérés** (nincs IQ vektor), hanem circuit-level raw shot memory. A pulse-level (Sweep API) 5 kötelező paramétert igényel, ami még nem stabilizált.
+**Ez NEM pulse-level mérés** — a Sweep API külön engedélyt igényel (§7.8.8).
 
 ### 7.8.4 Mit bizonyít ez (valódi eredmény)
 
-1. **✅ Tesseract 4-sík architektúra hardveresen érvényesítve** — 4 független Bell-pár szimultán megőrzése 95-96% hűséggel
-2. **✅ Virtual Z phase (detuned drive) nem destruktív** — a 4.11 GHz / 37ns phase-shift nem bontja a koherenciát
-3. **✅ IQM Garnet 19Q támogat 8-qubit koherens áramköreit** — depth 4, 12 r-kapu, 4 cz-kapu, 1024 shots
-4. **❌ Globális 8-qubit szinkronizáció (20 valóság szelekció) NEM bizonyítva** — a síkok közötti korreláció nem elég erős
-5. **❌ Pulse-level / raw IQ (meas_level=0) NEM elérhető** a jelenlegi circuit-level API-val
+1. ✅ **4 független Bell-pár szimultán megőrzése** IQM-en, 95-96% hűséggel
+2. ✅ **IQM Garnet 19Q támogat 8-qubit koherens áramkört** — depth 4, 1024 shots
+3. ❌ **Globális 8-qubit szinkronizáció** (20 valóság szelekció) NEM bizonyítva — 11.62%
+4. ❌ **Fizikai detuned anchor drive** NEM mérve — a `rz` digitális volt (§7.8.2)
+5. ❌ **Pulse-level IQ vektor** NEM elérhető — a Starter tier tiltja (§7.8.8)
 
 ### 7.8.5 Audit Trail
 
@@ -603,17 +612,70 @@ A `docs/HOPE-WP-2026-V1.2.md` vagy `arxiv/quantum_anchor_v1.2.tex` fájlokban:
 
 ### 7.8.7 Következő lépések Tesseract-hoz
 
-1. **Pulse-level Sweep API** megvalósítása IQM-en (5 paraméter: sweep_id, dut_label, settings, sweeps, return_parameters)
+> 🔬 **MÉRT TENDBER (2026-10-07): a pulse-level hozzáférés NINCS benne a
+> Starter (ingyenes) tierben.** Ez nem dokumentációs példa, hanem **mért
+> elutasítás** — lásd §7.8.8.
+
+1. **Pulse-level Sweep API** megvalósítása IQM-en — **PÉNZES TÍER SZÜKSÉGES**
 2. **Braket Pulse** (Rigetti Ankaa-3 / Cepheus) másodlagos validáció: `braket.pulse.GaussianWaveform`
 3. **IBM DD primitívek** (Dynamical Decoupling) várhatóan 2025 H2-ben — ez adja a `meas_level=0` ekvivalenst IBM-en
 4. **T_annihil mérés** (self-annihilation time ~46 ns extrapolálva) — pulse-level hozzáféréssel mérhető
 
+### 7.8.8 A pulse-level tiltás mérése — mit tudunk, mit nem
+
+A circuit-level mérés után megkérdeztük: **a jelenlegi (Starter, ingyenes)
+fiókkal használható-e a Sweep API?** Ezt mérni kellett, nem feltételezni.
+
+**A próba lépései és eredménye:**
+
+| Lépés | Eredmény |
+|---|---|
+| `submit_sweep` elérhető az SDK-ban? | ✅ Igen (`iqm-client 35.0.3`) |
+| 82 hardver-csatorna olvasható? | ✅ Igen (`get_channel_properties`) |
+| `SweepDefinition` felépíthető? | ✅ Igen — mind az 5 kötelező mező megvan |
+| Playlista szerverre küldhető? | ✅ Igen — a hiba a szerveroldalon jön |
+| **A job ELUTASÍTVA?** | ❌ **`Personal account does not have pulse-level access enabled required to submit this job`** |
+
+**Amit ez bizonyít:**
+
+1. **A kód helyes.** A `SweepDefinition` felépül, a playlisták validálnak,
+   és a kérés eljut a szerver engedélyezési rétegéig. Nem Python-hiba volt.
+2. **A korábbi „5 paraméter kell" nem blokkolt, hanem csak lassú volt.** A
+   tényleges akadály az **engedély**, nem az API-terv.
+3. **A szükséges `Playlist`/`Segment`/`Instruction` séma dokumentált:**
+
+   ```python
+   cd   = ChannelDescription(channel_config=ReadoutChannelConfig(sampling_rate=rate),
+                             controller_name="readout")
+   seg  = Segment()                       # NEM dict[str, list[Instruction]]!
+   seg.add_to_segment(cd, instruction)    # ez adja vissza az utasítás-INDEXET
+   pl   = Playlist(channel_descriptions={"PL-1__readout": cd},  # hardver-csatorna neve
+                   segments=[seg])         # a Segment kulcsa a CONTROLLER neve
+   ```
+
+   A négy elakadás, amit ez költség — mindegyik néma `TypeError` volt:
+   `Instruction` nincs importálva; a `Segment` **indexeket** kér, nem
+   objektumokat; a `probe_pulse` maga is `Instruction`, nem nyers `Wait`;
+   a `SettingNode`-nak kötelező `name` kell.
+
+**Amit ez NEM bizonyít:** hogy a fizetős tier *ingyenesen* is elérhető volna,
+vagy hogy az IQM bármi áron megéri. A tiltás explicit: **a pulse-level
+külön engedélykérés, nem pusztán kredit.**
+
+**Következmény a projekt állítására:** a §7.8 eredmény **circuit-level**, és
+az anchor drive **nem** volt ténylegesen gerjesztve egy detuned GHz-es
+fizikai pulzzal — hanem egy `rz(0.4398)` virtuális Z-forratással, amit a
+transzpiler `r` kapukká bontott. Ez lényeges korlát, ezért a
+„non-destructive detuned drive" állítás **csak digitális megfelelője**, nem
+fizikai bizonyíték.
+
 ## 10. Következő lépések (2026-10-07)
 
-1. **IQM regisztráció** → `https://resonance.iqm.com` → Starter tier → API token
-2. **Token beállítása** → `export IQM_TOKEN="..."` vagy `--token` paraméter
-3. **Futtatás** → `python anchor_measure_iqm.py --shots 1024 --backend garnet`
-4. **§7.8 kitöltése** → raw IQ plot + counts → VALIDATION.md
-5. **White Paper V1.2** → Ψ(x,y,z,w) formula + Tesseract appendix
-6. **arXiv submission** → mindkét bizonyítás egyben (ψ(37ns) + anchor drive)
-7. **Zenodo concept DOI** → mindkét repo (.zenodo.json kész, CITATION.cff kész)
+1. ✅ **IQM regisztráció** → Starter tier → API token (kész)
+2. ✅ **Circuit-level mérés** → Job `01a1162c-717c-77e7-91d9-90ed16c0e591` (kész)
+3. ✅ **§7.8 kitöltése** → per-plane balance, raw shot memory (kész)
+4. ✅ **White Paper V1.2** → Tesseract appendix (kész)
+5. ✅ **arXiv LaTeX** → `arxiv/quantum_anchor_v1.2.tex` (kész, beküldés kézi)
+6. ✅ **Zenodo metaadat** → `.zenodo.json` + `CITATION.cff` (kész, DOI mintelés kézi)
+7. ⏳ **Pulse-level Sweep** → **pénzes tier VAGY külön engedély** (mérve tiltva a §7.8.8-ban)
+8. ⏳ **Braket Pulse** (Rigetti) → alternatíva, ha az IQM nem ad engedélyt

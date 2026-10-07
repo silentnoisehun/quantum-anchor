@@ -12,10 +12,11 @@
 >   - ψ(37ns) = 0.331662 (single-qubit dynamics, γ=0 model)
 >   - Borg 16-node: 100% clear, 96.43% average balance
 >   - Matryoshka fractal D0→D8: 97.40% → 89.40% (cumulative noise, not anchor failure)
+> - **⚠️ PARTIAL** on IQM Garnet (19Q, circuit-level): 4 Bell pairs hold 95-96% coherence
 > - **❌ ANCHOR DRIVE COMPENSATION NOT PROVEN** — SamplerV2 cannot implement dissipative T1/T2 noise compensation
-> - **➡️ NEXT: IQM Resonance** (pulse-level, raw IQ, Starter 30 credits/month free)
+> - **❌ PULSE-LEVEL ACCESS BLOCKED** — IQM rejects sweeps on a free account: *"Personal account does not have pulse-level access enabled"*
 >
-> Full proof ledger: **[docs/VALIDATION.md](docs/VALIDATION.md)** (§7.7–§7.8 hardware, §9 retraction, §10 next steps)
+> Full proof ledger: **[docs/VALIDATION.md](docs/VALIDATION.md)** (§7.7–§7.8 hardware, §7.8.8 pulse-level denial, §9 retraction, §10 next steps)
 
 ---
 
@@ -95,6 +96,10 @@ python anchor_measure_iqm_final.py --shots 1024 --backend garnet --token "YOUR_T
 - Global 00000000+11111111 balance: 11.62% ❌
 - Raw shot memory: 1024 bitstrings captured
 
+⚠️ **The "virtual Z phase" is an `rz()` digital gate, not a 4.11 GHz physical drive.**
+Pulse-level Sweep API is a **paid permission** — measured rejection:
+`Personal account does not have pulse-level access enabled` (VALIDATION.md §7.8.8)
+
 ### Dependency Audit
 
 ```powershell
@@ -122,24 +127,27 @@ python -m src.check_no_dependencies
 | **ψ(37ns) single-qubit dynamics** | 0.331662 (γ=0) | 🔬 **HARDWARE PROVEN** | ibm_marrakesh, VALIDATION.md §7.7 |
 | **Borg 16-node clear signal** | 100% clear, 96.43% balance | 🔬 **HARDWARE PROVEN** | ibm_marrakesh, VALIDATION.md §8 |
 | **Matryoshka D0→D8 preservation** | 97.40% → 89.40% | ⚠️ UNVERIFIED | Cumulative noise, not anchor failure |
-| **Anchor drive compensation (Tesseract 4-plane, IQM Garnet)** | Per-plane 95-96%, Global 11.62% | 🔬 **PARTIAL** | IQM Garnet, VALIDATION.md §7.8 |
+| **Anchor drive compensation (Tesseract 4-plane, IQM Garnet)** | Per-plane 95-96%, Global 11.62% | ⚠️ PARTIAL | Circuit-level only; no physical detuned drive |
+| **Pulse-level Sweep API** | Access denied on Starter tier | ❌ BLOCKED | Measured — `Personal account does not have pulse-level access enabled` |
 
 **Key insight:** The SamplerV2 API (IBM's current primitive) only supports coherent gates. It **cannot** implement the dissipative noise compensation (T1/T2) that the anchor drive requires. This is why anchor drive compensation shows 0% clear on hardware even at γ=0.
 
-**IQM Result:** Circuit-level raw shot memory (`result.get_memory()`) achieves 95-96% per-plane Bell balance with virtual Z phase (4.11 GHz × 37 ns = 0.4398 rad). Global 8-qubit sync (11.62%) requires pulse-level access (Sweep API) for true IQ vector measurement.
+**IQM Result (circuit-level):** Four independent Bell pairs hold 95-96% coherence over a 37 ns evolution window. ⚠️ But the "virtual Z phase" was an `rz(0.4398)` **digital** gate, not a 4.11 GHz physical detuned drive — the transpiler emitted `r` rotations. Global 8-qubit sync (11.62%) is not enough for 20-reality selection.
+
+**Pulse-level access is a paid permission, not just credits:** a minimal `submit_sweep` probe with a valid playlist was rejected by the server with `Personal account does not have pulse-level access enabled`. See VALIDATION.md §7.8.8.
 
 ---
 
 ## Next Steps
 
 1. ✅ **IQM Registration** → `https://resonance.iqm.com` → Starter tier → API token
-2. ✅ **Run IQM measurement** → `python anchor_measure_iqm_final.py --shots 1024 --backend garnet` (COMPLETED 2026-10-07)
-3. ✅ **Update VALIDATION.md §7.8** with raw shot memory + counts (COMPLETED)
+2. ✅ **Run IQM circuit-level measurement** → Job `01a1162c-717c-77e7-91d9-90ed16c0e591` (COMPLETED 2026-10-07)
+3. ✅ **Update VALIDATION.md §7.8** with per-plane balance + raw shot memory (COMPLETED)
 4. ✅ **White Paper V1.2** → `docs/HOPE-WP-2026-V1.2.md` (Tesseract appendix)
 5. ✅ **arXiv submission** → `arxiv/quantum_anchor_v1.2.tex` (ready)
 6. ✅ **Zenodo concept DOI** → `.zenodo.json` + `CITATION.cff` ready
-7. ⏳ **Pulse-level Sweep API** on IQM (5 params) → true IQ vector measurement
-8. ⏳ **Braket Pulse** (Rigetti Ankaa-3) secondary validation
+7. ⚠️ **Pulse-level Sweep API** → **BLOCKED**: paid permission, not in Starter tier (MEASURED, §7.8.8). Requires: paid IQM tier, or an explicit access request from IQM.
+8. ⏳ **Braket Pulse** (Rigetti Ankaa-3) → alternative route for pulse-level, ~$0.36 / 1024 shots
 
 ---
 
