@@ -1,0 +1,25 @@
+{
+  "protocol": "anchor_dynamics",
+  "timestamp_utc": "2026-10-07T07:38:31Z",
+  "metadata": {
+    "protocol": "anchor_dynamics",
+    "duration_ns": 37,
+    "amp": 0.08,
+    "freq_ghz": 4.11,
+    "shots": 2000,
+    "backend": "local",
+    "evidence_grade": "local"
+  },
+  "results": [
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "0": 16,
+        "1": 1983
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    }
+  ]
+}

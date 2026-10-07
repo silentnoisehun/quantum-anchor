@@ -1,0 +1,56 @@
+{
+  "protocol": "matryoshka",
+  "timestamp_utc": "2026-10-07T07:36:03Z",
+  "metadata": {
+    "protocol": "matryoshka",
+    "wavepacket": {
+      "amplitude": 1.0,
+      "gamma": 0.0,
+      "frequency": 0.25,
+      "phase": 0.0
+    },
+    "depths": [
+      0,
+      4,
+      8
+    ],
+    "shots": 2000,
+    "backend": "local",
+    "evidence_grade": "local",
+    "fractional_gates": true
+  },
+  "results": [
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "00": 999,
+        "11": 999
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    },
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "00": 1000,
+        "01": 36,
+        "11": 963
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    },
+    {
+      "job_id": "local_statevector",
+      "counts": {
+        "00": 999,
+        "01": 73,
+        "11": 926
+      },
+      "transpiled_ops": {},
+      "transpiled_qasm": "ideal (no transpilation)",
+      "backend_properties": {}
+    }
+  ]
+}
