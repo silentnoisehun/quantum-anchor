@@ -1018,21 +1018,17 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 
 Minden rekord tartalmazza: `protocol`, `backend`, `job_id`, `shots`, `returned`, `phase_idx`, `phi_rad`, `interferometric`, `global_coherence_pct`, `counts`, `transpiled_ops`, `transpiled_depth`, `transpiled_qasm`.
 
-### 7.12.4 Hardveres futtatási terv (IQM Garnet 20Q, Starter tier)
+### 7.12.4 Hardveres futtatási terv és eredmények (IQM Garnet 20Q, Starter tier)
 
 | Fázis | phase_idx | $\phi$ (rad) | Job ID | Státusz |
 |---|---|---|---|---|
-| 0 | 0 | 0.000 | `01a11943-739b-7415-8719-1fa493bc9aa8` | 🔄 **QUEUE** (beküldve) |
-| 1 | 1 | 1.257 | — | ⏳ vár |
-| 2 | 2 | 2.513 | — | ⏳ vár |
-| 3 | 3 | 3.770 | — | ⏳ vár |
-| 4 | 4 | 5.027 | — | ⏳ vár |
+| 0 | 0 | 0.000 | `01a11943-739b-7415-8719-1fa493bc9aa8` | ✅ **DONE** (2026-10-08T08:45Z) |
+| 1 | 1 | 1.257 | `01a11ab7-7d8e-77c3-bc67-ae8423181204` | ✅ **DONE** (2026-10-08T08:55Z) |
+| 2 | 2 | 2.513 | `01a11aba-531f-73ae-8da7-c705c729038d` | ✅ **DONE** (2026-10-08T08:56Z) |
+| 3 | 3 | 3.770 | `01a11aba-c6d7-736a-ac56-a5c0525d2cc4` | ✅ **DONE** (2026-10-08T08:56Z) |
+| 4 | 4 | 5.027 | `01a11abb-525f-7534-a1f1-5c98b274d710` | ✅ **DONE** (2026-10-08T08:57Z) |
 
-**Parancs a sweephez (ha a queue engedi):**
-```bash
-$env:IQM_TOKEN = "<your_token_here>"
-python tesseract_v3_interferometric.py --hardware --sweep --shots 1024 --backend garnet
-```
+**5/5 fázis befejezve — sweep teljes.** Minden fázis 1024 shot, circuit-level API, H^x8 interferometrikus readout.
 
 ### 7.12.5 Várható hardveres kihívások
 
