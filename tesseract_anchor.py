@@ -9,12 +9,13 @@ BACKEND: ibm_marrakesh (156-qubit Heron), 2000 shots
 """
 
 from __future__ import annotations
+
 import argparse
 import json
 import math
 import sys
 from dataclasses import dataclass, field
-from typing import List, Optional, Tuple
+
 import numpy as np
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -56,7 +57,7 @@ class TesseractPlane:
 @dataclass
 class TesseractAnchor:
     """4 sík × 5 valóság = 20 valóság horgony"""
-    planes: List[TesseractPlane] = field(default_factory=lambda: [
+    planes: list[TesseractPlane] = field(default_factory=lambda: [
         TesseractPlane(k) for k in range(4)
     ])
     mass: float = 1.0               # effektív massa (normalizált)
@@ -99,7 +100,7 @@ class TesseractAnchor:
                 total += psi
         return total
     
-    def annihilation_time(self, threshold: float = 1e-6, t_min: float = 1e-9) -> Optional[float]:
+    def annihilation_time(self, threshold: float = 1e-6, t_min: float = 1e-9) -> float | None:
         """
         T_annihil = min{t > t_min | |Σ ψ| < threshold}
         Numerikus keresés t ∈ [t_min, 100 ns]
@@ -131,9 +132,9 @@ class AnnihilationDetector:
     """Destruktív interferencia detektálása"""
     threshold: float = 1e-6
     t_min: float = 1e-9  # skip t=0 constructive interference
-    anchor: Optional[TesseractAnchor] = None
+    anchor: TesseractAnchor | None = None
     
-    def detect(self, x: np.ndarray, t: float) -> Tuple[bool, float]:
+    def detect(self, x: np.ndarray, t: float) -> tuple[bool, float]:
         if self.anchor is None:
             return False, 0.0
         if t < self.t_min:
@@ -245,7 +246,7 @@ def main():
         print(f"Self-annihilation: {'YES' if t_annihil else 'NO (threshold not reached)'}")
         if t_annihil:
             print(f"T_annihil = {t_annihil:.2f} ns")
-            print(f"  (extrapolated from §7.7: 37 ns × 5/4 = 46.25 ns)")
+            print("  (extrapolated from §7.7: 37 ns × 5/4 = 46.25 ns)")
         
         if args.json:
             result = {
