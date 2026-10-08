@@ -50,9 +50,9 @@ The original white paper (HOPE-WP-2026) hypothesized: a weak, non-destructive pu
 | `tools/check_tex.py` | Static LaTeX structure check (environments, braces, math mode). No LaTeX toolchain needed. |
 | `tools/check_claims.py` | **Claim consistency scanner.** Catches retracted/false claims in published files. |
 | `tools/selftest_claims.py` | Claim-scanner self-test: proves it fires on defects, stays silent on fixes. |
-| `tools/check_audit_trail.py` | **MĂ©ri** a `measurement_raw/` teljessĂ©gĂ©t, Ă©s Ă¶sszeveti a dokumentumok ĂˇllĂ­tĂˇsĂˇval. |
+| `tools/check_audit_trail.py` | **Measures** `measurement_raw/` completeness, and cross-checks against document claims. |
 | `tools/check_metadata.py` | `CITATION.cff` â†” `.zenodo.json` consistency; affiliation and ORCID contradiction checks. |
-| `tools/check_pulse_probe_claims.py` | A pulse-probe script szĂ¶vegĂ©nek Ĺ‘re (nincs `--token`, nincs visszavont ĂˇllĂ­tĂˇs). |
+| `tools/check_pulse_probe_claims.py` | A pulse-probe script guard (no `--token`, no retracted claim asserted). |
 | `tools/audit_secrets.py` | Working-tree secret audit. |
 | `tools/audit_git_history.py` | Git-history secret audit. |
 | `src/check_no_dependencies.py` | Static dependency audit (AST-based). |

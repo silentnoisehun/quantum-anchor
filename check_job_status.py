@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
-"""Check IQM job status for job 01a11943-739b-7415-8719-1fa493bc9aa8"""
+"""Check IQM job status for job 01a11943-739b-7415-8719-1fa493bc9aa8
+
+Token MUST come from IQM_TOKEN environment variable — never hardcode.
+"""
 
 import os
 import sys
 
-os.environ['IQM_TOKEN'] = 'krOhHfZ/eC4E37C+GJ/IE/GdIL2s8c2C1kc6rYcFNxMBoRWK14Jw3aPsk3cAjaLM'
+if not os.getenv("IQM_TOKEN"):
+    print("[HIBA] IQM_TOKEN környezeti változó nincs beállítva.")
+    print("   A token soha ne menjen CLI argumentumként vagy fájlba.")
+    print("   PowerShell:  \$env:IQM_TOKEN = '...'")
+    sys.exit(1)
 
 try:
     from iqm.qiskit_iqm import IQMProvider
