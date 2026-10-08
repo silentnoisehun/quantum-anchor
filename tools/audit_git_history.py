@@ -28,15 +28,15 @@ PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("CREDENTIAL-ASSIGNED-LITERAL", re.compile(
         r"(?:IQM_TOKEN|IBM_QUANTUM_API_TOKEN|GITHUB_TOKEN|GH_TOKEN|"
         r"OPENAI_API_KEY|ANTHROPIC_API_KEY|BRAKET_MW_TOKEN)"
-        r"\s*[:=]\s*[\"']([^\"']{8,})[\"']", re.I)),
+        r"\s*[:=]\s*[\"']([^\"']{8,})[\"']", re.IGNORECASE)),
     ("BEARER-TOKEN", re.compile(r"Bearer\s+([A-Za-z0-9\-_.]{12,})")),
     ("CLI-TOKEN-LITERAL", re.compile(
-        r"--token\s+[\"']?([A-Za-z0-9\-]{12,})", re.I)),
+        r"--token\s+[\"']?([A-Za-z0-9\-]{12,})", re.IGNORECASE)),
 ]
 
 PLACEHOLDER = re.compile(
     r"your|placeholder|x{3,}|changeme|todo|<|>|example|dummy|redacted|"
-    r"none|null|\$\{|\$\(|%s|\{[a-z_]+\}", re.I)
+    r"none|null|\$\{|\$\(|%s|\{[a-z_]+\}", re.IGNORECASE)
 
 TEXTY = re.compile(
     r"\.(py|md|json|tex|cff|ya?ml|toml|cfg|ini|sh|ps1|txt)$")

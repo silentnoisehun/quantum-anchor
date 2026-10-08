@@ -40,7 +40,7 @@ SECRET_VARS = [
 ASSIGN_RE = re.compile(
     r"(IQM_TOKEN|IBM_QUANTUM_API_TOKEN|IQM_USER|GITHUB_TOKEN|GH_TOKEN|"
     r"OPENAI_API_KEY|ANTHROPIC_API_KEY|BRAKET_MW_TOKEN)"
-    r"\s*[:=]\s*[\"']([^\"']{6,})[\"']", re.I)
+    r"\s*[:=]\s*[\"']([^\"']{6,})[\"']", re.IGNORECASE)
 
 BEARER_RE = re.compile(r"Bearer\s+[A-Za-z0-9\-_.]{12,}")
 
@@ -66,7 +66,7 @@ _PHASE = r"phase[0-9]+"
 _VERSION = r"v[0-9]+"
 _SEGMENT = rf"(?:[a-z_]+|{_VERSION}|{_IBM_JOB}|{_IQM_JOB}|{_STAMP}|{_PHASE})"
 
-AUDIT_NAME_RE = re.compile(rf"^{_SEGMENT}(?:_{_SEGMENT})*$", re.I)
+AUDIT_NAME_RE = re.compile(rf"^{_SEGMENT}(?:_{_SEGMENT})*$", re.IGNORECASE)
 
 
 def _is_audit_filename(tok: str) -> bool:
@@ -142,7 +142,7 @@ def main() -> int:
                        ("github", "gitlab", "readthedocs", "docs.python")):
                     continue
                 # Hex-only 40/64 char strings are usually content hashes.
-                if re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", tok, re.I):
+                if re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", tok, re.IGNORECASE):
                     continue
                 # Measurement artifact filenames follow a known, benign
                 # convention: <protocol>_<jobid-or-timestamp>.json. These are

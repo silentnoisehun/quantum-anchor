@@ -120,17 +120,23 @@ def _load_iqm() -> dict[str, Any]:
     if _IQM or _IQM_IMPORT_ERROR is not None:
         return _IQM
     try:
-        from iqm.qiskit_iqm import IQMProvider
         from iqm.iqm_client import IQMClient
         from iqm.iqm_server_client.iqm_server_client import SweepDefinition
         from iqm.models.playlist import Playlist, Segment
+        from iqm.models.playlist.channel_descriptions import (
+            ChannelDescription,
+            IQChannelConfig,
+            ReadoutChannelConfig,
+        )
         from iqm.models.playlist.instructions import (
-            ComplexIntegration, Instruction, IQPulse, ReadoutTrigger, Wait,
+            ComplexIntegration,
+            Instruction,
+            IQPulse,
+            ReadoutTrigger,
+            Wait,
         )
         from iqm.models.playlist.waveforms import Samples
-        from iqm.models.playlist.channel_descriptions import (
-            ChannelDescription, IQChannelConfig, ReadoutChannelConfig,
-        )
+        from iqm.qiskit_iqm import IQMProvider
 
         _IQM.update({
             "IQMProvider": IQMProvider,
@@ -249,7 +255,7 @@ def compute_samples(duration_ns: float, sigma: float, sampling_rate: float = 2e9
 # Playlist-építés — IQM-függő
 # ---------------------------------------------------------------------------
 
-def build_anchor_playlist(client: "IQMClient", duration_ns: int = 37,
+def build_anchor_playlist(client: IQMClient, duration_ns: int = 37,
                           amp: float = 0.08, sigma: float = 0.1,
                           freq_ghz: float = 4.11, n_planes: int = 4):
     """Tesseract 4-síkos anchor drive playlist (pulse-level).
@@ -387,9 +393,7 @@ def measure_balance(counts: Any, n_qubits: int) -> tuple[float, int]:
     (0.0, 0).
     """
     merged: dict[str, int] = {}
-    if hasattr(counts, "counts"):
-        items = [counts]
-    elif isinstance(counts, dict):
+    if hasattr(counts, "counts") or isinstance(counts, dict):
         items = [counts]
     else:
         items = list(counts or [])

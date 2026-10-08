@@ -42,7 +42,7 @@ ROOT = Path(__file__).resolve().parent.parent
 TARGET = "anchor_measure_iqm.py"
 
 RETRACTION_NEAR = re.compile(
-    r"VISSZAVONVA|RETRACTED|tautol|TAUTOL|visszavonva", re.I)
+    r"VISSZAVONVA|RETRACTED|tautol|TAUTOL|visszavonva", re.IGNORECASE)
 
 
 def check() -> list[str]:
@@ -77,7 +77,7 @@ def check() -> list[str]:
             bad.append(f"{TARGET}:{i + 1}: states '100% clear' without marking "
                        f"it retracted")
 
-    if re.search(r"meas_level=0\s*(?:equivalent|ekvivalens)", src, re.I):
+    if re.search(r"meas_level=0\s*(?:equivalent|ekvivalens)", src, re.IGNORECASE):
         bad.append(f"{TARGET}: calls get_memory() a meas_level=0 equivalent; it "
                    f"returns decoded bitstrings, not an IQ vector")
 

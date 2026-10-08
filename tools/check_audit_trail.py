@@ -89,10 +89,10 @@ CLAIMING_DOCS = (
 # A claim of UNIFORMITY: every record has the field. These are the phrasings
 # that are only true if all files agree.
 UNIVERSAL_CLAIM_PATTERNS = (
-    re.compile(r"all raw data.{0,160}transpiled", re.I | re.S),
-    re.compile(r"every (?:raw )?(?:record|file|job).{0,120}transpiled_qasm", re.I | re.S),
-    re.compile(r"minden (?:fájl|rekord).{0,120}transpiled_qasm", re.I | re.S),
-    re.compile(r"mind(?:en)?(?:,)? ?(?:a )?(?:fájl|rekord)", re.I | re.S),
+    re.compile(r"all raw data.{0,160}transpiled", re.IGNORECASE | re.DOTALL),
+    re.compile(r"every (?:raw )?(?:record|file|job).{0,120}transpiled_qasm", re.IGNORECASE | re.DOTALL),
+    re.compile(r"minden (?:fájl|rekord).{0,120}transpiled_qasm", re.IGNORECASE | re.DOTALL),
+    re.compile(r"mind(?:en)?(?:,)? ?(?:a )?(?:fájl|rekord)", re.IGNORECASE | re.DOTALL),
 )
 
 
@@ -217,7 +217,7 @@ def check_document_claims(summaries: list[dict[str, object]]) -> list[str]:
                 span_end = tail_end if tail_end != -1 else len(text)
                 window = text[span_start:span_end + 400]
                 qualifier = re.compile(
-                    r"except|however|not\b|kivétel|azonban|⚠|IBM-fájlok", re.I)
+                    r"except|however|not\b|kivétel|azonban|⚠|IBM-fájlok", re.IGNORECASE)
                 if qualifier.search(window):
                     continue
                 findings.append(

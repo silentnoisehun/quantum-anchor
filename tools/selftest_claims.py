@@ -21,7 +21,7 @@ import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import check_claims as cc  # noqa: E402
+import check_claims as cc
 
 BROKEN = """# Broken fixture
 
