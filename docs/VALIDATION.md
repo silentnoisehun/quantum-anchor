@@ -733,9 +733,10 @@ módosítja.
 | Négysoros kontrollmátrix #2 | `01a11808`, `01a11808` | `iqm_control_matrix_01a11808_01a11808_01a11808_01a11808_20261007T202323Z.json` | ✅ |
 | Négysoros kontrollmátrix #3 | `01a11818`, `01a11819` | `iqm_control_matrix_01a11818_01a11819_01a11819_01a11819_20261007T204127Z.json` | ✅ |
 
-Minden rekord tartalmazza: `backend_properties` (qubit-szám, natív gate-ek,
-target paraméterek), `transpiled_qasm` (teljes transzpilált circuit),
-`memory` (1024 shot, teljes), `seed_requested: 42`, `seed_applied: false`,
+A három kontrollmátrix-futás rekordja **mindegyike** tartalmazza:
+`backend_properties` (qubit-szám, natív gate-ek, target paraméterek),
+`transpiled_qasm` (teljes transzpilált circuit), `memory` (1024 shot, teljes),
+`seed_requested: 42`, `seed_applied: false`,
 `global_balance_ci95_pct` (Wilson 95%-os intervallum), és
 `mean_plane_balance_ci95_pct` (síkonkénti Wilson-intervallum).
 
@@ -1016,7 +1017,7 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 | Tesseract-V3 phase 3 | `01a11aba-c6d7-736a-ac56-a5c0525d2cc4` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11aba_phase3_20261008T085652Z.json` |
 | Tesseract-V3 phase 4 | `01a11abb-525f-7534-a1f1-5c98b274d710` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11abb_phase4_20261008T085727Z.json` |
 
-Minden rekord tartalmazza: `protocol`, `backend`, `job_id`, `shots`, `returned`, `phase_idx`, `phi_rad`, `interferometric`, `global_coherence_pct`, `counts`, `transpiled_ops`, `transpiled_depth`, `transpiled_qasm`.
+A 5 Tesseract-V3 fázis rekordja **mindegyike** tartalmazza: `protocol`, `backend`, `job_id`, `shots`, `returned`, `phase_idx`, `phi_rad`, `interferometric`, `global_coherence_pct`, `counts`, `transpiled_ops`, `transpiled_depth`, `transpiled_qasm`.
 
 ### 7.12.4 Hardveres futtatási terv és eredmények (IQM Garnet 20Q, Starter tier)
 

@@ -57,10 +57,14 @@ TOKEN_CHARS = re.compile(r"^[A-Za-z0-9_\-]{16,}$")
 # Artifacts combine them into filenames:
 #   matryoshka_db2viifr11fs7397i3e0_20261007T074831Z.json
 #   iqm_anchor_01a1162c-717c-...-90ed16c0e591_20261007T114508Z.json
+#   iqm_tesseract_v3_interferometric_01a11abb_phase4_20261008T085727Z.json
 _IBM_JOB = r"db2[0-9a-z]{17}"
 _IQM_JOB = r"[0-9a-f]{8}(?:-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})?"
 _STAMP = r"[0-9]{8}t[0-9]{6}z"
-_SEGMENT = rf"(?:[a-z_]+|v[0-9]+|{_IBM_JOB}|{_IQM_JOB}|{_STAMP})"
+# Also handle "phase{N}" and "v{N}" segments in Tesseract artifact names
+_PHASE = r"phase[0-9]+"
+_VERSION = r"v[0-9]+"
+_SEGMENT = rf"(?:[a-z_]+|{_VERSION}|{_IBM_JOB}|{_IQM_JOB}|{_STAMP}|{_PHASE})"
 
 AUDIT_NAME_RE = re.compile(rf"^{_SEGMENT}(?:_{_SEGMENT})*$", re.I)
 
