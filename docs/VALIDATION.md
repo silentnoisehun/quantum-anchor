@@ -1068,5 +1068,7 @@ A 5 Tesseract-V3 fázis rekordja **mindegyike** tartalmazza: `protocol`, `backen
 9. ✅ **Tesseract-V3 5-fázis Interferometrikus Sweep** → 5/5 fázis befejezve (2026-10-08) — **zaj dominál, NINCS megkülönböztetés, cos(8φ) görbe elutasítva p<0.0001, flat p=0.7392** (kész)
 10. ⏳ **Pulse-level Sweep** → **pénzes tier VAGY külön engedély** (mérve tiltva a §7.8.8-ban)
 11. ⏳ **Braket Pulse** (Rigetti) → alternatíva, ha az IQM nem ad engedélyt
-12. 📝 **README.md** → V3 eredmények hozzáadása az Evidence Grades táblázathoz
-13. 📝 **v1.2.2 tag + GitHub Release** → a V3 dokumentációval kiegészített állapot
+12. ✅ **README.md** → V3 eredmények az Evidence Grades táblázatban ÉS a „STATUS — Read before citing" fejlécben (kész 2026-10-08: a fejléc V1.2-t hirdetett, miközben a törzs már V3-at tartalmazott)
+13. ✅ **Verzió-metaadat → v1.2.4** → `CITATION.cff` + `.zenodo.json`: title, abstract/description (V2 83.01% + V3 negatív), `version: 1.2.4`, `date-released: 2026-10-08` (kész, feltöltés kézi)
+14. 📝 **v1.2.4 tag + GitHub Release** → a white paper és az arXiv forrás is megkapja a V2/V3-at
+15. ✅ **White paper + arXiv .tex** → §7.2 (V2/V3), §8 táblázat, STATUS blokk, abstract, `\date` (kész 2026-10-08)

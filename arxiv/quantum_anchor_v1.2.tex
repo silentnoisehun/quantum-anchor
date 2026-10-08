@@ -17,13 +17,13 @@
 
 \title{Quantum Anchor V1.2: Tesseract Architecture for Coherent State Selection on Superconducting QPUs}
 \author{M\'at\'e R\'obert\\Hope Ecosystem}
-\date{2026-10-07}
+\date{2026-10-08}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-We present Quantum Anchor V1.2 (Tesseract Anchor), a post-pulse experimental protocol for coherent state anchoring on superconducting quantum processors. The original pulse-level protocol (\texttt{qiskit.pulse}, \texttt{meas\_level=0}) was deprecated by IBM in 2025. V1.2 migrates to working APIs and reports evidence grades honestly. We report hardware measurements on IBM \texttt{ibm\_marrakesh} (156Q Heron r2) and on IQM Resonance Garnet 20Q. On IBM we measure single-qubit dynamics $\psi(37\text{ns}) = 0.331662$ under a $\gamma=0$ model, and we show that both the $\gamma=0$ baseline (89.72\% balance) and the $\gamma=0.5$ anchor-on condition (87.74\%) yield \textbf{0\% clear}. On IQM we measure four independent Bell pairs at 95--96\% per-plane balance using a virtual Z rotation of $0.4398$ rad. We \textbf{retract} an earlier positive result that we show to be a circuit tautology. The global 8-qubit correlation was 11.62\%, consistent with statistically independent planes, so the 20-reality synchronized-selection claim is \textbf{not demonstrated}. The physical anchor-drive compensation effect is \textbf{not proven by any measurement in this work}; pulse-level access required to test it was measured to be unavailable on our IQM account tier.
+We present Quantum Anchor V1.2.4 (Tesseract Anchor), a post-pulse experimental protocol for coherent state anchoring on superconducting quantum processors. The original pulse-level protocol (\texttt{qiskit.pulse}, \texttt{meas\_level=0}) was deprecated by IBM in 2025. V1.2.4 migrates to working APIs and reports evidence grades honestly. We report hardware measurements on IBM \texttt{ibm\_marrakesh} (156Q Heron r2) and on IQM Resonance Garnet 20Q. On IBM we measure single-qubit dynamics $\psi(37\text{ns}) = 0.331662$ under a $\gamma=0$ model, and we show that both the $\gamma=0$ baseline (89.72\% balance) and the $\gamma=0.5$ anchor-on condition (87.74\%) yield \textbf{0\% clear}. On IQM we measure four independent Bell pairs at 95--96\% per-plane balance using a virtual Z rotation of $0.4398$ rad, and an inter-plane entangling backbone (Tesseract-V2) reaching \textbf{83.01\%} global 8-qubit GHZ coherence, Wilson CI [80.59, 85.18]\% against V1's [9.80, 13.73]\% --- non-overlapping, which establishes that plane coupling works. We then test whether the readout can resolve relative phase at all (Tesseract-V3): an $H^{\otimes 8}$ interferometric readout does so in simulation, where the Z-basis readout is provably blind, but on hardware the five-phase sweep is \textbf{noise-dominated} --- goodness-of-fit rejects the theoretical $\cos(8\phi)$ curve ($\chi^2=30.72$, df 4, $p<0.0001$) and cannot reject a flat response ($\chi^2=1.98$, df 4, $p=0.7392$), so the modulation is \textbf{not established} and the five phases are not distinguishable. We \textbf{retract} an earlier positive result that we show to be a circuit tautology. The global 8-qubit correlation was 11.62\%, consistent with statistically independent planes, so the 20-reality synchronized-selection claim is \textbf{not demonstrated}. The physical anchor-drive compensation effect is \textbf{not proven by any measurement in this work}; pulse-level access required to test it was measured to be unavailable on our IQM account tier.
 \end{abstract}
 
 \section{Introduction}
@@ -36,6 +36,7 @@ This paper documents:
 \item Migration to working APIs: fractional gates + \texttt{qiskit-dynamics} (IBM), circuit-level + raw shot memory (IQM)
 \item Hardware measurements with honest evidence grades
 \item Tesseract architecture: 4 planes $\times$ 5 realities = 20 pre-realities
+\item Tesseract-V2 inter-plane coupling (83.01\% global coherence) and Tesseract-V3 interferometric phase readout (noise-dominated, not established)
 \item Retraction of a tautological false positive
 \end{enumerate}
 
@@ -75,7 +76,7 @@ Different grades are never conflated.
 \subsection{Protocol}
 \texttt{matryoshka\_borg\_predictive.py} uses fractional gates + dynamics simulation on IBM Heron.
 
-\subsection{Hardware Results (2026-10-06, 2000 shots)}
+\subsection{Hardware Results (IBM 2026-10-06, 2000 shots; IQM 2026-10-08)}
 
 \begin{table}[h]
 \centering
@@ -207,9 +208,69 @@ Plane 1 (q2,q3) Bell balance & 96.09\% & $\mathfrak{H}$ \\
 Plane 2 (q4,q5) Bell balance & 96.19\% & $\mathfrak{H}$ \\
 Plane 3 (q6,q7) Bell balance & 96.58\% & $\mathfrak{H}$ \\
 Global $00000000 + 11111111$ & 11.62\% & $\times$ \\
+\midrule
+Tesseract-V2 global GHZ coherence & 83.01\% (850/1024) & $\mathfrak{H}$ \\
+Tesseract-V2 Wilson 95\% CI & [80.59, 85.18]\% & $\mathfrak{H}$ \\
+Tesseract-V3 5-phase global coherence & 0.20--1.37\% & $\triangle$ \\
+$\chi^2$ fit: theoretical $\cos(8\phi)$ & 30.72 (df 4), $p<0.0001$ & $\times$ \\
+$\chi^2$ fit: flat / no modulation & 1.98 (df 4), $p=0.7392$ & $\times$ \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\subsection{Tesseract-V2: inter-plane coupling (2026-10-08)}
+
+An inter-plane entangling backbone ($q0\!\leftrightarrow\!q2\!\leftrightarrow\!q4\!\leftrightarrow\!q6$)
+plus per-plane extension produces an entangled 8-qubit GHZ state with
+\textbf{83.01\%} global coherence on Garnet 20Q (850/1024), Wilson CI
+[80.59\%, 85.18\%], against V1's [9.80\%, 13.73\%] --- non-overlapping. This is
+the first measurement in which the planes are not statistically independent.
+
+\textbf{Interpretation.} This establishes that \textbf{plane coupling works}. It
+does \emph{not} demonstrate 20-reality synchronized selection, which was not
+measured.
+
+\subsection{Tesseract-V3: interferometric phase readout (2026-10-08)}
+
+The V1/V2 readout is Z-basis, and an 8-qubit GHZ state is \emph{blind} to
+relative phase there: $P(0^8)=P(1^8)=1/2$ for every $\phi$, so the five
+phase-realities are indistinguishable by construction. V3 inserts $H^{\otimes 8}$
+before readout, giving $P(0^8)=P(1^8)=(1/128)(1+\cos 8\phi)$, which does vary
+with $\phi$. In simulation this works; on hardware the signal did not survive.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ccccc}
+\toprule
+phase\_idx & $\phi$ (rad) & theory & measured & Wilson 95\% CI \\
+\midrule
+0 & 0.0000 & 3.125\% & 1.27\% & [0.74, 2.16] \\
+1 & 1.2566 & 1.078\% & 0.29\% & [0.10, 0.86] \\
+2 & 2.5133 & 0.375\% & 0.20\% & [0.05, 0.71] \\
+3 & 3.7699 & 0.375\% & 1.37\% & [0.82, 2.28] \\
+4 & 5.0265 & 1.078\% & 0.29\% & [0.10, 0.86] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Interpretation.} Global coherence measured 0.2--1.4\%, with the hardware
+noise floor \textbf{above} the predicted signal (0.3--3.1\%). Goodness-of-fit
+\textbf{rejects} the theoretical $\cos(8\phi)$ curve ($\chi^2=30.72$, df 4,
+$p<0.0001$) and \textbf{cannot reject} a flat, unmodulated response
+($\chi^2=1.98$, df 4, $p=0.7392$).
+
+\textbf{The $\cos(8\phi)$ modulation is NOT established on hardware.} The five
+phases are not statistically distinguishable at 1024 shots per phase. The
+measured ordering also does not follow theory: phase 3 should be among the
+lowest (0.375\%) and measured highest (1.37\%), while phase 0 should be highest
+(3.125\%) and measured 1.27\%.
+
+The $R^2=0.85$ of the $\cos(8\phi)$ fit is \emph{not} evidence of modulation: the
+fitted amplitudes are $A=0.678$, $B=0.717$, $C=0.684$ --- effectively flat. $R^2$
+is high only because five noisy points are fitted with three parameters. The
+$\chi^2$ test is the one that decides this, and it rejects the curve.
+
+Full job IDs and raw counts: VALIDATION.md $\S$7.12.
 
 \paragraph{Count discrepancy.} 1024 shots were requested but the returned
 counts sum to 1016. The tabulated percentages use a 1024 denominator; with the

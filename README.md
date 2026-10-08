@@ -2,25 +2,27 @@
 
 **Post-pulse experimental protocol for coherent state anchoring on superconducting QPUs.**
 
-> ## âš ď¸Ź STATUS â€” Read before citing
+> ## ⚠️ STATUS — Read before citing
 >
-> This repository documents the **Quantum Anchor V1.2 (Tesseract Anchor)** protocol.
-> The original pulse-level protocol (`qiskit.pulse`, `meas_level=0`) was **deprecated by IBM in 2024, removed Feb 2025** (F1â€“F2 in VALIDATION.md).
+> This repository documents the **Quantum Anchor V1.2.4 (Tesseract Anchor)** protocol. The measurement ladder is currently at the **Tesseract-V3 interferometric readout** stage.
+> The original pulse-level protocol (`qiskit.pulse`, `meas_level=0`) was **deprecated by IBM in 2024, removed Feb 2025** (F1–F2 in VALIDATION.md).
 >
-> **V1.2 migrates to Heron fractional gates + qiskit-dynamics.** Measured results, including the negative ones:
-> - **đź”¬ HARDWARE MEASURED** on `ibm_marrakesh` (156Q Heron r2, 2000 shots):
+> **Measured results, newest first — including the negative ones:**
+> - **❌ TESSERACT-V3 5-PHASE HARDWARE SWEEP — NOT PROVEN** (2026-10-08) — 5/5 phases on IQM Garnet 20Q, 1024 shots/phase. Global coherence 0.2–1.4%. Goodness-of-fit **rejects** the theoretical cos(8φ) curve (χ²=30.72, df=4, p<0.0001) and **cannot reject** a flat response (χ²=1.98, df=4, p=0.7392). Hardware noise sits **above** the predicted signal (0.3–3.1%). **The five phases are not statistically distinguishable.**
+> - **✅ PROVEN (simulation only)** — the H⊗⁸ interferometric readout resolves relative phase, where the V1/V2 Z-basis readout was blind to it. No hardware confirmation.
+> - **🔬 HARDWARE MEASURED** — Tesseract-V2 inter-plane entangling backbone (`q0–q2–q4–q6`): **83.01%** global 8-qubit GHZ coherence (850/1024), Wilson CI [80.59%, 85.18%] vs V1 [9.80%, 13.73%] — non-overlapping. **Plane coupling works.** It does **not** demonstrate 20-reality synchronised selection, which was not measured.
+> - **🔬 HARDWARE MEASURED** on `ibm_marrakesh` (156Q Heron r2, 2000 shots):
 >   - Ď(37ns) = 0.331662 (single-qubit dynamics, Îł=0 model)
->   - Borg Îł=0 corrected baseline: 89.72% balance, **0% clear**
->   - Borg Îł=0.5 anchor ON: 87.74% balance, **0% clear**
-> - **âš ď¸Ź RETRACTED**: an earlier "100% clear" Borg reading was a circuit tautology, not evidence (Â§9)
-> - **đź”¬ HARDWARE MEASURED** on IQM Garnet (20Q, circuit-level): 4 Bell pairs at 96â€“98% per-plane balance, three independent runs
-> - **âťŚ ANCHOR DRIVE COMPENSATION NOT PROVEN** â€” both anchor-on and anchor-off give 0% clear on IBM; SamplerV2 cannot implement dissipative T1/T2 compensation
-> - **âťŚ 20-REALITY SYNC NOT SHOWN** â€” global 8-qubit correlation is 11.62%, consistent with independent planes
-> - **âťŚ PULSE-LEVEL ACCESS BLOCKED** â€” IQM rejects sweeps on a free account: *"Personal account does not have pulse-level access enabled"*
+>   - Borg γ=0 corrected baseline: 89.72% balance, **0% clear**
+>   - Borg γ=0.5 anchor ON: 87.74% balance, **0% clear**
+> - **🔴 RETRACTED** — an earlier "100% clear" Borg reading was a circuit tautology, not evidence (§9)
+> - **❌ ANCHOR DRIVE COMPENSATION NOT PROVEN** — both anchor-on and anchor-off give 0% clear on IBM; SamplerV2 cannot implement dissipative T1/T2 compensation
+> - **❌ 20-REALITY SYNC NOT SHOWN** — V1 global 8-qubit correlation 11.62%, consistent with four independent planes
+> - **❌ PULSE-LEVEL ACCESS BLOCKED** — IQM rejects sweeps on a Starter account: *"Personal account does not have pulse-level access enabled"* (§7.8.8)
 >
-> **The central claim â€” that a weak drive compensates T1/T2 dissipation â€” is not proven by any measurement here.**
+> **The central claim — that a weak drive compensates T1/T2 dissipation — is not proven by any measurement here.**
 >
-> Full proof ledger: **[docs/VALIDATION.md](docs/VALIDATION.md)** (Â§7.7â€“Â§7.8 hardware, Â§7.9â€“Â§7.10 IQM control matrix (3 runs), Â§7.8.8 pulse-level denial, Â§9 retraction, Â§10 next steps)
+> Full proof ledger: **[docs/VALIDATION.md](docs/VALIDATION.md)** (§7.7–§7.8 Heron hardware, §7.9–§7.10 IQM control matrix, §7.11 Tesseract-V2, §7.12 Tesseract-V3 5-phase sweep, §7.8.8 pulse-level denial, §9 retraction, §10 next steps)
 
 ---
 
@@ -242,7 +244,10 @@ access this account actually has.
 8. âś… **Tesseract-V3 5-phase Interferometric Sweep** â†’ 5/5 phases complete (2026-10-08) â€” **NOISE-DOMINATED, no phase discrimination, cos(8Ď†) rejected p<0.0001, flat p=0.739** (COMPLETED)
 9. âťŚ **Pulse-level Sweep API** â†’ **BLOCKED** by account entitlement (MEASURED, Â§7.8.8)
 10. â„ąď¸Ź **Paid QPU routes** (Braket / Rigetti Ankaa-3) â†’ documented, deliberately not pursued
-11. 📝 **v1.2.2 tag + GitHub Release** → the V3 documented state (READY)
+11. ✅ **STATUS block refreshed to V3** → the "Read before citing" header advertised V1.2 while the body already carried V2/V3 (COMPLETED 2026-10-08)
+12. ✅ **Version metadata → v1.2.4** → `CITATION.cff` + `.zenodo.json` now carry the V2 83.01% and the V3 noise-dominated negative result (COMPLETED 2026-10-08; upload is manual)
+13. 📝 **v1.2.3 has a tag but no release** — superseded by v1.2.4
+14. 📝 **v1.2.4 tag + GitHub Release** → V2/V3 propagated to the white paper and arXiv source
 
 ---
 

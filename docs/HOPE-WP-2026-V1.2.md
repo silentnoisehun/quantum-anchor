@@ -13,11 +13,11 @@
 
 ## ⚠️ STATUS — Read Before Citing
 
-This paper documents the **Quantum Anchor V1.2 (Tesseract Anchor)** protocol.
+This paper documents the **Quantum Anchor V1.2.4 (Tesseract Anchor)** protocol, at the **Tesseract-V3 interferometric readout** stage.
 
 The original pulse-level protocol (`qiskit.pulse`, `meas_level=0`) was **deprecated by IBM in 2024, removed Feb 2025** (Blockers F1–F2 in `docs/VALIDATION.md`).
 
-**V1.2 migrates to working APIs and reports evidence grades honestly:**
+**V1.2.4 migrates to working APIs and reports evidence grades honestly:**
 
 | Test | Result | Grade | Platform |
 |---|---|---|---|
@@ -27,11 +27,15 @@ The original pulse-level protocol (`qiskit.pulse`, `meas_level=0`) was **depreca
 | **Borg γ=0 corrected baseline** | 89.72% balance, 0% clear | 🔬 **HARDWARE MEASURED** | IBM `ibm_marrakesh` |
 | **Borg γ=0.5 anchor ON** | 87.74% balance, 0% clear | 🔬 **HARDWARE MEASURED** | IBM `ibm_marrakesh` |
 | **Tesseract 4-plane (IQM Garnet)** | Per-plane 95-96%, Global 11.62% | 🔬 **HARDWARE MEASURED** | IQM Resonance Garnet 20Q |
+| **Tesseract-V2 inter-plane backbone** | **83.01%** global 8-qubit GHZ, CI [80.59, 85.18] vs V1 [9.80, 13.73] | 🔬 **HARDWARE MEASURED** | IQM Resonance Garnet 20Q |
+| **Tesseract-V3 5-phase interferometric sweep** | 0.2-1.4%; χ² rejects cos(8φ) p<0.0001, flat p=0.739 | ❌ **NOT PROVEN** | IQM Resonance Garnet 20Q |
 
 **The central claim — that a weak drive can compensate T1/T2 dissipation — is
 NOT proven by any measurement in this paper.** The two anchor-on/off rows above
-both yield 0% clear. The IQM row shows clean Bell-pair execution, not anchor
-compensation.
+both yield 0% clear. The IQM rows show clean Bell-pair execution and working
+plane coupling, not anchor compensation. The V3 five-phase sweep is
+noise-dominated: the five phase-realities are **not** statistically
+distinguishable at 1024 shots per phase.
 
 **Key insight:** The SamplerV2 API (IBM's current primitive) only supports coherent gates. It **cannot** implement dissipative noise compensation (T1/T2) that the anchor drive requires. This is why anchor drive compensation shows 0% clear on IBM hardware even at γ=0.
 
@@ -326,6 +330,55 @@ contribution cannot be separated from the Bell circuit's natural quality.
 
 ---
 
+### 7.2 Tesseract-V2 and V3 — the measurements that followed
+
+Both were run on IQM Resonance Garnet 20Q on **2026-10-08**, after the first Garnet job.
+
+**Tesseract-V2 — inter-plane coupling.** An inter-plane entangling backbone
+(`q0–q2–q4–q6`) plus per-plane extension produces an entangled 8-qubit GHZ
+state with **83.01%** global coherence (850/1024), Wilson CI [80.59%, 85.18%],
+against V1's [9.80%, 13.73%] — **non-overlapping**. This is the first
+measurement in which the planes are not statistically independent.
+
+> ✅ **This establishes that plane coupling works.** It does **not** demonstrate
+> 20-reality synchronized selection, which was not measured.
+
+**Tesseract-V3 — can the readout see phase at all?** The V1/V2 readout is
+Z-basis, and an 8-qubit GHZ state is *blind* to relative phase there:
+`P(0⁸) = P(1⁸) = 1/2` for every φ, so the five phase-realities are
+indistinguishable by construction. V3 inserts `H^⊗⁸` before readout, giving
+`P(0⁸) = P(1⁸) = (1/128)(1 + cos 8φ)`, which does vary with φ. In **simulation**
+this works: V2 returns 100% at every phase, V3 returns
+1.76 / 0.15 / 0.83 / 1.17 / 0.24 %.
+
+On hardware the signal did not survive. Global coherence measured 0.2–1.4%,
+with the noise floor **above** the predicted signal (0.3–3.1%):
+
+| phase_idx | φ (rad) | theory P(0⁸)+P(1⁸) | measured | Wilson 95% CI |
+|---|---|---|---|---|
+| 0 | 0.000 | 3.125% | 1.27% | [0.74, 2.16] |
+| 1 | 1.257 | 1.078% | 0.29% | [0.10, 0.86] |
+| 2 | 2.513 | 0.375% | 0.20% | [0.05, 0.71] |
+| 3 | 3.770 | 0.375% | 1.37% | [0.82, 2.28] |
+| 4 | 5.027 | 1.078% | 0.29% | [0.10, 0.86] |
+
+Goodness-of-fit settles it: the theoretical cos(8φ) curve is **rejected**
+(χ² = 30.72, df = 4, p < 0.0001), while a **flat, unmodulated response cannot
+be rejected** (χ² = 1.98, df = 4, p = 0.7392).
+
+> ❌ **The cos(8φ) modulation is NOT established on hardware.** The five phases
+> are not statistically distinguishable at 1024 shots/phase. The measured
+> ordering also does not follow theory: phase 3 should be among the lowest
+> (0.375%) and measured highest (1.37%), while phase 0 should be highest
+> (3.125%) and measured 1.27%.
+
+The R² = 0.85 of the cos(8φ) fit is **not** evidence of modulation: the fitted
+amplitudes are A = 0.678, B = 0.717, C = 0.684 — effectively flat. R² is high
+only because five noisy points are being fitted with three parameters. The χ²
+test is the one that decides this, and it rejects the curve.
+
+Full records, job IDs and raw counts: VALIDATION.md §7.12.
+
 ## 8. What This Proves / Does Not Prove
 
 | Claim | Status | Evidence |
@@ -333,7 +386,9 @@ contribution cannot be separated from the Bell circuit's natural quality.
 | 4 Bell pairs execute on Garnet at depth 4 | 🔬 HARDWARE | Per-plane 95-96% balance |
 | Virtual Z rotation does not break a Bell pair | 🔬 HARDWARE (weak) | Same circuit, rz present |
 | IQM Garnet 8-qubit circuit execution | 🔬 HARDWARE | Depth 4, transpiled OK |
-| `rz(φ)` has a distinct measurable effect | ⚠️ UNVERIFIED | No rz-free control row in this run |
+| `rz(φ)` has a distinct measurable effect | ❌ NOT SHOWN | rz-free Bell control measured: +0.5 pp, within 95% CI |
+| Plane coupling (Tesseract-V2 backbone) | 🔬 HARDWARE | 83.01% global 8-qubit GHZ, CI [80.59, 85.18] vs V1 [9.80, 13.73] |
+| cos(8φ) phase discrimination (V3 sweep) | ❌ NOT PROVEN | Noise-dominated; χ² rejects cos(8φ) p<0.0001, flat p=0.739 |
 | Global 20-reality sync | ❌ NOT SHOWN | 11.62% global balance |
 | Pulse-level IQ vector | ❌ NOT OBTAINED | Circuit-level only |
 | Physical detuned drive applied | ❌ NOT MEASURED | `rz` is a virtual rotation |
