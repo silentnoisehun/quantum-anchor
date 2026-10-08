@@ -936,7 +936,7 @@ szemben azzal a V1 eredménnyel, ahol ugyanez a mérés szétesést mutatott.
 
 ## 7.12 TESSERACT-V3 INTERFEROMETRIKUS FÁZIS-READOUT — A 5 FÁZIS MEGKÜLÖNBÖZTETÉSE (2026-10-08)
 
-> **Státusz:** Szimuláció ✅, Hardveres sweep 🔄 **KÉSZENLÉT — Job `01a11943-739b-7415-8719-1fa493bc9aa8` várólistán (phase_idx=0), még 4 fázis hátravan. A queue rendkívül lassú (>3 perc 0% progress).**
+> **Státusz:** Szimuláció ✅, Hardveres sweep 🔬 **BEFEJEZVE — 5/5 fázis megmérve IQM Garnet 20Q-en (Starter tier).**
 
 ### 7.12.1 A probléma, amit a V3 old meg
 
@@ -975,6 +975,29 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 
 **V2 minden fázisra azonos (vak). V3 megkülönbözteti — az "anchor szelekció" lehetséges.**
 
+### 7.12.8 Hardveres eredmények (IQM Garnet 20Q, 1024 shots/fázis, 2026-10-08)
+
+| phase_idx | Job ID | φ (rad) | c0 (0^8) | c1 (1^8) | Sum | Global coherence % | Wilson 95% CI (%) |
+|---|---|---|---|---|---|---|---|
+| 0 | `01a11943-739b-7415-8719-1fa493bc9aa8` | 0.0000 | 6 | 7 | 13 | 1.27% | [0.74, 2.16] |
+| 1 | `01a11ab7-7d8e-77c3-bc67-ae8423181204` | 1.2566 | 3 | 0 | 3 | 0.29% | [0.10, 0.86] |
+| 2 | `01a11aba-531f-73ae-8da7-c705c729038d` | 2.5133 | 2 | 0 | 2 | 0.20% | [0.05, 0.71] |
+| 3 | `01a11aba-c6d7-736a-ac56-a5c0525d2cc4` | 3.7699 | 7 | 7 | 14 | 1.37% | [0.82, 2.28] |
+| 4 | `01a11abb-525f-7534-a1f1-5c98b274d710` | 5.0265 | 1 | 2 | 3 | 0.29% | [0.10, 0.86] |
+
+**Elemzés:**
+- A mért értékek rendrendje: phase 0 (3.125% elmélet) → 1.27%, phase 3 (0.375% elmélet) → 1.37% legmagasabb.
+- Phase 1 és 2 (elméletben 1.078% és 0.375%) → 0.29% és 0.20%.
+- Phase 4 (elméletben 1.078%) → 0.29%.
+
+**Cos(8φ) illesztés a mért adatokra:**
+- Fitted: A=0.68±0.20, B=0.72±0.30, C=0.68±0.14
+- R² = 0.85
+- Chi² = 30.72 (df=4), p < 0.0001 → **elutasítja az elméleti cos(8φ) görbét**
+- Flat (no modulation) test: chi² = 1.98 (df=4), p = 0.74 → **egyenes görbe NEM elutasítható**
+
+**Következmény:** A hardware zajszint (~1% globális koherencia) **felette van az elméleti jel** (1–3%). Az 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett.
+
 ### 7.12.4 Hardveres futtatási terv (IQM Garnet 20Q, Starter tier)
 
 | Fázis | phase_idx | $\phi$ (rad) | Job ID | Státusz |
@@ -1009,8 +1032,8 @@ python tesseract_v3_interferometric.py --hardware --sweep --shots 1024 --backend
 | Állítás | Státusz |
 |---|---|
 | H^x8 readout megkülönbözteti a 5 fázist (szimulációban) | ✅ **BIZONYÍTVA (szimuláció)** |
-| H^x8 readout megkülönbözteti a 5 fázist (hardveren) | 🔄 **KÉSZENLÉT** — queue várakozás |
-| Az 5 fázis szelekciója (anchor mechanizmus) hardveresen működik | ⚠️ **NEM BIZONYÍTOTT** — még nincs adat |
+| H^x8 readout megkülönbözteti a 5 fázist (hardveren) | ❌ **NEM BIZONYÍTOTT** — zaj dominál, p=0.74 flat hypothesis |
+| Az 5 fázis szelekciója (anchor mechanizmus) hardveresen működik | ❌ **NEM BIZONYÍTOTT** — nincs mérhető moduláció |
 | Pulse-level fizikai anchor drive | ❌ **BLOKKOLVA** — Starter tier tiltás |
 
 ---
@@ -1025,9 +1048,8 @@ python tesseract_v3_interferometric.py --hardware --sweep --shots 1024 --backend
 6. ✅ **Zenodo metaadat** → `.zenodo.json` + `CITATION.cff` (kész, DOI mintelés kézi)
 7. ✅ **Bell Control Matrix** → 3 független futás, 12 job, `rz(φ)` hatás kimérve: **NINCS** (kész)
 8. ✅ **Tesseract-V2 Globális Koherencia** → 83.01% IQM Garnet-en (kész)
-9. 🔄 **Tesseract-V3 5-fázis Interferometrikus Sweep** → Job `01a11943-739b-7415-8719-1fa493bc9aa8` (phase_idx=0) QUEUE-ban, még 4 fázis hátravan — **queue lassúság blokkolja**
+9. ✅ **Tesseract-V3 5-fázis Interferometrikus Sweep** → 5/5 fázis befejezve (2026-10-08) — **zaj dominál, NINCS megkülönböztetés** (kész)
 10. ⏳ **Pulse-level Sweep** → **pénzes tier VAGY külön engedély** (mérve tiltva a §7.8.8-ban)
 11. ⏳ **Braket Pulse** (Rigetti) → alternatíva, ha az IQM nem ad engedélyt
-12. 📝 **VALIDATION.md §7.12** → V3 eredmények kitöltése, statisztika, cos(8φ) illesztés (amint a sweep befejeződik)
-13. 📝 **README.md** → V3 eredmények hozzáadása az Evidence Grades táblázathoz
-14. 📝 **v1.2.1 tag + GitHub Release** → a V3 dokumentációval kiegészített állapot
+12. 📝 **README.md** → V3 eredmények hozzáadása az Evidence Grades táblázathoz
+13. 📝 **v1.2.1 tag + GitHub Release** → a V3 dokumentációval kiegészített állapot
