@@ -10,8 +10,8 @@ import re
 import sys
 from pathlib import Path
 
-DOC = Path(sys.argv[1] if len(sys.argv) > 1
-           else r"C:\Users\mater\Documents\orassh\quantum_anchor\arxiv\quantum_anchor_v1.2.tex")
+ROOT = Path(__file__).resolve().parent.parent
+DOC = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "arxiv" / "quantum_anchor_v1.2.tex"
 
 text = DOC.read_text(encoding="utf-8")
 
