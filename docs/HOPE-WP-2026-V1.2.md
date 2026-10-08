@@ -5,10 +5,6 @@
 **Version:** 1.2 (Tesseract Anchor)  
 **Date:** 2026-10-07  
 **Authors:** Máté Róbert, Hope Ecosystem  
-⚠️ **Unresolved before publication:** the affiliation above reads "Hope Ecosystem",
-but `.zenodo.json` and `CITATION.cff` state "Independent" for the same person.
-A Zenodo DOI is permanent, so one value must be chosen and applied to all four
-files. `tools/check_metadata.py` fails until this is settled.  
 **Status:** MEASURED, CLAIM NOT PROVEN — see §8  
 **Repositories:** `quantum-anchor` (protocol), `scs-quantum` (bridge)  
 **DOI (concept):** pending Zenodo registration

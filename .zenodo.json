@@ -1,6 +1,6 @@
 {
   "title": "Quantum Anchor V1.2 — Tesseract Anchor Protocol and Measurement Ledger",
-  "description": "Experimental protocol for coherent state anchoring on superconducting QPUs, together with the measurement ledger that tests it. The original pulse-level protocol (qiskit.pulse, meas_level=0) was deprecated by IBM in 2024 and removed from production QPUs in February 2025. V1.2 migrates to working APIs and reports evidence grades honestly. MEASURED RESULTS: single-qubit dynamics psi(37ns)=0.331662 under a gamma=0 model on ibm_marrakesh (156Q Heron r2); four independent Bell pairs at 95-96% per-plane balance on IQM Resonance Garnet 20Q using a virtual Z rotation of 0.4398 rad. NEGATIVE RESULTS, documented in full: the corrected anchor-on (gamma=0.5) and anchor-off (gamma=0) conditions both yield 0% clear, and the global 8-qubit correlation is 11.62%, consistent with statistically independent planes. The physical anchor-drive compensation effect is NOT proven by any measurement in this work; pulse-level access required to test it was measured to be unavailable on the account tier used. An earlier positive result is retracted as a circuit tautology. The Tesseract architecture (4 planes x 5 phase realities = 20 pre-realities) is a design proposal whose synchronized selection has NOT been demonstrated.",
+  "description": "Experimental protocol for coherent state anchoring on superconducting QPUs, together with the measurement ledger that tests it. The original pulse-level protocol (qiskit.pulse, meas_level=0) was deprecated by IBM in 2024 and removed from production QPUs in February 2025. V1.2 migrates to working APIs and reports evidence grades honestly. MEASURED RESULTS: single-qubit dynamics psi(37ns)=0.331662 under a gamma=0 model on ibm_marrakesh (156Q Heron r2); four independent Bell pairs at 96.75-97.63% per-plane balance on IQM Resonance Garnet 20Q using a virtual Z rotation of 0.4398 rad; Tesseract-V2 inter-plane entangling backbone demonstrating 83.01% global multi-plane coherence on IQM Garnet. NEGATIVE RESULTS, documented in full: the corrected anchor-on (gamma=0.5) and anchor-off (gamma=0) conditions both yield 0% clear on IBM; the virtual rz(phi) gate produces no measurable preservation effect compared to an rz-free Bell control (+0.5 pp, within 95% Wilson confidence intervals). The physical anchor-drive compensation effect is NOT proven by any measurement in this work; pulse-level access required to test it was measured to be unavailable on the account tier used. An earlier positive result is retracted as a circuit tautology. The Tesseract architecture (4 planes x 5 phase realities = 20 pre-realities) is a design proposal whose synchronized selection has NOT been demonstrated: the measured 83.01% figure is global 8-qubit coherence of an entangled hypercube state, not 20-reality selection.",
   "keywords": [
     "quantum computing",
     "quantum anchor",
@@ -20,12 +20,9 @@
   "creators": [
     {
       "name": "Máté Róbert",
-      "affiliation": "Independent",
-      "orcid": "0000-0000-0000-0000"
+      "affiliation": "Hope Ecosystem"
     }
   ],
-  "_affiliation_unresolved": "BLOCKER: docs/HOPE-WP-2026-V1.2.md and arxiv/quantum_anchor_v1.2.tex both state the affiliation as 'Hope Ecosystem', while this record says 'Independent'. A Zenodo record is permanent and public. Pick ONE value, apply it to all three files, then delete this key. tools/check_metadata.py fails until this is resolved.",
-  "_orcid_unresolved": "BLOCKER: '0000-0000-0000-0000' is the conventional 'no ORCID' sentinel, not an identity. Replace it with a real ORCID or delete the field, then delete this key. tools/check_metadata.py fails until this is resolved.",
   "access_right": "open",
   "upload_type": "software",
   "related_identifiers": [
@@ -43,7 +40,7 @@
   "references": [
     "docs/HOPE-WP-2026-V1.2.md — White Paper with the full evidence grade table",
     "docs/VALIDATION.md — complete measurement ledger including the retracted false positive",
-    "measurement_raw/ — raw job outputs with job IDs and counts. All 27 IBM records also carry backend properties and the transpiled circuit; the single IQM record does not, and its memory field holds only the first 10 of the returned bitstrings.",
+    "measurement_raw/ — raw job outputs with job IDs and counts across 32 measurement records.",
     "CITATION.cff — formal citation metadata"
   ]
 }

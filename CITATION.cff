@@ -54,8 +54,8 @@ authors:
     given-names: "Róbert"
     family-names: "Máté"
     alias: "silentnoisehun"
+    affiliation: "Hope Ecosystem"
     website: "https://github.com/silentnoisehun"
-    orcid: "0000-0000-0000-0000"
 keywords:
   - quantum computing
   - quantum anchor

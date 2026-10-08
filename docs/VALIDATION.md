@@ -884,6 +884,56 @@ transzpiler `r` kapukká bontott. Ez lényeges korlát, ezért a
 „non-destructive detuned drive" állítás **csak digitális megfelelője**, nem
 fizikai bizonyíték.
 
+### 7.11 Tesseract-V2 Globális Koherencia — Valódi Hardveres Mérés (IQM Garnet 20Q, 2026-10-07)
+
+A korábbi Tesseract-V1 mérésekben (§7.8) a négy sík (`(q0,q1)`, `(q2,q3)`,
+`(q4,q5)`, `(q6,q7)`) teljesen csatolatlan volt, így a mért állapot egy
+szorzatállapot maradt ($|\Phi^+\rangle^{\otimes 4}$). Ennek elméleti
+globális koherenciája ($|00000000\rangle + |11111111\rangle$) csupán
+$(1/2)^4 + (1/2)^4 = 1/16 + 1/16 = 12.5\%$, ami a hardveren mért 11.62%-kal
+(1024 kért shotra vetítve) tökéletesen egybevágott (a síkok szétesése).
+
+A **Tesseract-V2** protokoll (`tesseract_v2_coherent.py`) síkközi
+összefonó CNOT-lánccal (`q0 → q2 → q4 → q6`) köti össze a négy síkot, majd
+síkon belül is kiterjeszti (`q0→q1`, `q2→q3`, `q4→q5`, `q6→q7`), így a négy
+sík helyett **egyetlen összefonódott 8-qubites állapot** keletkezik.
+
+⚠️ **Pontosítás: a mért állapot GHZ-8, nem "hiperkocka".** A mérés
+`phase_idx=0` értékkel futott, ami $\phi = 2\pi\cdot 0/5 = 0$, tehát az
+`rz(0)` az identitás — a mért áramkör a globális összefonódást méri
+$(|00000000\rangle + |11111111\rangle)/\sqrt{2}$, nem az 5 fázis-valóság
+modulált változatát. A "hiperkocka" elnevezés a V2 architektúra
+**tervezési** neve; a mért 83.01% a **globális 8-qubites koherencia**, nem
+20-valóság szinkronizált szelekció.
+
+**Hardveres mérési jegyzőkönyv (IQM Garnet 20Q):**
+
+| Paraméter | Érték |
+|---|---|
+| **Protokoll** | `tesseract_v2_global_coherence` |
+| **QPU** | IQM Resonance Garnet 20Q |
+| **Job ID** | `01a1183a-2a40-7622-8d51-243b3a9e602b` |
+| **Audit rekord** | `measurement_raw/iqm_tesseract_v2_01a1183a_20261007T211713Z.json` |
+| **Shots** | 1024 kért, 1024 visszaadott (teljes) |
+| **Circuit mélység** | 10 (transzpilált natív mélység) |
+| **Natív műveletek** | 15 `r`, 7 `cz`, 8 `measure` |
+| **\|00000000⟩ előfordulás** | 482 shot (47.07%) |
+| **\|11111111⟩ előfordulás** | 368 shot (35.94%) |
+| **Globális koherencia (0ⁿ + 1ⁿ)** | **83.01%** (850 / 1024 shot) |
+| **Wilson 95% CI** | [80.59%, 85.18%] |
+
+**Összevetés és fizikai következtetés:**
+- **Tesseract-V1 (csatolatlan síkok):** 11.62% globális egyensúly (1024 kért shotra vetítve; 11.71% az 1016 visszaadott shotra vetítve), Wilson CI [9.80%, 13.73%] — a síkok szétesnek, nincs globális szinkronizáció.
+- **Tesseract-V2 (összefonó gerinc):** **83.01%** globális koherencia, Wilson CI [80.59%, 85.18%] — valódi QPU hardveren.
+- **A két intervallum NEM fedik egymást** (13.73% < 80.59%), tehát a 71 pp ugrás nem mérési zaj, hanem **valódi fizikai különbség**.
+- A négy sík nem esik szét: az összefonó gerinc fenntartja a globális 8-qubites koherens állapotot a zajos fizikai környezetben is.
+
+⚠️ **Amit ez NEM bizonyít:** a 20-valóság (5 fázis × 4 sík) szinkronizált
+szelekcióját. Ehhez a 5 fázis-valóságot (`phase_idx` 0–4) végig kellene
+mérni, és a szelekciós kritériumot alkalmazni — ez nem történt meg. Amit a
+mérés **igazolt**, hogy a síkok közötti összefonás **működik** a hardveren,
+szemben azzal a V1 eredménnyel, ahol ugyanez a mérés szétesést mutatott.
+
 ## 10. Következő lépések (2026-10-07)
 
 1. ✅ **IQM regisztráció** → Starter tier → API token (kész)
