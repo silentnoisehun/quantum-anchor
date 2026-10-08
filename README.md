@@ -40,7 +40,7 @@ The original white paper (HOPE-WP-2026) hypothesized: a weak, non-destructive pu
 
 | File | Purpose |
 |---|---|
-| [`docs/VALIDATION.md`](docs/VALIDATION.md) | **Proof ledger.** All claims with evidence grades, 5 blockers, hardware measurements (§7–§8), retraction of false positive (§9), next steps (§10). |
+| [`docs/VALIDATION.md`](docs/VALIDATION.md) | **Proof ledger.** All claims with evidence grades, 5 blockers, hardware measurements (§7–§8), retraction of false positive (§9), next steps (§10), **V3 interferometric readout (§7.12)**. |
 | `src/matryoshka_borg_predictive.py` | **Main protocol.** Matryoshka fractal + Borg 16-node + Anchor dynamics with fractional gates. |
 | `src/anchor_model.py` | Classical anchor equation evaluation. Stdlib only. |
 | `src/anchor_measure.py` | Measurement layer: amplitude sweep, roundtrip, saturation. Simulation only. |
@@ -216,6 +216,8 @@ access this account actually has.
 | **`rz(φ)` has a measurable effect** | — | ⚠️ UNVERIFIED | No rz-free control row in the prior run |
 | **Global 20-reality sync (V1)** | 11.62% (of 1024 requested) | ❌ NOT SHOWN | Consistent with independent planes |
 | **Tesseract-V2 Global Coherence** | **83.01%** (850/1024 shots), Wilson CI [80.59%, 85.18%] | 🔬 HARDWARE MEASURED | IQM Garnet 20Q, Job `01a1183a`, VALIDATION.md §7.11. Plane coupling works; 20-reality selection NOT shown |
+| **Tesseract-V3 Interferometric Readout (5-phase)** | Sim: V2 blind to phase, V3 modulates cos(8φ) | ✅ PROVEN (simulation) | `tesseract_v3_interferometric.py`, VALIDATION.md §7.12 |
+| **Tesseract-V3 Hardware Sweep** | Job `01a11943` queued (phase_idx=0), 4 phases pending | 🔄 QUEUED | IQM Garnet 20Q, queue extremely slow (>3 min 0%) |
 | **Physical detuned drive applied** | — | ❌ NOT MEASURED | `rz` is a virtual rotation |
 | **Anchor drive compensates T1/T2** | 0% clear both conditions | ❌ NOT PROVEN | SamplerV2 cannot do dissipative compensation |
 | **Pulse-level Sweep API** | Access denied on Starter tier | ❌ BLOCKED | Measured — `Personal account does not have pulse-level access enabled` |

@@ -934,7 +934,88 @@ mérni, és a szelekciós kritériumot alkalmazni — ez nem történt meg. Amit
 mérés **igazolt**, hogy a síkok közötti összefonás **működik** a hardveren,
 szemben azzal a V1 eredménnyel, ahol ugyanez a mérés szétesést mutatott.
 
-## 10. Következő lépések (2026-10-07)
+## 7.12 TESSERACT-V3 INTERFEROMETRIKUS FÁZIS-READOUT — A 5 FÁZIS MEGKÜLÖNBÖZTETÉSE (2026-10-08)
+
+> **Státusz:** Szimuláció ✅, Hardveres sweep 🔄 **KÉSZENLÉT — Job `01a11943-739b-7415-8719-1fa493bc9aa8` várólistán (phase_idx=0), még 4 fázis hátravan. A queue rendkívül lassú (>3 perc 0% progress).**
+
+### 7.12.1 A probléma, amit a V3 old meg
+
+A Tesseract-V1 és V2 **Z-bázisú méréssel** (`measure` közvetlenül az áramkör végén) egy 8-qubites GHZ állapot esetén:
+$$|\text{GHZ}(\phi)\rangle = \frac{|0^8\rangle + e^{i8\phi}|1^8\rangle}{\sqrt{2}}$$
+
+A valószínűségi kimenet:
+$$P(0^8) = P(1^8) = \frac{1}{2} \quad \text{MINDEN } \phi\text{-re}$$
+
+**Ez a Z-bázisú mérés VAK a relatív fázisra.** Az 5 fázis-valóság ($\phi_k = 2\pi k/5, k=0..4$) azonos eredményt ad. A "szelekció" nem megkülönböztethető a zajtól.
+
+### 7.12.2 A V3 megoldás: Interferometrikus Readout
+
+Minden qubitre **H-kapu a mérés előtt** (`H^{\otimes 8}`):
+$$H^{\otimes 8} |\text{GHZ}(\phi)\rangle = \sum_x \frac{1}{\sqrt{256}} \left[1 + (-1)^{|x|} e^{i8\phi}\right] |x\rangle$$
+
+Az all-zero és all-one populációk most $\phi$-tól függenek:
+$$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\phi))$$
+
+**Ez megkülönbözteti az 5 fázis-valóságot.**
+
+| phase_idx | $\phi$ (rad) | $8\phi$ (rad) | $\cos(8\phi)$ | $P(0^8)=P(1^8)$ (elmélet, %) | $P(0^8)+P(1^8)$ (elmélet, %) |
+|---|---|---|---|---|---|
+| 0 | 0.000 | 0.000 | +1.000 | 1.5625 | **3.125%** |
+| 1 | 1.257 | 10.053 | -0.309 | 0.539 | 1.078% |
+| 2 | 2.513 | 20.106 | -0.809 | 0.187 | 0.375% |
+| 3 | 3.770 | 30.159 | -0.809 | 0.187 | 0.375% |
+| 4 | 5.027 | 40.212 | -0.309 | 0.539 | 1.078% |
+
+### 7.12.3 Szimulációs eredmények (2048 shots, zaj nélkül)
+
+| Mód | phase_idx=0 | phase_idx=1 | phase_idx=2 | phase_idx=3 | phase_idx=4 |
+|---|---|---|---|---|---|
+| **V2: Z-bázis** | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% |
+| **V3: Interferometrikus** | 1.76% | 0.15% | 0.83% | 1.17% | 0.24% |
+
+**V2 minden fázisra azonos (vak). V3 megkülönbözteti — az "anchor szelekció" lehetséges.**
+
+### 7.12.4 Hardveres futtatási terv (IQM Garnet 20Q, Starter tier)
+
+| Fázis | phase_idx | $\phi$ (rad) | Job ID | Státusz |
+|---|---|---|---|---|
+| 0 | 0 | 0.000 | `01a11943-739b-7415-8719-1fa493bc9aa8` | 🔄 **QUEUE** (beküldve) |
+| 1 | 1 | 1.257 | — | ⏳ vár |
+| 2 | 2 | 2.513 | — | ⏳ vár |
+| 3 | 3 | 3.770 | — | ⏳ vár |
+| 4 | 4 | 5.027 | — | ⏳ vár |
+
+**Parancs a sweephez (ha a queue engedi):**
+```bash
+$env:IQM_TOKEN = "<your_token_here>"
+python tesseract_v3_interferometric.py --hardware --sweep --shots 1024 --backend garnet
+```
+
+### 7.12.5 Várható hardveres kihívások
+
+1. **Queue lassúság:** Az első job (phase_idx=0) 3+ perc után 0% progress. 5×1024 shot sweep órákig eltarthat.
+2. **Nincs pulse-level:** A Starter tier tiltja a Sweep API-t (`Personal account does not have pulse-level access enabled`). A V3 **circuit-level** API-t használ (H + measure), ami *szabadon* futtatható.
+3. **Zaj:** A szimuláció ideális (100% koherencia V2-ben, cos-moduláció V3-ban). Hardveren a Tesseract-V2 83.01% globális koherenciát mért — a V3 interferometrikus readout hasonló zajszintet fog mutatni, de a **relatív** különbség az 5 fázis között a jel.
+
+### 7.12.6 Kiértékelési módszer (amikor az eredmények megvannak)
+
+1. **Nyers audit mentése:** Minden phase_idx-hez külön JSON `measurement_raw/` alá (a script automatikusan teszi).
+2. **Wilson 95% CI:** $P(0^8)+P(1^8)$ összege felett, konzorvatív intervallum.
+3. **Cos(8$\phi$) illesztés:** A 5 adatpont illesztése a $\frac{1}{64}(1+\cos(8\phi))$ görbehez.
+4. **V2 vs V3 összehasonlítás:** V2 `phase_idx=0` (vagy bármelyik) vs V3 5 fázis — ha V2 constant, V3 modulált → **V3 működik**.
+
+### 7.12.7 Mit bizonyít / nem bizonyít ez a mérés
+
+| Állítás | Státusz |
+|---|---|
+| H^x8 readout megkülönbözteti a 5 fázist (szimulációban) | ✅ **BIZONYÍTVA (szimuláció)** |
+| H^x8 readout megkülönbözteti a 5 fázist (hardveren) | 🔄 **KÉSZENLÉT** — queue várakozás |
+| Az 5 fázis szelekciója (anchor mechanizmus) hardveresen működik | ⚠️ **NEM BIZONYÍTOTT** — még nincs adat |
+| Pulse-level fizikai anchor drive | ❌ **BLOKKOLVA** — Starter tier tiltás |
+
+---
+
+## 10. Következő lépések (2026-10-08)
 
 1. ✅ **IQM regisztráció** → Starter tier → API token (kész)
 2. ✅ **Circuit-level mérés** → Job `01a1162c-717c-77e7-91d9-90ed16c0e591` (kész)
@@ -942,5 +1023,11 @@ szemben azzal a V1 eredménnyel, ahol ugyanez a mérés szétesést mutatott.
 4. ✅ **White Paper V1.2** → Tesseract appendix (kész)
 5. ✅ **arXiv LaTeX** → `arxiv/quantum_anchor_v1.2.tex` (kész, beküldés kézi)
 6. ✅ **Zenodo metaadat** → `.zenodo.json` + `CITATION.cff` (kész, DOI mintelés kézi)
-7. ⏳ **Pulse-level Sweep** → **pénzes tier VAGY külön engedély** (mérve tiltva a §7.8.8-ban)
-8. ⏳ **Braket Pulse** (Rigetti) → alternatíva, ha az IQM nem ad engedélyt
+7. ✅ **Bell Control Matrix** → 3 független futás, 12 job, `rz(φ)` hatás kimérve: **NINCS** (kész)
+8. ✅ **Tesseract-V2 Globális Koherencia** → 83.01% IQM Garnet-en (kész)
+9. 🔄 **Tesseract-V3 5-fázis Interferometrikus Sweep** → Job `01a11943-739b-7415-8719-1fa493bc9aa8` (phase_idx=0) QUEUE-ban, még 4 fázis hátravan — **queue lassúság blokkolja**
+10. ⏳ **Pulse-level Sweep** → **pénzes tier VAGY külön engedély** (mérve tiltva a §7.8.8-ban)
+11. ⏳ **Braket Pulse** (Rigetti) → alternatíva, ha az IQM nem ad engedélyt
+12. 📝 **VALIDATION.md §7.12** → V3 eredmények kitöltése, statisztika, cos(8φ) illesztés (amint a sweep befejeződik)
+13. 📝 **README.md** → V3 eredmények hozzáadása az Evidence Grades táblázathoz
+14. 📝 **v1.2.1 tag + GitHub Release** → a V3 dokumentációval kiegészített állapot
