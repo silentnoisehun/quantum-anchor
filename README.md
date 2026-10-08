@@ -217,7 +217,7 @@ access this account actually has.
 | **Global 20-reality sync (V1)** | 11.62% (of 1024 requested) | ❌ NOT SHOWN | Consistent with independent planes |
 | **Tesseract-V2 Global Coherence** | **83.01%** (850/1024 shots), Wilson CI [80.59%, 85.18%] | 🔬 HARDWARE MEASURED | IQM Garnet 20Q, Job `01a1183a`, VALIDATION.md §7.11. Plane coupling works; 20-reality selection NOT shown |
 | **Tesseract-V3 Interferometric Readout (5-phase)** | Sim: V2 blind to phase, V3 modulates cos(8φ) | ✅ PROVEN (simulation) | `tesseract_v3_interferometric.py`, VALIDATION.md §7.12 |
-| **Tesseract-V3 Hardware Sweep (5-phase)** | Global coherence 0.2–1.4%, χ² p=0.74 flat, cos(8φ) fit p<0.0001 | ❌ NOT PROVEN (noise-dominated) | IQM Garnet 20Q, Jobs `01a11943`, `01a11ab7`, `01a11aba`, `01a11abb`, VALIDATION.md §7.12 |
+| **Tesseract-V3 Hardware Sweep (5-phase)** | Global coherence 0.2–1.4%, χ² p=0.739 flat, cos(8φ) fit p<0.0001, R²=0.85 | ❌ NOT PROVEN (noise-dominated) | IQM Garnet 20Q, Jobs `01a11943`, `01a11ab7`, `01a11aba`, `01a11abb`, VALIDATION.md §7.12 |
 | **Physical detuned drive applied** | — | ❌ NOT MEASURED | `rz` is a virtual rotation |
 | **Anchor drive compensates T1/T2** | 0% clear both conditions | ❌ NOT PROVEN | SamplerV2 cannot do dissipative compensation |
 | **Pulse-level Sweep API** | Access denied on Starter tier | ❌ BLOCKED | Measured — `Personal account does not have pulse-level access enabled` |
@@ -239,10 +239,10 @@ access this account actually has.
 5. ✅ **arXiv source** → `arxiv/quantum_anchor_v1.2.tex`
 6. ✅ **Zenodo + CITATION metadata corrected** → `.zenodo.json`, `CITATION.cff`
 7. ✅ **Run the Bell control matrix & Tesseract-V2** (FREE) → 3 control matrix runs (12 jobs) + Tesseract-V2 83.01% (COMPLETED)
-8. ✅ **Tesseract-V3 5-phase Interferometric Sweep** → 5/5 phases complete (2026-10-08) — **NOISE-DOMINATED, no phase discrimination** (COMPLETED)
+8. ✅ **Tesseract-V3 5-phase Interferometric Sweep** → 5/5 phases complete (2026-10-08) — **NOISE-DOMINATED, no phase discrimination, cos(8φ) rejected p<0.0001, flat p=0.739** (COMPLETED)
 9. ❌ **Pulse-level Sweep API** → **BLOCKED** by account entitlement (MEASURED, §7.8.8)
 10. ℹ️ **Paid QPU routes** (Braket / Rigetti Ankaa-3) → documented, deliberately not pursued
-11. 📝 **v1.2.1 tag + GitHub Release** → the V3 documented state
+11. 📝 **v1.2.2 tag + GitHub Release** → the V3 documented state
 
 ---
 

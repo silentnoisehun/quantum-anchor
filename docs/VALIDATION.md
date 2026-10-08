@@ -991,12 +991,32 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 - Phase 4 (elméletben 1.078%) → 0.29%.
 
 **Cos(8φ) illesztés a mért adatokra:**
-- Fitted: A=0.68±0.20, B=0.72±0.30, C=0.68±0.14
-- R² = 0.85
-- Chi² = 30.72 (df=4), p < 0.0001 → **elutasítja az elméleti cos(8φ) görbét**
-- Flat (no modulation) test: chi² = 1.98 (df=4), p = 0.74 → **egyenes görbe NEM elutasítható**
+- Fitted: A=0.6784±0.2018, B=0.7170±0.2974, C=0.6837±0.1427
+- R² = 0.8497
+- Fitted values:
+  - Phase 0: measured=1.27%, fitted=1.20%
+  - Phase 1: measured=0.29%, fitted=0.53%
+  - Phase 2: measured=0.20%, fitted=0.42%
+  - Phase 3: measured=1.37%, fitted=1.27%
+  - Phase 4: measured=0.29%, fitted=0.01%
 
-**Következmény:** A hardware zajszint (~1% globális koherencia) **felette van az elméleti jel** (1–3%). Az 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett.
+**Chi-squared goodness-of-fit tesztek:**
+- Elméleti cos(8φ) görbe: chi² = 30.72 (df=4), p < 0.0001 → **elutasítja az elméleti görbét**
+- Flat (no modulation) hipotezis: chi² = 1.98 (df=4), p = 0.7392 → **egyenes görbe NEM elutasítható**
+
+**Következmény:** A hardware zajszint (~0.2–1.4% globális koherencia) **felette van az elméleti jel** (0.3–3.1%). Az 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett. A cos(8φ) moduláció hardveresen **NEM igazolt**.
+
+### 7.12.9 Audit Trail (V3 5-fázis sweep)
+
+| Protokoll | Job ID | Fájl |
+|---|---|---|
+| Tesseract-V3 phase 0 | `01a11943-739b-7415-8719-1fa493bc9aa8` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11943_20261008T084500Z.json` |
+| Tesseract-V3 phase 1 | `01a11ab7-7d8e-77c3-bc67-ae8423181204` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11ab7_phase1_20261008T085544Z.json` |
+| Tesseract-V3 phase 2 | `01a11aba-531f-73ae-8da7-c705c729038d` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11aba_phase2_20261008T085622Z.json` |
+| Tesseract-V3 phase 3 | `01a11aba-c6d7-736a-ac56-a5c0525d2cc4` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11aba_phase3_20261008T085652Z.json` |
+| Tesseract-V3 phase 4 | `01a11abb-525f-7534-a1f1-5c98b274d710` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11abb_phase4_20261008T085727Z.json` |
+
+Minden rekord tartalmazza: `protocol`, `backend`, `job_id`, `shots`, `returned`, `phase_idx`, `phi_rad`, `interferometric`, `global_coherence_pct`, `counts`, `transpiled_ops`, `transpiled_depth`, `transpiled_qasm`.
 
 ### 7.12.4 Hardveres futtatási terv (IQM Garnet 20Q, Starter tier)
 
@@ -1032,8 +1052,8 @@ python tesseract_v3_interferometric.py --hardware --sweep --shots 1024 --backend
 | Állítás | Státusz |
 |---|---|
 | H^x8 readout megkülönbözteti a 5 fázist (szimulációban) | ✅ **BIZONYÍTVA (szimuláció)** |
-| H^x8 readout megkülönbözteti a 5 fázist (hardveren) | ❌ **NEM BIZONYÍTOTT** — zaj dominál, p=0.74 flat hypothesis |
-| Az 5 fázis szelekciója (anchor mechanizmus) hardveresen működik | ❌ **NEM BIZONYÍTOTT** — nincs mérhető moduláció |
+| H^x8 readout megkülönbözteti a 5 fázist (hardveren) | ❌ **NEM BIZONYÍTOTT** — zaj dominál, p=0.7392 flat hypothesis |
+| Az 5 fázis szelekciója (anchor mechanizmus) hardveresen működik | ❌ **NEM BIZONYÍTOTT** — nincs mérhető moduláció, chi² elutasítja az elméleti cos(8φ) görbét (p<0.0001) |
 | Pulse-level fizikai anchor drive | ❌ **BLOKKOLVA** — Starter tier tiltás |
 
 ---
@@ -1048,8 +1068,8 @@ python tesseract_v3_interferometric.py --hardware --sweep --shots 1024 --backend
 6. ✅ **Zenodo metaadat** → `.zenodo.json` + `CITATION.cff` (kész, DOI mintelés kézi)
 7. ✅ **Bell Control Matrix** → 3 független futás, 12 job, `rz(φ)` hatás kimérve: **NINCS** (kész)
 8. ✅ **Tesseract-V2 Globális Koherencia** → 83.01% IQM Garnet-en (kész)
-9. ✅ **Tesseract-V3 5-fázis Interferometrikus Sweep** → 5/5 fázis befejezve (2026-10-08) — **zaj dominál, NINCS megkülönböztetés** (kész)
+9. ✅ **Tesseract-V3 5-fázis Interferometrikus Sweep** → 5/5 fázis befejezve (2026-10-08) — **zaj dominál, NINCS megkülönböztetés, cos(8φ) görbe elutasítva p<0.0001, flat p=0.7392** (kész)
 10. ⏳ **Pulse-level Sweep** → **pénzes tier VAGY külön engedély** (mérve tiltva a §7.8.8-ban)
 11. ⏳ **Braket Pulse** (Rigetti) → alternatíva, ha az IQM nem ad engedélyt
 12. 📝 **README.md** → V3 eredmények hozzáadása az Evidence Grades táblázathoz
-13. 📝 **v1.2.1 tag + GitHub Release** → a V3 dokumentációval kiegészített állapot
+13. 📝 **v1.2.2 tag + GitHub Release** → a V3 dokumentációval kiegészített állapot
