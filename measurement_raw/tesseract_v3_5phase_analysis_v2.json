@@ -97,9 +97,5 @@
   },
   "avg_global_coherence_pct": 0.68,
   "theoretical_max_signal_pct": 1.56,
-  "conclusion": "Hardware noise dominates. cos(8phi) curve REJECTED (p=0.000006). Flat response REJECTED (p=0.000515). R^2 = -4.4083 (worse than mean). Theoretical signal (0-1.56%) sits at/below noise floor (~0.68%). Five phases not statistically distinguishable as phase-dependent.",
-  "counts": {
-    "total_successes": 35,
-    "total_trials": 5120
-  }
+  "conclusion": "Hardware noise dominates. cos(8phi) curve REJECTED (p=0.000006). Flat response REJECTED (p=0.000515). R^2 = -4.4083 (worse than mean). Theoretical signal (0-1.56%) sits at/below noise floor (~0.68%). Five phases not statistically distinguishable as phase-dependent."
 }
