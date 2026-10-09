@@ -1,0 +1,100 @@
+{
+  "phases": [
+    {
+      "phase_idx": 0,
+      "phi_rad": 0.0,
+      "job_id": "01a11943-739b-7415-8719-1fa493bc9aa8",
+      "shots": 1024,
+      "returned": 1024,
+      "c0": 6,
+      "c1": 7,
+      "successes": 13,
+      "coherence_pct": 1.27,
+      "ci95": [
+        0.743,
+        2.16
+      ],
+      "theory_pct": 3.125
+    },
+    {
+      "phase_idx": 1,
+      "phi_rad": 1.2566,
+      "job_id": "01a11ab7-7d8e-77c3-bc67-ae8423181204",
+      "shots": 1024,
+      "returned": 1024,
+      "c0": 3,
+      "c1": 7,
+      "successes": 10,
+      "coherence_pct": 0.977,
+      "ci95": [
+        0.531,
+        1.788
+      ],
+      "theory_pct": 0.298
+    },
+    {
+      "phase_idx": 2,
+      "phi_rad": 2.5133,
+      "job_id": "01a11aba-531f-73ae-8da7-c705c729038d",
+      "shots": 1024,
+      "returned": 1024,
+      "c0": 2,
+      "c1": 2,
+      "successes": 4,
+      "coherence_pct": 0.391,
+      "ci95": [
+        0.152,
+        1.0
+      ],
+      "theory_pct": 2.045
+    },
+    {
+      "phase_idx": 3,
+      "phi_rad": 3.7699,
+      "job_id": "01a11aba-c6d7-736a-ac56-a5c0525d2cc4",
+      "shots": 1024,
+      "returned": 1024,
+      "c0": 7,
+      "c1": 7,
+      "successes": 14,
+      "coherence_pct": 1.367,
+      "ci95": [
+        0.816,
+        2.282
+      ],
+      "theory_pct": 2.045
+    },
+    {
+      "phase_idx": 4,
+      "phi_rad": 5.0265,
+      "job_id": "01a11abb-525f-7534-a1f1-5c98b274d710",
+      "shots": 1024,
+      "returned": 1024,
+      "c0": 1,
+      "c1": 2,
+      "successes": 3,
+      "coherence_pct": 0.293,
+      "ci95": [
+        0.1,
+        0.858
+      ],
+      "theory_pct": 0.299
+    }
+  ],
+  "fit": {
+    "offset": 0.8596144144101046,
+    "amplitude": 0.3143127533853582,
+    "r2": 0.2519217219965466,
+    "model": "coherence(%) = 0.860 + 0.314 * cos(8phi)"
+  },
+  "theoretical": {
+    "offset": 1.5625,
+    "amplitude": 1.5625,
+    "model": "coherence(%) = 1.5625 + 1.5625 * cos(8phi)"
+  },
+  "conclusion": "Phase modulation not resolved above noise floor; GHZ fidelity insufficient",
+  "counts": {
+    "total_successes": 44,
+    "total_trials": 5120
+  }
+}
