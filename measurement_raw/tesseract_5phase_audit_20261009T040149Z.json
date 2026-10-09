@@ -1,0 +1,159 @@
+{
+  "protocol": "tesseract_anchor_5phase_summary",
+  "platform": "IQM Resonance",
+  "backend": "garnet",
+  "backend_qubits": 20,
+  "measured_kind": "circuit_level_bitstrings",
+  "is_meas_level_0": false,
+  "is_physical_detuned_drive": false,
+  "phase_formula": "phi = 2*pi * f_GHz * t_ns mod 2pi",
+  "freq_ghz": 4.11,
+  "duration_ns": 37,
+  "phase_rad": 0.4398,
+  "n_planes": 4,
+  "n_qubits": 8,
+  "requested_shots_per_phase": 1024,
+  "completed_phases": 4,
+  "failed_phases": 1,
+  "failure_reason": "Not enough credits (Starter tier)",
+  "phases": [
+    {
+      "phase": 1,
+      "bell": {
+        "mean_plane": 95.9,
+        "ci": [
+          92.97,
+          97.7
+        ],
+        "global": 10.94,
+        "global_ci": [
+          9.17,
+          13.0
+        ]
+      },
+      "anchor": {
+        "mean_plane": 96.92,
+        "ci": [
+          93.84,
+          98.66
+        ],
+        "global": 10.35,
+        "global_ci": [
+          8.63,
+          12.37
+        ]
+      },
+      "delta": 1.02,
+      "verdict": "OVERLAP - no measurable anchor effect"
+    },
+    {
+      "phase": 2,
+      "bell": {
+        "mean_plane": 96.19,
+        "ci": [
+          92.31,
+          98.1
+        ],
+        "global": 10.84,
+        "global_ci": [
+          9.08,
+          12.89
+        ]
+      },
+      "anchor": {
+        "mean_plane": 96.39,
+        "ci": [
+          93.84,
+          97.78
+        ],
+        "global": 11.52,
+        "global_ci": [
+          9.71,
+          13.62
+        ]
+      },
+      "delta": 0.2,
+      "verdict": "OVERLAP - no measurable anchor effect"
+    },
+    {
+      "phase": 3,
+      "bell": {
+        "mean_plane": 96.48,
+        "ci": [
+          93.51,
+          98.26
+        ],
+        "global": 11.04,
+        "global_ci": [
+          9.26,
+          13.1
+        ]
+      },
+      "anchor": {
+        "mean_plane": 96.14,
+        "ci": [
+          91.67,
+          98.26
+        ],
+        "global": 11.52,
+        "global_ci": [
+          9.71,
+          13.62
+        ]
+      },
+      "delta": -0.34,
+      "verdict": "OVERLAP - no measurable anchor effect"
+    },
+    {
+      "phase": 4,
+      "bell": {
+        "mean_plane": 96.75,
+        "ci": [
+          93.18,
+          98.66
+        ],
+        "global": 12.4,
+        "global_ci": [
+          10.52,
+          14.56
+        ]
+      },
+      "anchor": {
+        "mean_plane": 96.0,
+        "ci": [
+          92.53,
+          98.02
+        ],
+        "global": 9.86,
+        "global_ci": [
+          8.18,
+          11.84
+        ]
+      },
+      "delta": -0.75,
+      "verdict": "OVERLAP - no measurable anchor effect"
+    }
+  ],
+  "aggregate": {
+    "total_shots": 4096,
+    "bell_balance_pct": 96.33,
+    "bell_balance_ci95_pct": [
+      95.69166329042106,
+      96.84850047218775
+    ],
+    "anchor_balance_pct": 96.3625,
+    "anchor_balance_ci95_pct": [
+      95.74411905686989,
+      96.89360945403897
+    ],
+    "mean_delta_pp": 0.03249999999999997,
+    "delta_std_pp": 0.7646949282775015,
+    "ci_overlap": true
+  },
+  "cos8phi_note": "All phases at fixed phi=0.4398; cos(8*phi)=-0.9298. Multiple phi needed for curve fit.",
+  "evidence_grade": "C",
+  "conclusion": "No measurable anchor effect at virtual Z level. Physical drive not accessible on Starter tier.",
+  "physical_anchor_compensation_proven": false,
+  "global_20_reality_sync_proven": false,
+  "ci_method": "Wilson score interval, 95%. Conservative envelope of per-plane CIs for mean-plane."
+}

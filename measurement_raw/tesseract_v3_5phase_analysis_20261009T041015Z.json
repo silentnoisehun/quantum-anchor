@@ -1,0 +1,129 @@
+{
+  "protocol": "tesseract_v3_5phase_interferometric",
+  "platform": "IQM Resonance",
+  "backend": "garnet",
+  "backend_qubits": 20,
+  "readout": "H^x8 interferometric",
+  "phase_formula": "phi = 2*pi * k / 5, k=0..4",
+  "phi_values": [
+    0.0,
+    1.2566,
+    2.5133,
+    3.7699,
+    5.0265
+  ],
+  "cos8phi_values": [
+    1.0,
+    -0.809,
+    0.309,
+    0.309,
+    -0.809
+  ],
+  "theory_pct": [
+    3.125,
+    0.298,
+    2.045,
+    2.045,
+    0.298
+  ],
+  "requested_shots_per_phase": 1024,
+  "completed_phases": 5,
+  "phases": [
+    {
+      "phase": 0,
+      "phi": 0.0,
+      "cos8phi": 1.0,
+      "theory_pct": 3.125,
+      "job_id": "01a11943-739b-7415-8719-1fa493bc9aa8",
+      "c0": 6,
+      "c1": 7,
+      "returned": 1024,
+      "global_pct": 1.27,
+      "ci": [
+        0.7434044913652256,
+        2.1599089101911852
+      ]
+    },
+    {
+      "phase": 1,
+      "phi": 1.2566,
+      "cos8phi": -0.809,
+      "theory_pct": 0.298,
+      "job_id": "01a11ab7-7d8e-77c3-bc67-ae8423181204",
+      "c0": 3,
+      "c1": 0,
+      "returned": 1024,
+      "global_pct": 0.29,
+      "ci": [
+        0.09968475014902936,
+        0.8578032686730406
+      ]
+    },
+    {
+      "phase": 2,
+      "phi": 2.5133,
+      "cos8phi": 0.309,
+      "theory_pct": 2.045,
+      "job_id": "01a11aba-531f-73ae-8da7-c705c729038d",
+      "c0": 2,
+      "c1": 0,
+      "returned": 1024,
+      "global_pct": 0.2,
+      "ci": [
+        0.053578082735409975,
+        0.7093273978132258
+      ]
+    },
+    {
+      "phase": 3,
+      "phi": 3.7699,
+      "cos8phi": 0.309,
+      "theory_pct": 2.045,
+      "job_id": "01a11aba-c6d7-736a-ac56-a5c0525d2cc4",
+      "c0": 7,
+      "c1": 7,
+      "returned": 1024,
+      "global_pct": 1.37,
+      "ci": [
+        0.8161286776036565,
+        2.281767262226188
+      ]
+    },
+    {
+      "phase": 4,
+      "phi": 5.0265,
+      "cos8phi": -0.809,
+      "theory_pct": 0.298,
+      "job_id": "01a11abb-525f-7534-a1f1-5c98b274d710",
+      "c0": 1,
+      "c1": 2,
+      "returned": 1024,
+      "global_pct": 0.29,
+      "ci": [
+        0.09968475014902936,
+        0.8578032686730406
+      ]
+    }
+  ],
+  "aggregate": {
+    "total_shots": 5120,
+    "mean_global_coherence": 0.6839999999999999,
+    "std_global_coherence": 0.5828207271537278,
+    "aggregate_coherence_pct": 0.68359375,
+    "aggregate_ci95": [
+      0.4919470279383109,
+      0.9491877029885415
+    ]
+  },
+  "chi2_theory": 2.9889169434042757,
+  "chi2_flat": 1.986432748538012,
+  "p_theory": 0.5596818333386722,
+  "p_flat": 0.738254419580957,
+  "cos8phi_fit": {
+    "offset_pct": 0.6839999999999998,
+    "amplitude_pct": 0.514379637140969,
+    "r2": 0.4868154727949421
+  },
+  "evidence_grade": "F",
+  "conclusion": "Hardware noise dominates. No statistically significant cos(8φ) modulation detected. Five phases not distinguishable from noise. Fitted amplitude 0.51% vs 1.56% theory (3x smaller)."
+}

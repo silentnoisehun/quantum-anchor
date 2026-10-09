@@ -1,0 +1,438 @@
+{
+  "protocol": "tesseract_anchor_control_matrix",
+  "platform": "IQM Resonance",
+  "backend": "garnet",
+  "measured_kind": "circuit_level_bitstrings",
+  "is_meas_level_0": false,
+  "is_physical_detuned_drive": false,
+  "phase_formula": "phi = 2*pi * f_GHz * t_ns mod 2pi",
+  "freq_ghz": 4.11,
+  "duration_ns": 37,
+  "phase_rad": 0.439823,
+  "n_planes": 4,
+  "n_qubits": 8,
+  "requested_shots": 1024,
+  "seed_requested": 42,
+  "seed_applied": false,
+  "seed_note": "The IQM circuit-level path does not implement a seed. seed_simulator is an IBM-primitive option; the IQM provider silently discards it with a UserWarning, so passing it would make an unseeded measurement LOOK deterministic.",
+  "backend_props": {
+    "backend_name": "garnet",
+    "num_qubits": 20,
+    "operation_names": [
+      "cz",
+      "delay",
+      "id",
+      "if_else",
+      "measure",
+      "r",
+      "reset"
+    ],
+    "target_num_qubits": 20,
+    "target_ops": [
+      "cz",
+      "delay",
+      "id",
+      "if_else",
+      "measure",
+      "r",
+      "reset"
+    ],
+    "status": "unavailable: AttributeError"
+  },
+  "anchor_minus_bell_pp": 0.0,
+  "conclusion": "anchor-balance +0.00 pp eltérés a bell-controllhoz képest, a 95%-os intervallumok átfedik egymást.  [95% CI anchor 0.00–79.34%, bell 0.00–79.34%; OVERLAP] KÖVETKEZMÉNY: a rz(phi) NEM mutatható ki a megőrzésben; a magas Bell-balance a tiszta Bell-áramkör természetes minősége, NEM anchor-kompenzáció.",
+  "ci_method": "Wilson score interval, 95%. A négy sík nem független (egy jobban futnak), ezért a mean-plane CI a legszélessébb sík-CI konzervatív burkolata, nem az átlag sztanderd hibája.",
+  "physical_anchor_compensation_proven": false,
+  "global_20_reality_sync_proven": false,
+  "runs": [
+    {
+      "label": "ZERO (|0> referencia)",
+      "mode": "zero",
+      "job_id": "01a11ebd-8800-7065-836e-21edb9729ea4",
+      "phase_rad": 0.0,
+      "seed_requested": 42,
+      "seed_applied": false,
+      "seed_note": "The IQM circuit-level path does not implement a seed. seed_simulator is an IBM-primitive option; the IQM provider silently discards it with a UserWarning, so passing it would make an unseeded measurement LOOK deterministic.",
+      "transpiled_ops": {
+        "measure": 8
+      },
+      "transpiled_depth": 1,
+      "transpiled_qasm": "                                    ┌─┐\nancilla_3 -> 7 ─────────────────────┤M├\n                                 ┌─┐└╥┘\n      q_4 -> 6 ──────────────────┤M├─╫─\n                              ┌─┐└╥┘ ║ \nancilla_2 -> 5 ───────────────┤M├─╫──╫─\n                           ┌─┐└╥┘ ║  ║ \nancilla_1 -> 4 ────────────┤M├─╫──╫──╫─\n                        ┌─┐└╥┘ ║  ║  ║ \nancilla_0 -> 3 ─────────┤M├─╫──╫──╫──╫─\n                     ┌─┐└╥┘ ║  ║  ║  ║ \n      q_5 -> 2 ──────┤M├─╫──╫──╫──╫──╫─\n                  ┌─┐└╥┘ ║  ║  ║  ║  ║ \n      q_6 -> 1 ───┤M├─╫──╫──╫──╫──╫──╫─\n               ┌─┐└╥┘ ║  ║  ║  ║  ║  ║ \n      q_7 -> 0 ┤M├─╫──╫──╫──╫──╫──╫──╫─\n               └╥┘ ║  ║  ║  ║  ║  ║  ║ \n          c: 8/═╩══╩══╩══╩══╩══╩══╩══╩═\n                0  1  2  3  4  5  6  7 ",
+      "analysis": {
+        "counts": {},
+        "requested_shots": 1024,
+        "returned_shots": 0,
+        "shot_loss": true,
+        "shot_loss_pct": 100.0,
+        "per_plane": [
+          {
+            "plane": 0,
+            "qubits": [
+              0,
+              1
+            ],
+            "00": 0,
+            "11": 0,
+            "other": 0,
+            "bell_balance_pct": 0.0,
+            "bell_balance_ci95_pct": [
+              0.0,
+              79.345
+            ]
+          },
+          {
+            "plane": 1,
+            "qubits": [
+              2,
+              3
+            ],
+            "00": 0,
+            "11": 0,
+            "other": 0,
+            "bell_balance_pct": 0.0,
+            "bell_balance_ci95_pct": [
+              0.0,
+              79.345
+            ]
+          },
+          {
+            "plane": 2,
+            "qubits": [
+              4,
+              5
+            ],
+            "00": 0,
+            "11": 0,
+            "other": 0,
+            "bell_balance_pct": 0.0,
+            "bell_balance_ci95_pct": [
+              0.0,
+              79.345
+            ]
+          },
+          {
+            "plane": 3,
+            "qubits": [
+              6,
+              7
+            ],
+            "00": 0,
+            "11": 0,
+            "other": 0,
+            "bell_balance_pct": 0.0,
+            "bell_balance_ci95_pct": [
+              0.0,
+              79.345
+            ]
+          }
+        ],
+        "global_balance_pct": 0.0,
+        "global_balance_ci95_pct": [
+          0.0,
+          79.345
+        ],
+        "memory_total": 0,
+        "memory_saved": 0
+      },
+      "mean_plane_balance_pct": 0.0,
+      "mean_plane_balance_ci95_pct": [
+        0.0,
+        79.345
+      ],
+      "memory": []
+    },
+    {
+      "label": "H-only (uniform ref)",
+      "mode": "h",
+      "job_id": "01a11ebd-9239-7356-b02a-d289ba45c208",
+      "phase_rad": 0.0,
+      "seed_requested": 42,
+      "seed_applied": false,
+      "seed_note": "The IQM circuit-level path does not implement a seed. seed_simulator is an IBM-primitive option; the IQM provider silently discards it with a UserWarning, so passing it would make an unseeded measurement LOOK deterministic.",
+      "transpiled_ops": {
+        "r": 8,
+        "measure": 8
+      },
+      "transpiled_depth": 2,
+      "transpiled_qasm": "               ┌─────────────┐                     ┌─┐\nancilla_3 -> 7 ┤ R(π/2,3π/2) ├─────────────────────┤M├\n               ├─────────────┤                  ┌─┐└╥┘\n      q_4 -> 6 ┤ R(π/2,3π/2) ├──────────────────┤M├─╫─\n               ├─────────────┤               ┌─┐└╥┘ ║ \nancilla_2 -> 5 ┤ R(π/2,3π/2) ├───────────────┤M├─╫──╫─\n               ├─────────────┤            ┌─┐└╥┘ ║  ║ \nancilla_1 -> 4 ┤ R(π/2,3π/2) ├────────────┤M├─╫──╫──╫─\n               ├─────────────┤         ┌─┐└╥┘ ║  ║  ║ \nancilla_0 -> 3 ┤ R(π/2,3π/2) ├─────────┤M├─╫──╫──╫──╫─\n               ├─────────────┤      ┌─┐└╥┘ ║  ║  ║  ║ \n      q_5 -> 2 ┤ R(π/2,3π/2) ├──────┤M├─╫──╫──╫──╫──╫─\n               ├─────────────┤   ┌─┐└╥┘ ║  ║  ║  ║  ║ \n      q_6 -> 1 ┤ R(π/2,3π/2) ├───┤M├─╫──╫──╫──╫──╫──╫─\n               ├─────────────┤┌─┐└╥┘ ║  ║  ║  ║  ║  ║ \n      q_7 -> 0 ┤ R(π/2,3π/2) ├┤M├─╫──╫──╫──╫──╫──╫──╫─\n               └─────────────┘└╥┘ ║  ║  ║  ║  ║  ║  ║ \n          c: 8/════════════════╩══╩══╩══╩══╩══╩══╩══╩═\n                               0  1  2  3  4  5  6  7 ",
+      "analysis": {
+        "counts": {},
+        "requested_shots": 1024,
+        "returned_shots": 0,
+        "shot_loss": true,
+        "shot_loss_pct": 100.0,
+        "per_plane": [
+          {
+            "plane": 0,
+            "qubits": [
+              0,
+              1
+            ],
+            "00": 0,
+            "11": 0,
+            "other": 0,
+            "bell_balance_pct": 0.0,
+            "bell_balance_ci95_pct": [
+              0.0,
+              79.345
+            ]
+          },
+          {
+            "plane": 1,
+            "qubits": [
+              2,
+              3
+            ],
+            "00": 0,
+            "11": 0,
+            "other": 0,
+            "bell_balance_pct": 0.0,
+            "bell_balance_ci95_pct": [
+              0.0,
+              79.345
+            ]
+          },
+          {
+            "plane": 2,
+            "qubits": [
+              4,
+              5
+            ],
+            "00": 0,
+            "11": 0,
+            "other": 0,
+            "bell_balance_pct": 0.0,
+            "bell_balance_ci95_pct": [
+              0.0,
+              79.345
+            ]
+          },
+          {
+            "plane": 3,
+            "qubits": [
+              6,
+              7
+            ],
+            "00": 0,
+            "11": 0,
+            "other": 0,
+            "bell_balance_pct": 0.0,
+            "bell_balance_ci95_pct": [
+              0.0,
+              79.345
+            ]
+          }
+        ],
+        "global_balance_pct": 0.0,
+        "global_balance_ci95_pct": [
+          0.0,
+          79.345
+        ],
+        "memory_total": 0,
+        "memory_saved": 0
+      },
+      "mean_plane_balance_pct": 0.0,
+      "mean_plane_balance_ci95_pct": [
+        0.0,
+        79.345
+      ],
+      "memory": []
+    },
+    {
+      "label": "BELL control (nincs rz)",
+      "mode": "bell",
+      "job_id": "01a11ebd-9b37-722a-99d7-948d8fe51309",
+      "phase_rad": 0.0,
+      "seed_requested": 42,
+      "seed_applied": false,
+      "seed_note": "The IQM circuit-level path does not implement a seed. seed_simulator is an IBM-primitive option; the IQM provider silently discards it with a UserWarning, so passing it would make an unseeded measurement LOOK deterministic.",
+      "transpiled_ops": {
+        "r": 12,
+        "measure": 8,
+        "cz": 4
+      },
+      "transpiled_depth": 4,
+      "transpiled_qasm": "               ┌─────────────┐                                 ┌─┐            »\n      q_0 -> 0 ┤ R(π/2,3π/2) ├─■───────────────────────────────┤M├────────────»\n               ├─────────────┤ │ ┌─────────────┐               └╥┘      ┌─┐   »\n      q_1 -> 1 ┤ R(π/2,3π/2) ├─■─┤ R(π/2,5π/2) ├────────────────╫───────┤M├───»\n               ├─────────────┤   └─────────────┘                ║ ┌─┐   └╥┘   »\n      q_2 -> 2 ┤ R(π/2,3π/2) ├──────────■───────────────────────╫─┤M├────╫────»\n               ├─────────────┤          │       ┌─────────────┐ ║ └╥┘    ║    »\n      q_5 -> 5 ┤ R(π/2,3π/2) ├─■────────┼───────┤ R(π/2,5π/2) ├─╫──╫─────╫────»\n               ├─────────────┤ │        │       └─────────────┘ ║  ║ ┌─┐ ║    »\nancilla_1 -> 4 ┤ R(π/2,3π/2) ├─■────────┼───────────────────────╫──╫─┤M├─╫────»\n               ├─────────────┤          │       ┌─────────────┐ ║  ║ └╥┘ ║ ┌─┐»\nancilla_0 -> 3 ┤ R(π/2,3π/2) ├──────────■───────┤ R(π/2,5π/2) ├─╫──╫──╫──╫─┤M├»\n               ├─────────────┤                  └─────┬─┬─────┘ ║  ║  ║  ║ └╥┘»\n      q_4 -> 6 ┤ R(π/2,3π/2) ├─■──────────────────────┤M├───────╫──╫──╫──╫──╫─»\n               ├─────────────┤ │ ┌─────────────┐      └╥┘       ║  ║  ║  ║  ║ »\n      q_3 -> 7 ┤ R(π/2,3π/2) ├─■─┤ R(π/2,5π/2) ├───────╫────────╫──╫──╫──╫──╫─»\n               └─────────────┘   └─────────────┘       ║        ║  ║  ║  ║  ║ »\n          c: 8/════════════════════════════════════════╩════════╩══╩══╩══╩══╩═»\n                                                       6        0  2  4  1  3 »\n«                     \n«      q_0 -> 0 ──────\n«                     \n«      q_1 -> 1 ──────\n«                     \n«      q_2 -> 2 ──────\n«               ┌─┐   \n«      q_5 -> 5 ┤M├───\n«               └╥┘   \n«ancilla_1 -> 4 ─╫────\n«                ║    \n«ancilla_0 -> 3 ─╫────\n«                ║    \n«      q_4 -> 6 ─╫────\n«                ║ ┌─┐\n«      q_3 -> 7 ─╫─┤M├\n«                ║ └╥┘\n«          c: 8/═╩══╩═\n«                5  7 ",
+      "analysis": {
+        "counts": {},
+        "requested_shots": 1024,
+        "returned_shots": 0,
+        "shot_loss": true,
+        "shot_loss_pct": 100.0,
+        "per_plane": [
+          {
+            "plane": 0,
+            "qubits": [
+              0,
+              1
+            ],
+            "00": 0,
+            "11": 0,
+            "other": 0,
+            "bell_balance_pct": 0.0,
+            "bell_balance_ci95_pct": [
+              0.0,
+              79.345
+            ]
+          },
+          {
+            "plane": 1,
+            "qubits": [
+              2,
+              3
+            ],
+            "00": 0,
+            "11": 0,
+            "other": 0,
+            "bell_balance_pct": 0.0,
+            "bell_balance_ci95_pct": [
+              0.0,
+              79.345
+            ]
+          },
+          {
+            "plane": 2,
+            "qubits": [
+              4,
+              5
+            ],
+            "00": 0,
+            "11": 0,
+            "other": 0,
+            "bell_balance_pct": 0.0,
+            "bell_balance_ci95_pct": [
+              0.0,
+              79.345
+            ]
+          },
+          {
+            "plane": 3,
+            "qubits": [
+              6,
+              7
+            ],
+            "00": 0,
+            "11": 0,
+            "other": 0,
+            "bell_balance_pct": 0.0,
+            "bell_balance_ci95_pct": [
+              0.0,
+              79.345
+            ]
+          }
+        ],
+        "global_balance_pct": 0.0,
+        "global_balance_ci95_pct": [
+          0.0,
+          79.345
+        ],
+        "memory_total": 0,
+        "memory_saved": 0
+      },
+      "mean_plane_balance_pct": 0.0,
+      "mean_plane_balance_ci95_pct": [
+        0.0,
+        79.345
+      ],
+      "memory": []
+    },
+    {
+      "label": "ANCHOR (rz(phi))",
+      "mode": "anchor",
+      "job_id": "01a11ebd-a3bc-7134-bb83-4b87f19bdc92",
+      "phase_rad": 0.4398229715026787,
+      "seed_requested": 42,
+      "seed_applied": false,
+      "seed_note": "The IQM circuit-level path does not implement a seed. seed_simulator is an IBM-primitive option; the IQM provider silently discards it with a UserWarning, so passing it would make an unseeded measurement LOOK deterministic.",
+      "transpiled_ops": {
+        "r": 12,
+        "measure": 8,
+        "cz": 4
+      },
+      "transpiled_depth": 4,
+      "transpiled_qasm": "               ┌─────────────┐                                 ┌─┐            »\n      q_0 -> 0 ┤ R(π/2,3π/2) ├─■───────────────────────────────┤M├────────────»\n               ├─────────────┤ │ ┌─────────────┐               └╥┘      ┌─┐   »\n      q_1 -> 1 ┤ R(π/2,3π/2) ├─■─┤ R(π/2,5π/2) ├────────────────╫───────┤M├───»\n               ├─────────────┤   └─────────────┘                ║ ┌─┐   └╥┘   »\n      q_2 -> 2 ┤ R(π/2,3π/2) ├──────────■───────────────────────╫─┤M├────╫────»\n               ├─────────────┤          │       ┌─────────────┐ ║ └╥┘    ║    »\n      q_5 -> 5 ┤ R(π/2,3π/2) ├─■────────┼───────┤ R(π/2,5π/2) ├─╫──╫─────╫────»\n               ├─────────────┤ │        │       └─────────────┘ ║  ║ ┌─┐ ║    »\nancilla_1 -> 4 ┤ R(π/2,3π/2) ├─■────────┼───────────────────────╫──╫─┤M├─╫────»\n               ├─────────────┤          │       ┌─────────────┐ ║  ║ └╥┘ ║ ┌─┐»\nancilla_0 -> 3 ┤ R(π/2,3π/2) ├──────────■───────┤ R(π/2,5π/2) ├─╫──╫──╫──╫─┤M├»\n               ├─────────────┤                  └─────┬─┬─────┘ ║  ║  ║  ║ └╥┘»\n      q_4 -> 6 ┤ R(π/2,3π/2) ├─■──────────────────────┤M├───────╫──╫──╫──╫──╫─»\n               ├─────────────┤ │ ┌─────────────┐      └╥┘       ║  ║  ║  ║  ║ »\n      q_3 -> 7 ┤ R(π/2,3π/2) ├─■─┤ R(π/2,5π/2) ├───────╫────────╫──╫──╫──╫──╫─»\n               └─────────────┘   └─────────────┘       ║        ║  ║  ║  ║  ║ »\n          c: 8/════════════════════════════════════════╩════════╩══╩══╩══╩══╩═»\n                                                       6        0  2  4  1  3 »\n«                     \n«      q_0 -> 0 ──────\n«                     \n«      q_1 -> 1 ──────\n«                     \n«      q_2 -> 2 ──────\n«               ┌─┐   \n«      q_5 -> 5 ┤M├───\n«               └╥┘   \n«ancilla_1 -> 4 ─╫────\n«                ║    \n«ancilla_0 -> 3 ─╫────\n«                ║    \n«      q_4 -> 6 ─╫────\n«                ║ ┌─┐\n«      q_3 -> 7 ─╫─┤M├\n«                ║ └╥┘\n«          c: 8/═╩══╩═\n«                5  7 ",
+      "analysis": {
+        "counts": {},
+        "requested_shots": 1024,
+        "returned_shots": 0,
+        "shot_loss": true,
+        "shot_loss_pct": 100.0,
+        "per_plane": [
+          {
+            "plane": 0,
+            "qubits": [
+              0,
+              1
+            ],
+            "00": 0,
+            "11": 0,
+            "other": 0,
+            "bell_balance_pct": 0.0,
+            "bell_balance_ci95_pct": [
+              0.0,
+              79.345
+            ]
+          },
+          {
+            "plane": 1,
+            "qubits": [
+              2,
+              3
+            ],
+            "00": 0,
+            "11": 0,
+            "other": 0,
+            "bell_balance_pct": 0.0,
+            "bell_balance_ci95_pct": [
+              0.0,
+              79.345
+            ]
+          },
+          {
+            "plane": 2,
+            "qubits": [
+              4,
+              5
+            ],
+            "00": 0,
+            "11": 0,
+            "other": 0,
+            "bell_balance_pct": 0.0,
+            "bell_balance_ci95_pct": [
+              0.0,
+              79.345
+            ]
+          },
+          {
+            "plane": 3,
+            "qubits": [
+              6,
+              7
+            ],
+            "00": 0,
+            "11": 0,
+            "other": 0,
+            "bell_balance_pct": 0.0,
+            "bell_balance_ci95_pct": [
+              0.0,
+              79.345
+            ]
+          }
+        ],
+        "global_balance_pct": 0.0,
+        "global_balance_ci95_pct": [
+          0.0,
+          79.345
+        ],
+        "memory_total": 0,
+        "memory_saved": 0
+      },
+      "mean_plane_balance_pct": 0.0,
+      "mean_plane_balance_ci95_pct": [
+        0.0,
+        79.345
+      ],
+      "memory": []
+    }
+  ]
+}
