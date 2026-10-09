@@ -8,11 +8,11 @@
 > The original pulse-level protocol (`qiskit.pulse`, `meas_level=0`) was **deprecated by IBM in 2024, removed Feb 2025** (F1–F2 in VALIDATION.md).
 >
 > **Measured results, newest first — including the negative ones:**
-> - **❌ TESSERACT-V3 5-PHASE HARDWARE SWEEP — NOT PROVEN** (2026-10-08) — 5/5 phases on IQM Garnet 20Q, 1024 shots/phase. Global coherence 0.2–1.4%. Goodness-of-fit **rejects** the theoretical cos(8φ) curve (χ²=30.72, df=4, p<0.0001) and **cannot reject** a flat response (χ²=1.98, df=4, p=0.7392). Hardware noise sits **above** the predicted signal (0.3–3.1%). **The five phases are not statistically distinguishable.**
+> - **❌ TESSERACT-V3 5-PHASE HARDWARE SWEEP — NOT PROVEN** (2026-10-09) — 5/5 phases on IQM Garnet 20Q, 1024 shots/phase. Global coherence 0.2–1.4%. Goodness-of-fit **rejects** the theoretical cos(8φ) curve (χ²=30.72, df=4, p=6×10⁻⁶). Flat response also **rejected** (χ²=20.29, df=4, p=5.15×10⁻⁴) — R² = -4.41 (worse than mean). Fitted amplitude 0.51% vs theoretical 1.56%. Hardware noise floor (~0.68%) sits **at/above** the predicted signal range (0–1.56%). **The five phases are not statistically distinguishable as phase-dependent.**
 > - **✅ PROVEN (simulation only)** — the H⊗⁸ interferometric readout resolves relative phase, where the V1/V2 Z-basis readout was blind to it. No hardware confirmation.
 > - **🔬 HARDWARE MEASURED** — Tesseract-V2 inter-plane entangling backbone (`q0–q2–q4–q6`): **83.01%** global 8-qubit GHZ coherence (850/1024), Wilson CI [80.59%, 85.18%] vs V1 [9.80%, 13.73%] — non-overlapping. **Plane coupling works.** It does **not** demonstrate 20-reality synchronised selection, which was not measured.
 > - **🔬 HARDWARE MEASURED** on `ibm_marrakesh` (156Q Heron r2, 2000 shots):
->   - Ď(37ns) = 0.331662 (single-qubit dynamics, Îł=0 model)
+>   - Ψ(37ns) = 0.331662 (single-qubit dynamics, γ=0 model)
 >   - Borg γ=0 corrected baseline: 89.72% balance, **0% clear**
 >   - Borg γ=0.5 anchor ON: 87.74% balance, **0% clear**
 > - **🔴 RETRACTED** — an earlier "100% clear" Borg reading was a circuit tautology, not evidence (§9)
@@ -28,12 +28,12 @@
 
 ## What this is
 
-The original white paper (HOPE-WP-2026) hypothesized: a weak, non-destructive pulse acts as an "anchor" â€” one mode survives the pulse and this survival carries significance.
+The original white paper (HOPE-WP-2026) hypothesized: a weak, non-destructive pulse acts as an "anchor" — one mode survives the pulse and this survival carries significance.
 
 **This project does NOT prove that hypothesis.** Instead, it:
-1. **Documents the blockers** (F1â€“F5 in VALIDATION.md) why the original pulse-level protocol cannot run
+1. **Documents the blockers** (F1–F5 in VALIDATION.md) why the original pulse-level protocol cannot run
 2. **Migrates to a working API** (fractional gates + qiskit-dynamics + SamplerV2)
-3. **Measures what IS measurable** on real hardware and reports evidence grades honestly â€” including the negative results
+3. **Measures what IS measurable** on real hardware and reports evidence grades honestly — including the negative results
 4. **Documents the measured denial** of IQM pulse-level access, which blocks the test that would actually decide the anchor question
 
 ---
@@ -42,7 +42,7 @@ The original white paper (HOPE-WP-2026) hypothesized: a weak, non-destructive pu
 
 | File | Purpose |
 |---|---|
-| [`docs/VALIDATION.md`](docs/VALIDATION.md) | **Proof ledger.** All claims with evidence grades, 5 blockers, hardware measurements (Â§7â€“Â§8), retraction of false positive (Â§9), next steps (Â§10), **V3 interferometric readout (Â§7.12)**. |
+| [`docs/VALIDATION.md`](docs/VALIDATION.md) | **Proof ledger.** All claims with evidence grades, 5 blockers, hardware measurements (§7–§8), retraction of false positive (§9), next steps (§10), **V3 interferometric readout (§7.12)**. |
 | `src/matryoshka_borg_predictive.py` | **Main protocol.** Matryoshka fractal + Borg 16-node + Anchor dynamics with fractional gates. |
 | `src/anchor_model.py` | Classical anchor equation evaluation. Stdlib only. |
 | `src/anchor_measure.py` | Measurement layer: amplitude sweep, roundtrip, saturation. Simulation only. |
@@ -53,12 +53,12 @@ The original white paper (HOPE-WP-2026) hypothesized: a weak, non-destructive pu
 | `tools/check_claims.py` | **Claim consistency scanner.** Catches retracted/false claims in published files. |
 | `tools/selftest_claims.py` | Claim-scanner self-test: proves it fires on defects, stays silent on fixes. |
 | `tools/check_audit_trail.py` | **Measures** `measurement_raw/` completeness, and cross-checks against document claims. |
-| `tools/check_metadata.py` | `CITATION.cff` â†” `.zenodo.json` consistency; affiliation and ORCID contradiction checks. |
+| `tools/check_metadata.py` | `CITATION.cff` ⇔ `.zenodo.json` consistency; affiliation and ORCID contradiction checks. |
 | `tools/check_pulse_probe_claims.py` | A pulse-probe script guard (no `--token`, no retracted claim asserted). |
 | `tools/audit_secrets.py` | Working-tree secret audit. |
 | `tools/audit_git_history.py` | Git-history secret audit. |
 | `src/check_no_dependencies.py` | Static dependency audit (AST-based). |
-| `tesseract_anchor.py` | Tesseract 4-plane Ă— 5-reality = 20 pre-realities simulation. |
+| `tesseract_anchor.py` | Tesseract 4-plane × 5-reality = 20 pre-realities simulation. |
 | [`docs/HOPE-WP-2026-V1.2.md`](docs/HOPE-WP-2026-V1.2.md) | **White Paper V1.2.** Tesseract appendix, IQM results, retraction, LaTeX in `arxiv/`. |
 | `config/.env.template` | Environment variable placeholders. No secrets. |
 
@@ -66,7 +66,7 @@ The original white paper (HOPE-WP-2026) hypothesized: a weak, non-destructive pu
 
 ## Running
 
-### Main Protocol (ibm_marrakesh â€” fractional gates + qiskit-dynamics)
+### Main Protocol (ibm_marrakesh — fractional gates + qiskit-dynamics)
 
 ```powershell
 # Requires: IBM_QUANTUM_API_TOKEN, IBM_QUANTUM_INSTANCE, IBM_QUANTUM_CHANNEL
@@ -84,7 +84,7 @@ python -m src.matryoshka_borg_predictive --local --shots 2000 --use-fractional -
 python -m src.anchor_model
 ```
 
-### Measurement Layer (simulation only â€” tests Rabi formula, not anchor)
+### Measurement Layer (simulation only — tests Rabi formula, not anchor)
 
 ```powershell
 python -m src.anchor_measure --shots 4000                      # ideal
@@ -97,11 +97,11 @@ python -m src.anchor_measure --backend FakeKyiv --shots 4000  # noise model
 python tesseract_anchor.py --annihilation-scan
 ```
 
-### IQM Resonance â€” Circuit-Level Control Matrix (FREE, no pulse-level)
+### IQM Resonance — Circuit-Level Control Matrix (FREE, no pulse-level)
 
 ```powershell
-# Register at https://resonance.iqm.com â†’ Starter tier (30 credits/month free)
-# The token is read from the ENVIRONMENT ONLY â€” never as a CLI argument,
+# Register at https://resonance.iqm.com → Starter tier (30 credits/month free)
+# The token is read from the ENVIRONMENT ONLY — never as a CLI argument,
 # because a command-line token persists in shell history and process listings.
 $env:IQM_TOKEN = "your_token_here"
 
@@ -122,21 +122,21 @@ The control matrix runs four circuits:
 | `zero` | no gates | What is the measurement floor? |
 | `h` | H on all 8 | Is the register uniform as expected? |
 | `bell` | H+CNOT, **no `rz`** | What does a clean Bell pair score? |
-| `anchor` | H+CNOT+`rz(Ď†)` | Does `rz(Ď†)` change anything? |
+| `anchor` | H+CNOT+`rz(φ)` | Does `rz(φ)` change anything? |
 
-âš ď¸Ź **If `anchor` and `bell` agree â€” which physics predicts â€” the high balance is
+⚠️ **If `anchor` and `bell` agree — which physics predicts — the high balance is
 NOT an anchor effect.** That is the single most informative free measurement
 still available.
 
 **Result (2026-10-07, prior run without controls):** Job `01a1162c-717c-77e7-91d9-90ed16c0e591`, 1024 shots requested, 4 planes (8 qubits)
 - Global 00000000+11111111 balance: 11.62% of the requested 1024 shots (11.71% of the 1016 actually returned)
-- âš ď¸Ź Counts summed to **1016**, not 1024 â€” the script now reports this instead of silently dividing by 1024
-- âš ď¸Ź The audit JSON stores only the **first 10** memory bitstrings, not all 1024
-- âš ď¸Ź That audit record also lacks `backend_properties` and `transpiled_qasm` â€” the saving code of that run wrote neither, so the transpiled circuit is not recoverable from it
+- ⚠️ Counts summed to **1016**, not 1024 — the script now reports this instead of silently dividing by 1024
+- ⚠️ The audit JSON stores only the **first 10** memory bitstrings, not all 1024
+- ⚠️ That audit record also lacks `backend_properties` and `transpiled_qasm` — the saving code of that run wrote neither, so the transpiled circuit is not recoverable from it
 
-âš ď¸Ź **The "virtual Z phase" is an `rz()` digital gate, not a 4.11 GHz physical drive.**
-Pulse-level Sweep API is **not included in the free tier** â€” measured rejection:
-`Personal account does not have pulse-level access enabled` (VALIDATION.md Â§7.8.8)
+⚠️ **The "virtual Z phase" is an `rz()` digital gate, not a 4.11 GHz physical drive.**
+Pulse-level Sweep API is **not included in the free tier** — measured rejection:
+`Personal account does not have pulse-level access enabled` (VALIDATION.md §7.8.8)
 
 ### Dependency Audit
 
@@ -148,7 +148,7 @@ python -m src.check_no_dependencies
 
 ## Verification
 
-Every offline check in one command â€” no hardware, no network, no token:
+Every offline check in one command — no hardware, no network, no token:
 
 ```powershell
 python tools\run_checks.py
@@ -167,7 +167,7 @@ Current state: **14 of 14 PASS.** All offline checks green.
 | 7 | Claim scanner self-test | The scanner fires on defects, stays silent on fixes |
 | 8 | Audit trail completeness | **Measures** `measurement_raw/`, does not trust the prose |
 | 9 | Audit trail self-test | That checker also fires both ways |
-| 10 | Publication metadata | `CITATION.cff` â†” `.zenodo.json` agree |
+| 10 | Publication metadata | `CITATION.cff` ⇔ `.zenodo.json` agree |
 | 11 | Metadata self-test | Same, as assertions |
 | 12 | Working-tree secret audit | No credential material in the tree |
 | 13 | Git-history secret audit | No credential material in any committed blob |
@@ -182,11 +182,11 @@ because prose review did not catch these:
 
 | Claim in the docs | Measured reality |
 |---|---|
-| ~~All raw data â€¦ with backend properties, transpiled QASM~~ â€” false | 28 of 32 records do; 4 earlier IQM records carry job ID + counts only |
-| ~~1024 bitstrings captured~~ â€” false | The IQM audit stores **10** of 1016 |
-| ~~"Garnet is 19Q"~~ â€” false | Re-measured 2026-10-07: the SDK reports **20 qubits** (`num_qubits` and `target.num_qubits`). An earlier correction to 19Q was itself wrong |
+| ~~All raw data … with backend properties, transpiled QASM~~ — false | 28 of 32 records do; 4 earlier IQM records carry job ID + counts only |
+| ~~1024 bitstrings captured~~ — false | The IQM audit stores **10** of 1016 |
+| ~~"Garnet is 19Q"~~ — false | Re-measured 2026-10-07: the SDK reports **20 qubits** (`num_qubits` and `target.num_qubits`). An earlier correction to 19Q was itself wrong |
 
-âš ď¸Ź **The account can reach three real QPUs, not one.** Measured with the live
+⚠️ **The account can reach three real QPUs, not one.** Measured with the live
 token: `garnet` 20Q, `emerald` 54Q, `sirius` 16Q (plus `:mock` variants). The
 documentation previously described only Garnet, which understated the free
 access this account actually has.
@@ -197,53 +197,53 @@ access this account actually has.
 
 | Marker | Meaning |
 |---|---|
-| âś… **PROVEN (classical)** | Offline computation or test suite proves it. **Not hardware proof.** |
-| đź”¬ **PROVEN (hardware)** | Measured on real QPU with known-expectation reference circuit. |
-| âš ď¸Ź **UNVERIFIED / MEASUREMENT-DEPENDENT** | Claim exists but no measurement supports it, or value depends on measurement. |
-| âš ď¸Ź **ASSUMPTION** | Model assumes it. No complexity measurement. |
-| â„ąď¸Ź **CONVENTION** | Project-chosen definition. Not a law of nature. |
+| ✅ **PROVEN (classical)** | Offline computation or test suite proves it. **Not hardware proof.** |
+| 📬 **PROVEN (hardware)** | Measured on real QPU with known-expectation reference circuit. |
+| ⚠️ **UNVERIFIED / MEASUREMENT-DEPENDENT** | Claim exists but no measurement supports it, or value depends on measurement. |
+| ⚠️ **ASSUMPTION** | Model assumes it. No complexity measurement. |
+| ⑩ **CONVENTION** | Project-chosen definition. Not a law of nature. |
 
 ---
 
-## Current Hardware Status (2026-10-08)
+## Current Hardware Status (2026-10-09)
 
 | Test | Result | Grade | Source |
 |---|---|---|---|
-| **Ď(37ns) single-qubit dynamics** | 0.331662 (Îł=0) | đź”¬ HARDWARE MEASURED | ibm_marrakesh, VALIDATION.md Â§7.7 |
-| **Borg 16-node clear signal** | 100% clear, 96.43% balance | âš ď¸Ź **RETRACTED** | Circuit tautology, VALIDATION.md Â§9 |
-| **Borg Îł=0 corrected baseline** | 89.72% balance, 0% clear | đź”¬ HARDWARE MEASURED | ibm_marrakesh, VALIDATION.md Â§8 |
-| **Borg Îł=0.5 anchor ON** | 87.74% balance, 0% clear | đź”¬ HARDWARE MEASURED | ibm_marrakesh, VALIDATION.md Â§8 |
-| **Matryoshka D0â†’D8 preservation** | 97.40% â†’ 89.40% | âš ď¸Ź UNVERIFIED | Criterion "preserved" evaluated False |
-| **4 Bell pairs on IQM Garnet 20Q** | Per-plane 96.75â€“97.63%, 3 runs, CI overlaps all; global ~10%, random-level | đź”¬ HARDWARE MEASURED | Circuit-level; VALIDATION.md Â§7.9â€“Â§7.10; 32 audit records total |
-| **`rz(Ď†)` has a measurable effect** | â€” | âš ď¸Ź UNVERIFIED | No rz-free control row in the prior run |
-| **Global 20-reality sync (V1)** | 11.62% (of 1024 requested) | âťŚ NOT SHOWN | Consistent with independent planes |
-| **Tesseract-V2 Global Coherence** | **83.01%** (850/1024 shots), Wilson CI [80.59%, 85.18%] | đź”¬ HARDWARE MEASURED | IQM Garnet 20Q, Job `01a1183a`, VALIDATION.md Â§7.11. Plane coupling works; 20-reality selection NOT shown |
-| **Tesseract-V3 Interferometric Readout (5-phase)** | Sim: V2 blind to phase, V3 modulates cos(8Ď†) | âś… PROVEN (simulation) | `tesseract_v3_interferometric.py`, VALIDATION.md Â§7.12 |
-| **Tesseract-V3 Hardware Sweep (5-phase)** | 5/5 phases complete (2026-10-08). Global coherence 0.2â€“1.4%, Ď‡Â˛ p=0.739 flat, cos(8Ď†) fit p<0.0001, RÂ˛=0.85 | âťŚ NOT PROVEN (noise-dominated) | IQM Garnet 20Q, Jobs `01a11943`, `01a11ab7`, `01a11aba` (ph2&3), `01a11abb`, VALIDATION.md Â§7.12 |
-| **Physical detuned drive applied** | â€” | âťŚ NOT MEASURED | `rz` is a virtual rotation |
-| **Anchor drive compensates T1/T2** | 0% clear both conditions | âťŚ NOT PROVEN | SamplerV2 cannot do dissipative compensation |
-| **Pulse-level Sweep API** | Access denied on Starter tier | âťŚ BLOCKED | Measured â€” `Personal account does not have pulse-level access enabled` |
+| **Ψ(37ns) single-qubit dynamics** | 0.331662 (γ=0) | 📬 HARDWARE MEASURED | ibm_marrakesh, VALIDATION.md §7.7 |
+| **Borg 16-node clear signal** | 100% clear, 96.43% balance | ⚠️ **RETRACTED** | Circuit tautology, VALIDATION.md §9 |
+| **Borg γ=0 corrected baseline** | 89.72% balance, 0% clear | 📬 HARDWARE MEASURED | ibm_marrakesh, VALIDATION.md §8 |
+| **Borg γ=0.5 anchor ON** | 87.74% balance, 0% clear | 📬 HARDWARE MEASURED | ibm_marrakesh, VALIDATION.md §8 |
+| **Matryoshka D0→D8 preservation** | 97.40% → 89.40% | ⚠️ UNVERIFIED | Criterion "preserved" evaluated False |
+| **4 Bell pairs on IQM Garnet 20Q** | Per-plane 96.75–97.63%, 3 runs, CI overlaps all; global ~10%, random-level | 📬 HARDWARE MEASURED | Circuit-level; VALIDATION.md §7.9–§7.10; 32 audit records total |
+| **`rz(φ)` has a measurable effect** | — | ⚠️ UNVERIFIED | No rz-free control row in the prior run |
+| **Global 20-reality sync (V1)** | 11.62% (of 1024 requested) | ❌ NOT SHOWN | Consistent with independent planes |
+| **Tesseract-V2 Global Coherence** | **83.01%** (850/1024 shots), Wilson CI [80.59%, 85.18%] | 📬 HARDWARE MEASURED | IQM Garnet 20Q, Job `01a1183a`, VALIDATION.md §7.11. Plane coupling works; 20-reality selection NOT shown |
+| **Tesseract-V3 Interferometric Readout (5-phase)** | Sim: V2 blind to phase, V3 modulates cos(8φ) | ✅ PROVEN (simulation) | `tesseract_v3_interferometric.py`, VALIDATION.md §7.12 |
+| **Tesseract-V3 Hardware Sweep (5-phase)** | 5/5 phases complete (2026-10-09). Global coherence 0.2-1.4%, χ²=30.72 cos(8φ) p=6×10⁻⁶, χ²=20.29 flat p=5.15×10⁻⁴, R²=-4.41, fitted amp 0.51% vs 1.56% theory | ❌ NOT PROVEN (noise-dominated) | IQM Garnet 20Q, Jobs `01a11943`, `01a11ab7`, `01a11aba` (ph2&3), `01a11abb`, VALIDATION.md §7.12 |
+| **Physical detuned drive applied** | — | ❌ NOT MEASURED | `rz` is a virtual rotation |
+| **Anchor drive compensates T1/T2** | 0% clear both conditions | ❌ NOT PROVEN | SamplerV2 cannot do dissipative compensation |
+| **Pulse-level Sweep API** | Access denied on Starter tier | ❌ BLOCKED | Measured — `Personal account does not have pulse-level access enabled` |
 
-**Key insight:** The SamplerV2 API (IBM's current primitive) only supports coherent gates. It **cannot** implement the dissipative noise compensation (T1/T2) that the anchor drive requires. This is why anchor drive compensation shows 0% clear on hardware even at Îł=0.
+**Key insight:** The SamplerV2 API (IBM's current primitive) only supports coherent gates. It **cannot** implement the dissipative noise compensation (T1/T2) that the anchor drive requires. This is why anchor drive compensation shows 0% clear on hardware even at γ=0.
 
-**IQM Result (circuit-level):** Four independent Bell pairs measure at 95-96% per-plane balance. âš ď¸Ź The `rz(0.4398)` was a **virtual Z rotation** â€” the transpiler emitted `r` rotations; no 4.11 GHz physical drive was applied. Global 8-qubit correlation in V1 (11.62% of the requested 1024 shots; 11.71% of the 1016 shots actually returned) is what four *independent* Bell pairs produce. In **Tesseract-V2**, an inter-plane entangling backbone (`q0â†’q2â†’q4â†’q6`) plus per-plane extension produces an entangled 8-qubit GHZ state with **83.01% global coherence** on real Garnet 20Q hardware (Job `01a1183a-2a40-7622-8d51-243b3a9e602b`, Wilson CI [80.59%, 85.18%] vs V1 [9.80%, 13.73%] â€” non-overlapping). âš ď¸Ź This proves the **plane coupling works**; it does **not** demonstrate 20-reality synchronized selection, which was not measured.
+**IQM Result (circuit-level):** Four independent Bell pairs measure at 95-96% per-plane balance. ⚠️ The `rz(0.4398)` was a **virtual Z rotation** — the transpiler emitted `r` rotations; no 4.11 GHz physical drive was applied. Global 8-qubit correlation in V1 (11.62% of the requested 1024 shots; 11.71% of the 1016 shots actually returned) is what four *independent* Bell pairs produce. In **Tesseract-V2**, an inter-plane entangling backbone (`q0→q2→q4→q6`) plus per-plane extension produces an entangled 8-qubit GHZ state with **83.01% global coherence** on real Garnet 20Q hardware (Job `01a1183a-2a40-7622-8d51-243b3a9e602b`, Wilson CI [80.59%, 85.18%] vs V1 [9.80%, 13.73%] — non-overlapping). ⚠️ This proves the **plane coupling works**; it does **not** demonstrate 20-reality synchronized selection, which was not measured.
 
-**Pulse-level access is a separate entitlement from credits:** a minimal `submit_sweep` probe with a fully validated playlist was rejected by the server with `Personal account does not have pulse-level access enabled`. The client, the 82 channels, and the playlist structure were all valid â€” see VALIDATION.md Â§7.8.8.
+**Pulse-level access is a separate entitlement from credits:** a minimal `submit_sweep` probe with a fully validated playlist was rejected by the server with `Personal account does not have pulse-level access enabled`. The client, the 82 channels, and the playlist structure were all valid — see VALIDATION.md §7.8.8.
 
 ---
 
 ## Next Steps
 
-1. âś… **IQM Registration** â†’ `https://resonance.iqm.com` â†’ Starter tier â†’ API token
-2. âś… **Run IQM circuit-level measurement** â†’ Job `01a1162c-717c-77e7-91d9-90ed16c0e591` (COMPLETED 2026-10-07)
-3. âś… **Update VALIDATION.md Â§7.8 & Â§7.11** with per-plane balance and Tesseract-V2 (COMPLETED)
-4. âś… **White Paper V1.2** â†’ `docs/HOPE-WP-2026-V1.2.md`
-5. âś… **arXiv source** â†’ `arxiv/quantum_anchor_v1.2.tex`
-6. âś… **Zenodo + CITATION metadata corrected** â†’ `.zenodo.json`, `CITATION.cff`
-7. âś… **Run the Bell control matrix & Tesseract-V2** (FREE) â†’ 3 control matrix runs (12 jobs) + Tesseract-V2 83.01% (COMPLETED)
-8. âś… **Tesseract-V3 5-phase Interferometric Sweep** â†’ 5/5 phases complete (2026-10-08) â€” **NOISE-DOMINATED, no phase discrimination, cos(8Ď†) rejected p<0.0001, flat p=0.739** (COMPLETED)
-9. âťŚ **Pulse-level Sweep API** â†’ **BLOCKED** by account entitlement (MEASURED, Â§7.8.8)
-10. â„ąď¸Ź **Paid QPU routes** (Braket / Rigetti Ankaa-3) â†’ documented, deliberately not pursued
+1. ✅ **IQM Registration** → `https://resonance.iqm.com` → Starter tier → API token
+2. ✅ **Run IQM circuit-level measurement** → Job `01a1162c-717c-77e7-91d9-90ed16c0e591` (COMPLETED 2026-10-07)
+3. ✅ **Update VALIDATION.md §7.8 & §7.11** with per-plane balance and Tesseract-V2 (COMPLETED)
+4. ✅ **White Paper V1.2** → `docs/HOPE-WP-2026-V1.2.md`
+5. ✅ **arXiv source** → `arxiv/quantum_anchor_v1.2.tex`
+6. ✅ **Zenodo + CITATION metadata corrected** → `.zenodo.json`, `CITATION.cff`
+7. ✅ **Run the Bell control matrix & Tesseract-V2** (FREE) → 3 control matrix runs (12 jobs) + Tesseract-V2 83.01% (COMPLETED)
+8. ✅ **Tesseract-V3 5-phase Interferometric Sweep** → 5/5 phases complete (2026-10-09) — **NOISE-DOMINATED, no phase discrimination, cos(8φ) rejected p=6×10⁻⁶, flat p=5.15×10⁻⁴, R²=-4.41** (COMPLETED)
+9. ❌ **Pulse-level Sweep API** → **BLOCKED** by account entitlement (MEASURED, §7.8.8)
+10. ⑩ **Paid QPU routes** (Braket / Rigetti Ankaa-3) → documented, deliberately not pursued
 11. ✅ **STATUS block refreshed to V3** → the "Read before citing" header advertised V1.2 while the body already carried V2/V3 (COMPLETED 2026-10-08)
 12. ✅ **Version metadata → v1.2.4** → `CITATION.cff` + `.zenodo.json` now carry the V2 83.01% and the V3 noise-dominated negative result (COMPLETED 2026-10-08; upload is manual)
 13. 📝 **v1.2.3 has a tag but no release** — superseded by v1.2.4
@@ -253,4 +253,4 @@ access this account actually has.
 
 ## License
 
-MIT â€” see [`LICENSE`](LICENSE).
+MIT — see [`LICENSE`](LICENSE).

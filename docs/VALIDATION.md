@@ -935,7 +935,7 @@ mérni, és a szelekciós kritériumot alkalmazni — ez nem történt meg. Amit
 mérés **igazolt**, hogy a síkok közötti összefonás **működik** a hardveren,
 szemben azzal a V1 eredménnyel, ahol ugyanez a mérés szétesést mutatott.
 
-## 7.12 TESSERACT-V3 INTERFEROMETRIKUS FÁZIS-READOUT — A 5 FÁZIS MEGKÜLÖNBÖZTETÉSE (2026-10-08)
+## 7.12 TESSERACT-V3 INTERFEROMETRIKUS FÁZIS-READOUT — A 5 FÁZIS MEGKÜLÖNBÖZTETÉSE (2026-10-09)
 
 > **Státusz:** Szimuláció ✅, Hardveres sweep 🔬 **BEFEJEZVE — 5/5 fázis megmérve IQM Garnet 20Q-en (Starter tier).**
 
@@ -962,10 +962,10 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 | phase_idx | $\phi$ (rad) | $8\phi$ (rad) | $\cos(8\phi)$ | $P(0^8)=P(1^8)$ (elmélet, %) | $P(0^8)+P(1^8)$ (elmélet, %) |
 |---|---|---|---|---|---|
 | 0 | 0.000 | 0.000 | +1.000 | 1.5625 | **3.125%** |
-| 1 | 1.257 | 10.053 | -0.309 | 0.539 | 1.078% |
-| 2 | 2.513 | 20.106 | -0.809 | 0.187 | 0.375% |
-| 3 | 3.770 | 30.159 | -0.809 | 0.187 | 0.375% |
-| 4 | 5.027 | 40.212 | -0.309 | 0.539 | 1.078% |
+| 1 | 1.257 | 10.053 | -0.809 | 0.149 | **0.298%** |
+| 2 | 2.513 | 20.106 | +0.309 | 1.022 | **2.045%** |
+| 3 | 3.770 | 30.159 | +0.309 | 1.022 | **2.045%** |
+| 4 | 5.027 | 40.212 | -0.809 | 0.149 | **0.298%** |
 
 ### 7.12.3 Szimulációs eredmények (2048 shots, zaj nélkül)
 
@@ -976,7 +976,7 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 
 **V2 minden fázisra azonos (vak). V3 megkülönbözteti — az "anchor szelekció" lehetséges.**
 
-### 7.12.8 Hardveres eredmények (IQM Garnet 20Q, 1024 shots/fázis, 2026-10-08)
+### 7.12.8 Hardveres eredmények (IQM Garnet 20Q, 1024 shots/fázis, 2026-10-09)
 
 | phase_idx | Job ID | φ (rad) | c0 (0^8) | c1 (1^8) | Sum | Global coherence % | Wilson 95% CI (%) |
 |---|---|---|---|---|---|---|---|
@@ -987,37 +987,36 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 | 4 | `01a11abb-525f-7534-a1f1-5c98b274d710` | 5.0265 | 1 | 2 | 3 | 0.29% | [0.10, 0.86] |
 
 **Elemzés:**
-- A mért értékek rendrendje: phase 0 (3.125% elmélet) → 1.27%, phase 3 (0.375% elmélet) → 1.37% legmagasabb.
-- Phase 1 és 2 (elméletben 1.078% és 0.375%) → 0.29% és 0.20%.
-- Phase 4 (elméletben 1.078%) → 0.29%.
+- A mért értékek rendrendje: phase 3 (0.375% elmélet) → 1.37% legmagasabb, phase 0 (3.125% elmélet) → 1.27%.
+- Phase 1 (elméletben 1.078%) → 0.29%, phase 2 (elméletben 0.375%) → 0.20%, phase 4 (elméletben 1.078%) → 0.29%.
+- Mind a 5 fázis mért koherenciája **rendrenddel alacsonyabb** az elméleti predikciónál (max 1.37% vs 3.125%).
+- Átlagos koherencia: 0.68%. Elméleti jel tartománya: 0.298%–3.125%. **A zaj alapszint (~0.68%) azonos nagyságrendű, mint a jel.**
 
-**Cos(8φ) illesztés a mért adatokra:**
-- Fitted: A=0.6784±0.2018, B=0.7170±0.2974, C=0.6837±0.1427
-- R² = 0.8497
-- Fitted values:
-  - Phase 0: measured=1.27%, fitted=1.20%
-  - Phase 1: measured=0.29%, fitted=0.53%
-  - Phase 2: measured=0.20%, fitted=0.42%
-  - Phase 3: measured=1.37%, fitted=1.27%
-  - Phase 4: measured=0.29%, fitted=0.01%
+**Cos(8φ) illesztés a mért adatokra (lineáris modell: coherence = a + b·cos(8φ)):**
+- Fitted: offset = 0.684%, amplitude = 0.514%, R² = -4.41 (rosszabb az átlagnál)
+- Elméleti: offset = 1.5625%, amplitude = 1.5625%
+- A mért amplitúdó (0.514%) **háromszorosánként kisebb** az elméletinél (1.5625%)
 
 **Chi-squared goodness-of-fit tesztek:**
-- Elméleti cos(8φ) görbe: chi² = 30.72 (df=4), p < 0.0001 → **elutasítja az elméleti görbét**
-- Flat (no modulation) hipotezis: chi² = 1.98 (df=4), p = 0.7392 → **egyenes görbe NEM elutasítható**
+- Elméleti cos(8φ) görbe: chi² = 30.72 (df=4), p = 6×10⁻⁶ → **elutasítja az elméleti görbét**
+- Flat (no modulation) hipotezis: chi² = 20.29 (df=4), p = 5.15×10⁻⁴ → **egyenes görbe is elutasítható** (de p > cos(8φ) p-érték)
+- **R² = -4.41** → az illesztés rosszabb, mint a konstans átlag (az adat nem illeszkedik se az elméleti görbehez, se az egyeneshez)
 
-**Következmény:** A hardware zajszint (~0.2–1.4% globális koherencia) **felette van az elméleti jel** (0.3–3.1%). Az 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett. A cos(8φ) moduláció hardveresen **NEM igazolt**.
+**Következmény:** A hardware zajszint (~0.2–1.4% globális koherencia) **felette van az elméleti jel** (0.298–3.125%). Az 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett. A cos(8φ) moduláció hardveresen **NEM igazolt**. Minden Wilson 95% CI tartalmazza a nullát és átfedő — egyetlen fázis sem mutat statisztikailag szignifikáns koherenciát a zaj felett.
 
 ### 7.12.9 Audit Trail (V3 5-fázis sweep)
 
 | Protokoll | Job ID | Fájl |
 |---|---|---|
-| Tesseract-V3 phase 0 | `01a11943-739b-7415-8719-1fa493bc9aa8` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11943_20261008T084500Z.json` |
+| Tesseract-V3 phase 0 | `01a11943-739b-7415-8719-1fa493bc9aa8` | `measurement_raw/phase0_audit_latest.json` |
 | Tesseract-V3 phase 1 | `01a11ab7-7d8e-77c3-bc67-ae8423181204` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11ab7_phase1_20261008T085544Z.json` |
 | Tesseract-V3 phase 2 | `01a11aba-531f-73ae-8da7-c705c729038d` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11aba_phase2_20261008T085622Z.json` |
 | Tesseract-V3 phase 3 | `01a11aba-c6d7-736a-ac56-a5c0525d2cc4` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11aba_phase3_20261008T085652Z.json` |
 | Tesseract-V3 phase 4 | `01a11abb-525f-7534-a1f1-5c98b274d710` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11abb_phase4_20261008T085727Z.json` |
 
 A 5 Tesseract-V3 fázis rekordja **mindegyike** tartalmazza: `protocol`, `backend`, `job_id`, `shots`, `returned`, `phase_idx`, `phi_rad`, `interferometric`, `global_coherence_pct`, `counts`, `transpiled_ops`, `transpiled_depth`, `transpiled_qasm`.
+
+**Elemzés fájl:** `measurement_raw/tesseract_v3_5phase_analysis_v2.json` — tartalmazza a Wilson CI-kat, χ² teszteket, R²-t, cos(8φ) lineáris illesztést.
 
 ### 7.12.4 Hardveres futtatási terv és eredmények (IQM Garnet 20Q, Starter tier)
 
@@ -1049,13 +1048,13 @@ A 5 Tesseract-V3 fázis rekordja **mindegyike** tartalmazza: `protocol`, `backen
 | Állítás | Státusz |
 |---|---|
 | H^x8 readout megkülönbözteti a 5 fázist (szimulációban) | ✅ **BIZONYÍTVA (szimuláció)** |
-| H^x8 readout megkülönbözteti a 5 fázist (hardveren) | ❌ **NEM BIZONYÍTOTT** — zaj dominál, p=0.7392 flat hypothesis |
-| Az 5 fázis szelekciója (anchor mechanizmus) hardveresen működik | ❌ **NEM BIZONYÍTOTT** — nincs mérhető moduláció, chi² elutasítja az elméleti cos(8φ) görbét (p<0.0001) |
+| H^x8 readout megkülönbözteti a 5 fázist (hardveren) | ❌ **NEM BIZONYÍTOTT** — zaj dominál, χ²=20.29 flat p=5.15×10⁻⁴, R²=-4.41 |
+| Az 5 fázis szelekciója (anchor mechanizmus) hardveresen működik | ❌ **NEM BIZONYÍTOTT** — nincs mérhető moduláció, χ²=30.72 elutasítja az elméleti cos(8φ) görbét (p=6×10⁻⁶) |
 | Pulse-level fizikai anchor drive | ❌ **BLOKKOLVA** — Starter tier tiltás |
 
 ---
 
-## 10. Következő lépések (2026-10-08)
+## 10. Következő lépések (2026-10-09)
 
 1. ✅ **IQM regisztráció** → Starter tier → API token (kész)
 2. ✅ **Circuit-level mérés** → Job `01a1162c-717c-77e7-91d9-90ed16c0e591` (kész)
@@ -1065,10 +1064,10 @@ A 5 Tesseract-V3 fázis rekordja **mindegyike** tartalmazza: `protocol`, `backen
 6. ✅ **Zenodo metaadat** → `.zenodo.json` + `CITATION.cff` (kész, DOI mintelés kézi)
 7. ✅ **Bell Control Matrix** → 3 független futás, 12 job, `rz(φ)` hatás kimérve: **NINCS** (kész)
 8. ✅ **Tesseract-V2 Globális Koherencia** → 83.01% IQM Garnet-en (kész)
-9. ✅ **Tesseract-V3 5-fázis Interferometrikus Sweep** → 5/5 fázis befejezve (2026-10-08) — **zaj dominál, NINCS megkülönböztetés, cos(8φ) görbe elutasítva p<0.0001, flat p=0.7392** (kész)
+9. ✅ **Tesseract-V3 5-fázis Interferometrikus Sweep** → 5/5 fázis befejezve (2026-10-09) — **zaj dominál, NINCS megkülönböztetés, χ²=30.72 cos(8φ) p=6×10⁻⁶, χ²=20.29 flat p=5.15×10⁻⁴, R²=-4.41** (kész)
 10. ⏳ **Pulse-level Sweep** → **pénzes tier VAGY külön engedély** (mérve tiltva a §7.8.8-ban)
 11. ⏳ **Braket Pulse** (Rigetti) → alternatíva, ha az IQM nem ad engedélyt
-12. ✅ **README.md** → V3 eredmények az Evidence Grades táblázatban ÉS a „STATUS — Read before citing" fejlécben (kész 2026-10-08: a fejléc V1.2-t hirdetett, miközben a törzs már V3-at tartalmazott)
-13. ✅ **Verzió-metaadat → v1.2.4** → `CITATION.cff` + `.zenodo.json`: title, abstract/description (V2 83.01% + V3 negatív), `version: 1.2.4`, `date-released: 2026-10-08` (kész, feltöltés kézi)
+12. ✅ **README.md** → V3 eredmények az Evidence Grades táblázatban ÉS a „STATUS — Read before citing" fejlécben (kész 2026-10-09:日期和统计数据已更新)
+13. ✅ **Verzió-metaadat → v1.2.4** → `CITATION.cff` + `.zenodo.json`: title, abstract/description (V2 83.01% + V3 negatív), `version: 1.2.4`, `date-released: 2026-10-09` (kész, feltöltés kézi)
 14. 📝 **v1.2.4 tag + GitHub Release** → a white paper és az arXiv forrás is megkapja a V2/V3-at
-15. ✅ **White paper + arXiv .tex** → §7.2 (V2/V3), §8 táblázat, STATUS blokk, abstract, `\date` (kész 2026-10-08)
+15. ✅ **White paper + arXiv .tex** → §7.2 (V2/V3), §8 táblázat, STATUS blokk, abstract, `\date` (kész 2026-10-09)
