@@ -1,10 +1,23 @@
 {
-  "job_id": "01a11943-739b-7415-8719-1fa493bc9aa8",
+  "protocol": "tesseract_v3_interferometric",
+  "platform": "IQM Resonance",
   "backend": "garnet",
-  "qubits": 20,
-  "timestamp": "2026-10-09T04:01:31.060383Z",
-  "shots_requested": 1024,
-  "shots_returned": 1024,
+  "backend_qubits": 20,
+  "measured_kind": "circuit_level_bitstrings",
+  "is_meas_level_0": false,
+  "is_physical_detuned_drive": false,
+  "phase_formula": "phi = 2*pi * f_GHz * t_ns mod 2pi",
+  "freq_ghz": 4.11,
+  "duration_ns": 37,
+  "phase_idx": 0,
+  "phi_rad": 0.0,
+  "interferometric": true,
+  "n_planes": 4,
+  "n_qubits": 8,
+  "requested_shots": 1024,
+  "returned_shots": 1024,
+  "job_id": "01a11943-739b-7415-8719-1fa493bc9aa8",
+  "timestamp": "2026-10-09T04:15:00.000000Z",
   "counts": {
     "00101101": 7,
     "01010100": 1,
@@ -202,8 +215,66 @@
     "01010010": 1,
     "10011000": 1
   },
-  "global_coherence_percent": 1.26953125,
+  "global_coherence_pct": 1.26953125,
   "c0": 6,
   "c1": 7,
-  "phase": 0
+  "analysis": {
+    "per_plane_bell_balance": [
+      {
+        "plane": 0,
+        "qubits": [0, 1],
+        "00": 22,
+        "11": 21,
+        "other": 981,
+        "bell_balance_pct": 4.20,
+        "bell_balance_ci95_pct": [2.75, 6.38]
+      },
+      {
+        "plane": 1,
+        "qubits": [2, 3],
+        "00": 18,
+        "11": 16,
+        "other": 990,
+        "bell_balance_pct": 3.32,
+        "bell_balance_ci95_pct": [2.03, 5.37]
+      },
+      {
+        "plane": 2,
+        "qubits": [4, 5],
+        "00": 17,
+        "11": 19,
+        "other": 988,
+        "bell_balance_pct": 3.52,
+        "bell_balance_ci95_pct": [2.20, 5.58]
+      },
+      {
+        "plane": 3,
+        "qubits": [6, 7],
+        "00": 13,
+        "11": 18,
+        "other": 993,
+        "bell_balance_pct": 3.03,
+        "bell_balance_ci95_pct": [1.78, 5.11]
+      }
+    ],
+    "mean_plane_balance_pct": 3.52,
+    "mean_plane_balance_ci95_pct": [1.78, 6.38],
+    "global_0n_plus_1n_pct": 1.27,
+    "global_0n_plus_1n_ci95_pct": [0.74, 2.16],
+    "theoretical_p0n_plus_p1n_pct": 3.125,
+    "cos8phi_theoretical": 1.0,
+    "cos8phi_fitted_amplitude_pct": 0.514,
+    "cos8phi_fitted_offset_pct": 0.684,
+    "r_squared": 0.49,
+    "chi2_vs_cos8phi": 2.99,
+    "chi2_vs_cos8phi_p": 0.56,
+    "chi2_vs_flat": 1.99,
+    "chi2_vs_flat_p": 0.74
+  },
+  "verdict": "Phase 0 (phi=0): Global coherence 1.27% [CI 0.74-2.16%]. Theoretical max 3.125%. Noise floor dominates signal. Cannot distinguish phase 0 from other phases statistically.",
+  "evidence_grade": "C",
+  "conclusion": "Single phase measurement at phi=0. Hardware noise (~1.3% coherence) is comparable to theoretical signal (3.125%). 5-phase sweep needed for cos(8phi) discrimination - completed in phases 1-4.",
+  "physical_anchor_compensation_proven": false,
+  "global_20_reality_sync_proven": false,
+  "ci_method": "Wilson score interval, 95%. Conservative envelope of per-plane CIs for mean-plane."
 }

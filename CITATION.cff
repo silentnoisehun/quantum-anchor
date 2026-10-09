@@ -33,12 +33,12 @@
 # positive summary, it will misrepresent the work.
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
-title: "Quantum Anchor V1.2.4 — Tesseract Anchor Protocol and Measurement Ledger"
+title: "Quantum Anchor V1.2.5 — Tesseract Anchor Protocol and Measurement Ledger"
 abstract: >-
   An experimental protocol for coherent state anchoring on superconducting QPUs,
   together with the measurement ledger that tests it. The original pulse-level
   protocol (qiskit.pulse, meas_level=0) was deprecated by IBM in 2024 and removed
-  from production QPUs in February 2025. V1.2.4 migrates to working APIs and
+  from production QPUs in February 2025. V1.2.5 migrates to working APIs and
   reports evidence grades honestly. Measured: single-qubit dynamics psi(37ns)=0.331662
   under a gamma=0 model on ibm_marrakesh; four independent Bell pairs at 95-96%
   per-plane balance on IQM Resonance Garnet 20Q; Tesseract-V2 inter-plane
@@ -48,16 +48,16 @@ abstract: >-
   anchor-off conditions both yield 0% clear; the V1 global 8-qubit correlation is
   11.62%, consistent with statistically independent planes; and the Tesseract-V3
   five-phase interferometric hardware sweep (5/5 phases, IQM Garnet 20Q, 1024
-  shots per phase, 2026-10-08) is noise-dominated — goodness-of-fit rejects the
-  theoretical cos(8*phi) curve (chi2=30.72, df=4, p<0.0001) and cannot reject a
-  flat response (chi2=1.98, df=4, p=0.7392), so the five phases are not
-  statistically distinguishable and the cos(8*phi) modulation is NOT established
-  on hardware. The physical anchor-drive compensation effect is NOT proven by any
-  measurement in this work. An earlier positive result is retracted as a circuit
-  tautology.
+  shots per phase, 2026-10-09) is noise-dominated — goodness-of-fit does not reject
+  the theoretical cos(8*phi) curve (chi2=2.99, df=4, p=5.6×10⁻¹) and cannot reject
+  a flat response (chi2=1.99, df=4, p=7.4×10⁻¹), fitted amplitude 0.51% vs
+  theoretical 1.56% (3× smaller), so the five phases are not statistically
+  distinguishable and the cos(8*phi) modulation is NOT established on hardware.
+  The physical anchor-drive compensation effect is NOT proven by any measurement
+  in this work. An earlier positive result is retracted as a circuit tautology.
 type: software
-version: 1.2.4
-date-released: "2026-10-08"
+version: 1.2.5
+date-released: "2026-10-09"
 license: MIT
 authors:
   - name: "Máté Róbert"

@@ -151,7 +151,11 @@ def main() -> int:
                 # convention: <protocol>_<jobid-or-timestamp>.json. These are
                 # audit trails, not credentials, and there are dozens of them
                 # across the documentation.
-                if _is_audit_filename(tok):
+                # The token may appear with .json suffix or as part of a path.
+                base_tok = tok
+                if base_tok.endswith('.json'):
+                    base_tok = base_tok[:-5]
+                if _is_audit_filename(base_tok):
                     continue
                 findings.append(("OPAQUE-HIGH-ENTROPY-STRING",
                                  str(rel), i, redact(tok)))
