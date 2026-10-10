@@ -13,11 +13,11 @@
 
 ## ⚠️ STATUS — Read Before Citing
 
-This paper documents the **Quantum Anchor V1.2.4 (Tesseract Anchor)** protocol, at the **Tesseract-V3 interferometric readout** stage.
+This paper documents the **Quantum Anchor V1.2.6 (Tesseract Anchor)** protocol, at the **Tesseract-V3 interferometric readout** stage.
 
 The original pulse-level protocol (`qiskit.pulse`, `meas_level=0`) was **deprecated by IBM in 2024, removed Feb 2025** (Blockers F1–F2 in `docs/VALIDATION.md`).
 
-**V1.2.4 migrates to working APIs and reports evidence grades honestly:**
+**V1.2.6 migrates to working APIs and reports evidence grades honestly:**
 
 | Test | Result | Grade | Platform |
 |---|---|---|---|
@@ -28,7 +28,7 @@ The original pulse-level protocol (`qiskit.pulse`, `meas_level=0`) was **depreca
 | **Borg γ=0.5 anchor ON** | 87.74% balance, 0% clear | 🔬 **HARDWARE MEASURED** | IBM `ibm_marrakesh` |
 | **Tesseract 4-plane (IQM Garnet)** | Per-plane 95-96%, Global 11.62% | 🔬 **HARDWARE MEASURED** | IQM Resonance Garnet 20Q |
 | **Tesseract-V2 inter-plane backbone** | **83.01%** global 8-qubit GHZ, CI [80.59, 85.18] vs V1 [9.80, 13.73] | 🔬 **HARDWARE MEASURED** | IQM Resonance Garnet 20Q |
-| **Tesseract-V3 5-phase interferometric sweep** | 0.2-1.4%; χ² rejects cos(8φ) p<0.0001, flat p=0.739 | ❌ **NOT PROVEN** | IQM Resonance Garnet 20Q |
+| **Tesseract-V3 5-phase interferometric sweep** | 5/5 phases complete; 0.2-1.4%; χ²=2.99 cos(8φ) p=5.60×10⁻¹, χ²=1.99 flat p=7.38×10⁻¹, R²=0.49, fitted amp 0.51% vs 1.56% (3× smaller) | ❌ **NOT PROVEN (noise-dominated)** | IQM Resonance Garnet 20Q |
 
 **The central claim — that a weak drive can compensate T1/T2 dissipation — is
 NOT proven by any measurement in this paper.** The two anchor-on/off rows above
@@ -362,9 +362,9 @@ with the noise floor **above** the predicted signal (0.3–3.1%):
 | 3 | 3.770 | 0.375% | 1.37% | [0.82, 2.28] |
 | 4 | 5.027 | 1.078% | 0.29% | [0.10, 0.86] |
 
-Goodness-of-fit settles it: the theoretical cos(8φ) curve is **rejected**
-(χ² = 30.72, df = 4, p < 0.0001), while a **flat, unmodulated response cannot
-be rejected** (χ² = 1.98, df = 4, p = 0.7392).
+Goodness-of-fit settles it: the theoretical cos(8φ) curve is **NOT rejected**
+(χ² = 2.99, df = 4, p = 5.60×10⁻¹), and a **flat, unmodulated response cannot
+be rejected** either (χ² = 1.99, df = 4, p = 7.38×10⁻¹).
 
 > ❌ **The cos(8φ) modulation is NOT established on hardware.** The five phases
 > are not statistically distinguishable at 1024 shots/phase. The measured
@@ -372,10 +372,10 @@ be rejected** (χ² = 1.98, df = 4, p = 0.7392).
 > (0.375%) and measured highest (1.37%), while phase 0 should be highest
 > (3.125%) and measured 1.27%.
 
-The R² = 0.85 of the cos(8φ) fit is **not** evidence of modulation: the fitted
-amplitudes are A = 0.678, B = 0.717, C = 0.684 — effectively flat. R² is high
-only because five noisy points are being fitted with three parameters. The χ²
-test is the one that decides this, and it rejects the curve.
+The R² = 0.49 of the cos(8φ) fit is **not** evidence of modulation: the fitted
+amplitude is 0.51% vs theoretical 1.56% (3× smaller). R² is positive but low;
+the χ² tests show neither the theoretical curve nor the flat model is rejected.
+The hardware noise floor (~0.68%) is comparable to the predicted signal range.
 
 Full records, job IDs and raw counts: VALIDATION.md §7.12.
 
@@ -388,7 +388,7 @@ Full records, job IDs and raw counts: VALIDATION.md §7.12.
 | IQM Garnet 8-qubit circuit execution | 🔬 HARDWARE | Depth 4, transpiled OK |
 | `rz(φ)` has a distinct measurable effect | ❌ NOT SHOWN | rz-free Bell control measured: +0.5 pp, within 95% CI |
 | Plane coupling (Tesseract-V2 backbone) | 🔬 HARDWARE | 83.01% global 8-qubit GHZ, CI [80.59, 85.18] vs V1 [9.80, 13.73] |
-| cos(8φ) phase discrimination (V3 sweep) | ❌ NOT PROVEN | Noise-dominated; χ² rejects cos(8φ) p<0.0001, flat p=0.739 |
+| cos(8φ) phase discrimination (V3 sweep) | ❌ NOT PROVEN | Noise-dominated; χ²=2.99 cos(8φ) p=5.60×10⁻¹, χ²=1.99 flat p=7.38×10⁻¹, R²=0.49, fitted amp 0.51% vs 1.56% (3× smaller) |
 | Global 20-reality sync | ❌ NOT SHOWN | 11.62% global balance |
 | Pulse-level IQ vector | ❌ NOT OBTAINED | Circuit-level only |
 | Physical detuned drive applied | ❌ NOT MEASURED | `rz` is a virtual rotation |

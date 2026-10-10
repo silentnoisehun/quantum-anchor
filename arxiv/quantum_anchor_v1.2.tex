@@ -15,15 +15,15 @@
 \usepackage{geometry}
 \geometry{margin=2.5cm}
 
-\title{Quantum Anchor V1.2: Tesseract Architecture for Coherent State Selection on Superconducting QPUs}
+\title{Quantum Anchor V1.2.6: Tesseract Architecture for Coherent State Selection on Superconducting QPUs}
 \author{M\'at\'e R\'obert\\Hope Ecosystem}
-\date{2026-10-08}
+\date{2026-10-10}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-We present Quantum Anchor V1.2.4 (Tesseract Anchor), a post-pulse experimental protocol for coherent state anchoring on superconducting quantum processors. The original pulse-level protocol (\texttt{qiskit.pulse}, \texttt{meas\_level=0}) was deprecated by IBM in 2025. V1.2.4 migrates to working APIs and reports evidence grades honestly. We report hardware measurements on IBM \texttt{ibm\_marrakesh} (156Q Heron r2) and on IQM Resonance Garnet 20Q. On IBM we measure single-qubit dynamics $\psi(37\text{ns}) = 0.331662$ under a $\gamma=0$ model, and we show that both the $\gamma=0$ baseline (89.72\% balance) and the $\gamma=0.5$ anchor-on condition (87.74\%) yield \textbf{0\% clear}. On IQM we measure four independent Bell pairs at 95--96\% per-plane balance using a virtual Z rotation of $0.4398$ rad, and an inter-plane entangling backbone (Tesseract-V2) reaching \textbf{83.01\%} global 8-qubit GHZ coherence, Wilson CI [80.59, 85.18]\% against V1's [9.80, 13.73]\% --- non-overlapping, which establishes that plane coupling works. We then test whether the readout can resolve relative phase at all (Tesseract-V3): an $H^{\otimes 8}$ interferometric readout does so in simulation, where the Z-basis readout is provably blind, but on hardware the five-phase sweep is \textbf{noise-dominated} --- goodness-of-fit rejects the theoretical $\cos(8\phi)$ curve ($\chi^2=30.72$, df 4, $p<0.0001$) and cannot reject a flat response ($\chi^2=1.98$, df 4, $p=0.7392$), so the modulation is \textbf{not established} and the five phases are not distinguishable. We \textbf{retract} an earlier positive result that we show to be a circuit tautology. The global 8-qubit correlation was 11.62\%, consistent with statistically independent planes, so the 20-reality synchronized-selection claim is \textbf{not demonstrated}. The physical anchor-drive compensation effect is \textbf{not proven by any measurement in this work}; pulse-level access required to test it was measured to be unavailable on our IQM account tier.
+We present Quantum Anchor V1.2.6 (Tesseract Anchor), a post-pulse experimental protocol for coherent state anchoring on superconducting quantum processors. The original pulse-level protocol (\texttt{qiskit.pulse}, \texttt{meas\_level=0}) was deprecated by IBM in 2025. V1.2.6 migrates to working APIs and reports evidence grades honestly. We report hardware measurements on IBM \texttt{ibm\_marrakesh} (156Q Heron r2) and on IQM Resonance Garnet 20Q. On IBM we measure single-qubit dynamics $\psi(37\text{ns}) = 0.331662$ under a $\gamma=0$ model, and we show that both the $\gamma=0$ baseline (89.72\% balance) and the $\gamma=0.5$ anchor-on condition (87.74\%) yield \textbf{0\% clear}. On IQM we measure four independent Bell pairs at 95--96\% per-plane balance using a virtual Z rotation of $0.4398$ rad, and an inter-plane entangling backbone (Tesseract-V2) reaching \textbf{83.01\%} global 8-qubit GHZ coherence, Wilson CI [80.59, 85.18]\% against V1's [9.80, 13.73]\% --- non-overlapping, which establishes that plane coupling works. We then test whether the readout can resolve relative phase at all (Tesseract-V3): an $H^{\otimes 8}$ interferometric readout does so in simulation, where the Z-basis readout is provably blind, but on hardware the five-phase sweep is \textbf{noise-dominated} --- goodness-of-fit does not reject the theoretical $\cos(8\phi)$ curve ($\chi^2=2.99$, df 4, $p=5.60\times10^{-1}$) and cannot reject a flat response ($\chi^2=1.99$, df 4, $p=7.38\times10^{-1}$), so the modulation is \textbf{not established} and the five phases are not distinguishable. The fitted amplitude is 0.51\% vs theoretical 1.56\% (3$\times$ smaller), R²=0.49. We \textbf{retract} an earlier positive result that we show to be a circuit tautology. The global 8-qubit correlation was 11.62\%, consistent with statistically independent planes, so the 20-reality synchronized-selection claim is \textbf{not demonstrated}. The physical anchor-drive compensation effect is \textbf{not proven by any measurement in this work}; pulse-level access required to test it was measured to be unavailable on our IQM account tier.
 \end{abstract}
 
 \section{Introduction}
@@ -212,8 +212,8 @@ Global $00000000 + 11111111$ & 11.62\% & $\times$ \\
 Tesseract-V2 global GHZ coherence & 83.01\% (850/1024) & $\mathfrak{H}$ \\
 Tesseract-V2 Wilson 95\% CI & [80.59, 85.18]\% & $\mathfrak{H}$ \\
 Tesseract-V3 5-phase global coherence & 0.20--1.37\% & $\triangle$ \\
-$\chi^2$ fit: theoretical $\cos(8\phi)$ & 30.72 (df 4), $p<0.0001$ & $\times$ \\
-$\chi^2$ fit: flat / no modulation & 1.98 (df 4), $p=0.7392$ & $\times$ \\
+$\chi^2$ fit: theoretical $\cos(8\phi)$ & 2.99 (df 4), $p=5.60\times10^{-1}$ & $\times$ \\
+$\chi^2$ fit: flat / no modulation & 1.99 (df 4), $p=7.38\times10^{-1}$ & $\times$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -255,9 +255,9 @@ phase\_idx & $\phi$ (rad) & theory & measured & Wilson 95\% CI \\
 
 \textbf{Interpretation.} Global coherence measured 0.2--1.4\%, with the hardware
 noise floor \textbf{above} the predicted signal (0.3--3.1\%). Goodness-of-fit
-\textbf{rejects} the theoretical $\cos(8\phi)$ curve ($\chi^2=30.72$, df 4,
-$p<0.0001$) and \textbf{cannot reject} a flat, unmodulated response
-($\chi^2=1.98$, df 4, $p=0.7392$).
+\textbf{does not reject} the theoretical $\cos(8\phi)$ curve ($\chi^2=2.99$, df 4,
+$p=5.60\times10^{-1}$) and \textbf{cannot reject} a flat, unmodulated response
+($\chi^2=1.99$, df 4, $p=7.38\times10^{-1}$).
 
 \textbf{The $\cos(8\phi)$ modulation is NOT established on hardware.} The five
 phases are not statistically distinguishable at 1024 shots per phase. The
@@ -265,10 +265,10 @@ measured ordering also does not follow theory: phase 3 should be among the
 lowest (0.375\%) and measured highest (1.37\%), while phase 0 should be highest
 (3.125\%) and measured 1.27\%.
 
-The $R^2=0.85$ of the $\cos(8\phi)$ fit is \emph{not} evidence of modulation: the
-fitted amplitudes are $A=0.678$, $B=0.717$, $C=0.684$ --- effectively flat. $R^2$
-is high only because five noisy points are fitted with three parameters. The
-$\chi^2$ test is the one that decides this, and it rejects the curve.
+The $R^2=0.49$ of the $\cos(8\phi)$ fit is \emph{not} evidence of modulation: the
+fitted amplitude is 0.51\% vs theoretical 1.56\% (3$\times$ smaller). $R^2$ is
+positive but low; the $\chi^2$ tests show neither the theoretical curve nor the
+flat model is rejected.
 
 Full job IDs and raw counts: VALIDATION.md $\S$7.12.
 
