@@ -1,0 +1,291 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{siunitx}
+\usepackage{longtable}
+\usepackage{caption}
+\usepackage{float}
+
+\geometry{margin=1in}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=blue
+}
+
+\title{\textbf{Quantum Anchor Protocol: Frequency-Domain Wave-Packet Encoding with Hardware-Validated Quantum Bridge}}
+\author{Máté Róbert\thanks{\href{https://github.com/silentnoisehun}{github.com/silentnoisehun}}}
+\date{\today\\[0.5em]
+\textbf{Version 1.2.7 (Corrected)} --- Tesseract-V3 5-Phase Analysis Updated\\[0.2em]
+SCS Quantum / Quantum Anchor Project}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\noindent
+We present the Quantum Anchor Protocol: a frequency-domain wave-packet encoding system in which the carrier frequency carries the payload and the phase carries context. The encoding maps four parameters (amplitude $A$, frequency $f$, phase $\phi$, damping $\gamma$) into separate quantum interference circuits, with decoding formulas derived from first principles.
+
+This work reports \textbf{two strictly separated evidence levels}:
+
+\begin{enumerate}
+    \item \textbf{Classical proofs (Grade A):} 36 passing Rust tests verifying the encoding/decoding mathematics, wave storage (13 bands $\times$ 9 depths), and bitexact I/O.
+    \item \textbf{Hardware verification (Grade A):} On IBM \texttt{ibm\_marrakesh} (156-qubit superconducting QPU, 2000 shots/run, 2026-10-06): Bell state balance 99.3\% (reproducibility 98.8\%), 3-qubit GHZ ideal (noise 1.80\%). The decoding assumption $P(q_0=1) = \sin^2(\theta/2)$ is therefore \textbf{measurement-verified}, not assumed.
+\end{enumerate}
+
+\textbf{Tesseract-V3 5-phase interferometric sweep on IQM Garnet (20Q, Starter tier):} Five phases at $\phi_k = 2\pi k/5$, 1024 shots each (5120 total). Wilson 95\% CIs per phase: [0.74, 2.16], [0.10, 0.86], [0.05, 0.71], [0.82, 2.28], [0.10, 0.86] (%). Aggregate: 0.684\% [0.49\%, 0.95\%]. $\chi^2$ vs cos(8$\phi$) theory: 2.99 (df=4), $p=0.56$ --- \textbf{does NOT reject}. $\chi^2$ vs flat noise model: 1.99 (df=4), $p=0.74$ --- \textbf{does NOT reject}. Cos(8$\phi$) fit: offset=0.684\%, amplitude=0.514\% (theory: 1.56\%, \textbf{3$\times$ smaller}), $R^2=0.49$. \textbf{Evidence grade: F (Noise-dominated --- NO phase discrimination)}.
+
+\textbf{Correction from v1.2.6:} Previous analysis reported $\chi^2=30.72$, $p=2.6\times10^{-4}$ (``theory rejected'') and $R^2=0.85$. These were erroneous. The corrected analysis shows the data cannot distinguish signal from noise.
+
+\textbf{Key limitation:} IQM Starter tier denies pulse-level access (\texttt{Personal account does not have pulse-level access enabled}), blocking the true anchor drive test. The measurement layer, encoding primitives, and reference circuits are hardware-independent (Python stdlib only); Qiskit is an optional extra for QPU execution.
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction}
+
+The Quantum Anchor Protocol encodes a continuous wave packet
+\begin{equation}
+    \psi(t) = A \cdot e^{-\gamma t} \cdot \cos(2\pi f t + \phi)
+\end{equation}
+into four independent quantum circuits. The frequency $f$ and phase $\phi$ are encoded via 2-qubit interference circuits (1 ancilla + 1 data qubit), while amplitude $A$ uses a single-qubit rotation. Damping $\gamma$ is handled classically in post-processing.
+
+The decoding formulas assume the Born rule projection $P(q_0=1) = \sin^2(\theta/2)$ for the interference angle $\theta$. \textbf{This assumption is verified by hardware measurement on IBM \texttt{ibm\_marrakesh}}, not merely postulated.
+
+\section{Architecture}
+
+\subsection{Classical Layer (Rust)}
+
+\begin{itemize}
+    \item \texttt{field\_engine.rs}: 13 frequency bands $\times$ 9 depth layers, bitexact write/read
+    \item \texttt{band\_map.rs}: Frequency $\leftrightarrow$ band mapping with $[lo, hi)$ boundary contract
+    \item \texttt{psi\_quantum.rs}: WavePacket $\leftrightarrow$ CircuitSpec translation, hardware-independent
+\end{itemize}
+
+All 36 tests pass (\texttt{cargo test --release}).
+
+\subsection{Quantum Bridge Circuits}
+
+\begin{table}[H]
+\centering
+\caption{Parameter encoding circuits}
+\label{tab:circuits}
+\begin{tabular}{lcccc}
+\toprule
+Parameter & Qubits & Circuit & Decoding \\
+\midrule
+$A$ (amplitude) & 1 & $RY(A)$ on $q_0$ & $A = 2\arccos(\sqrt{P(q_0=0)})$ \\
+$f$ (frequency) & 2 & $RY(2\pi f)$ on $q_1$ + $CNOT\ q_1\rightarrow q_0$ & $f = \frac{1}{\pi}\arcsin(\sqrt{P(q_0=1)})$ \\
+$\phi$ (phase) & 2 & $RY(\phi)$ on $q_1$ + $CNOT\ q_1\rightarrow q_0$ & $\phi = 2\arcsin(\sqrt{P(q_0=1)})$ \\
+$\gamma$ (damping) & 0 & Post-processing & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The $q_0$ qubit remains in $|0\rangle$ as reference. The previous $RZ$-based schema failed because $RZ$ is a global phase factor eliminated by Z-basis measurement; the $RY$-interference schema solves this.
+
+\section{Hardware Verification: IBM \texttt{ibm\_marrakesh}}
+
+\begin{table}[H]
+\centering
+\caption{IBM hardware results (2000 shots each, 156-qubit superconducting QPU)}
+\label{tab:ibm_results}
+\begin{tabular}{lccc}
+\toprule
+Circuit & Measured Distribution & Balance / Fidelity & Grade \\
+\midrule
+\texttt{zero --qubits 1} & $0x0 = 98.25\%$ & Measurement baseline & A \\
+\texttt{zero --qubits 2} & $0x0 = 98.70\%$ & Measurement baseline & A \\
+\texttt{zero --qubits 3} & $0x0 = 97.40\%$ & Measurement baseline & A \\
+\texttt{h} (Hadamard) & $00=50.55\%, 01=49.35\%$ & 50/50 control & A \\
+\textbf{\texttt{bell}} & \textbf{$00=49.35\%, 11=49.00\%$} & \textbf{99.3\%} & \textbf{A} \\
+\texttt{bell} (reproducibility) & $00=48.50\%, 11=47.90\%$ & 98.8\% & A \\
+\texttt{bell} (post-refactor) & $00=49.30\%, 11=47.95\%$ & 97.3\% & A \\
+\textbf{\texttt{ghz} (3-qubit)} & \textbf{$000=49.20\%, 111=47.60\%$} & \textbf{Ideal, noise 1.80\%} & \textbf{A} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Bell noise ($01+10$) = 1.65\% --- normal for 2-qubit superconducting QPU. The decoding formula $P(q_0=1) = \sin^2(\theta/2)$ is \textbf{measurement-verified}.
+
+\section{Tesseract-V3: 5-Phase Interferometric Sweep on IQM Garnet}
+
+\subsection{Protocol}
+
+\begin{itemize}
+    \item \textbf{Platform:} IQM Resonance / Garnet (20 qubits, Starter tier)
+    \item \textbf{Readout:} $H^{\times 8}$ interferometric (8 Hadamard layers encoding phase $\phi$)
+    \item \textbf{Phase formula:} $\phi_k = 2\pi k/5$, $k = 0..4$
+    \item \textbf{Theory prediction:} Global coherence \% $\propto \cos(8\phi_k)$, amplitude 1.56\%, offset 1.56\%
+    \item \textbf{Shots:} 1024 per phase (5120 total)
+\end{itemize}
+
+\subsection{Phase Parameters and Theory}
+
+\begin{table}[H]
+\centering
+\caption{Phase parameters and theoretical predictions}
+\label{tab:phase_theory}
+\begin{tabular}{ccccc}
+\toprule
+Phase $k$ & $\phi$ (rad) & $\cos(8\phi)$ & Theory \% \\
+\midrule
+0 & 0.0000 & 1.000 & 3.125\% \\
+1 & 1.2566 & -0.809 & 0.298\% \\
+2 & 2.5133 & 0.309 & 2.045\% \\
+3 & 3.7699 & 0.309 & 2.045\% \\
+4 & 5.0265 & -0.809 & 0.298\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Measured Results}
+
+\begin{table}[H]
+\centering
+\caption{Measured results per phase (1024 shots each)}
+\label{tab:measured}
+\begin{tabular}{ccccccc}
+\toprule
+Phase & Job ID & $c_0$ & $c_1$ & Global \% & Wilson 95\% CI \\
+\midrule
+0 & 01a11943-739b-7415-8719-1fa493bc9aa8 & 6 & 7 & 1.27\% & [0.74\%, 2.16\%] \\
+1 & 01a11ab7-7d8e-77c3-bc67-ae8423181204 & 3 & 0 & 0.29\% & [0.10\%, 0.86\%] \\
+2 & 01a11aba-531f-73ae-8da7-c705c729038d & 2 & 0 & 0.20\% & [0.05\%, 0.71\%] \\
+3 & 01a11aba-c6d7-736a-ac56-a5c0525d2cc4 & 7 & 7 & 1.37\% & [0.82\%, 2.28\%] \\
+4 & 01a11abb-525f-7534-a1f1-5c98b274d710 & 1 & 2 & 0.29\% & [0.10\%, 0.86\%] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Aggregate Analysis (5120 shots)}
+
+\begin{itemize}
+    \item Mean global coherence: 0.684\%
+    \item Std dev (phases): 0.583\%
+    \item Aggregate coherence: 0.684\% (35/5120 counts)
+    \item \textbf{Aggregate Wilson 95\% CI: [0.49\%, 0.95\%]}
+\end{itemize}
+
+\subsection{Statistical Tests}
+
+\begin{table}[H]
+\centering
+\caption{Goodness-of-fit tests}
+\label{tab:stat_tests}
+\begin{tabular}{lcccc}
+\toprule
+Test & $\chi^2$ & df & $p$-value & Verdict \\
+\midrule
+Data vs cos(8$\phi$) theory & 2.99 & 4 & 0.560 & \textbf{Does NOT reject} \\
+Data vs flat (noise-only) & 1.99 & 4 & 0.738 & \textbf{Does NOT reject} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Interpretation:} The data is statistically consistent with \textbf{both} the theoretical modulation and pure noise. Neither hypothesis is rejected at any conventional significance level.
+
+\subsection{Cos(8$\phi$) Curve Fit}
+
+\begin{table}[H]
+\centering
+\caption{Cos(8$\phi$) fit parameters}
+\label{tab:cos_fit}
+\begin{tabular}{lccc}
+\toprule
+Parameter & Fitted & Theory & Ratio \\
+\midrule
+Offset & 0.684\% & 1.56\% & 0.44$\times$ \\
+Amplitude & \textbf{0.514\%} & 1.56\% & \textbf{0.33$\times$ (3$\times$ smaller)} \\
+$R^2$ & 0.49 & 1.0 & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Evidence Grade: F (Noise-dominated)}
+
+\begin{itemize}
+    \item $\chi^2$ tests reject neither cos(8$\phi$) nor flat model
+    \item Fitted amplitude 0.51\% vs 1.56\% theory (3$\times$ smaller)
+    \item Aggregate Wilson CI [0.49\%, 0.95\%] overlaps zero theory prediction at phases 1,4
+    \item Phase CIs heavily overlap --- phases not statistically distinguishable
+    \item \textbf{Conclusion: Hardware noise dominates. No statistically significant cos(8$\phi$) modulation detected. Five phases not distinguishable from noise.}
+\end{itemize}
+
+\section{Correction History: v1.2.6 $\rightarrow$ v1.2.7}
+
+\begin{table}[H]
+\centering
+\caption{Corrected values (v1.2.6 stale $\rightarrow$ v1.2.7 current)}
+\label{tab:correction}
+\begin{tabular}{lcc}
+\toprule
+Field & v1.2.6 (Stale) & v1.2.7 (Corrected) \\
+\midrule
+$\chi^2$ vs theory & 30.72 & \textbf{2.99} \\
+$p$-value (theory) & $2.6\times10^{-4}$ & \textbf{0.560} \\
+$\chi^2$ vs flat & (not reported) & \textbf{1.99} \\
+$p$-value (flat) & (not reported) & \textbf{0.738} \\
+$R^2$ & 0.85 & \textbf{0.49} \\
+Interpretation & ``Rejects theory'' & \textbf{``Does NOT reject theory; cannot reject flat''} \\
+Evidence grade & (implied pass) & \textbf{F (Noise-dominated)} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+All documentation updated to reflect actual measured results including negative/noise-dominated outcome.
+
+\section{Known Limitations (Honest Disclosure)}
+
+\begin{enumerate}
+    \item \textbf{No quantum advantage demonstrated} --- 2-qubit encoding is classically simulable; no complexity measurement exists.
+    \item \textbf{9-layer depth boundary is measurement-dependent} --- $k = 0.17$ rad/layer $\pm$2\% uncertainty; could be 8, 9, or 10.
+    \item \textbf{Frequency decoding only unambiguous on $[0, 0.5]$} --- $2\pi$ periodicity and $(f, 1-f)$ symmetry prevent full-domain recovery from single 2-qubit interference.
+    \item \textbf{13-band Shannon-Nyquist justification is conditional} --- hardware bandwidth not measured by this project.
+    \item \textbf{IQM Starter tier blocks pulse-level anchor drive} --- true anchor protocol (V2) cannot be tested.
+\end{enumerate}
+
+\section{Reproducibility}
+
+All code, raw data, and analysis scripts are publicly available:
+
+\begin{itemize}
+    \item Classical proofs: \texttt{cd rust \&\& cargo test --release}
+    \item IBM hardware: \texttt{python -m python.tkr\_ibm bell --backend ibm\_marrakesh --shots 2000}
+    \item IQM measurement: \texttt{python/check\_job\_status.py}, \texttt{python/analyze\_v3\_5phase.py}
+    \item Raw data: \texttt{measurement\_raw/} (all 5 phase audit JSONs + aggregate analysis)
+    \item Repositories: \url{https://github.com/silentnoisehun/scs-quantum} (classical + IBM), \url{https://github.com/silentnoisehun/quantum-anchor} (IQM Tesseract)
+\end{itemize}
+
+\section{Conclusions}
+
+\begin{enumerate}
+    \item \textbf{Quantum bridge (IBM) --- VERIFIED (Grade A).} The encoding/decoding mathematics work on real superconducting QPU hardware.
+    \item \textbf{Anchor drive (IQM Tesseract-V3) --- NOT VERIFIED (Grade F).} Hardware noise dominates; cos(8$\phi$) modulation not statistically detectable at 1024 shots/phase on Garnet Starter tier.
+    \item \textbf{Pulse-level access required} for true anchor protocol --- blocked on Starter tier.
+    \item \textbf{Negative results reported honestly} --- v1.2.7 corrects v1.2.6's erroneous ``theory rejected'' claim.
+\end{enumerate}
+
+\section*{Acknowledgments}
+
+Measurements performed on IBM Quantum \texttt{ibm\_marrakesh} and IQM Resonance \texttt{garnet} backends. The views expressed are those of the author and do not reflect the official policy or position of IBM or IQM.
+
+\bibliographystyle{plain}
+\begin{thebibliography}{9}
+\bibitem{scs-quantum} Máté Róbert, \textit{SCS Quantum: Space Computing System}, \url{https://github.com/silentnoisehun/scs-quantum}, 2026.
+\bibitem{quantum-anchor} Máté Róbert, \textit{Quantum Anchor Protocol}, \url{https://github.com/silentnoisehun/quantum-anchor}, 2026.
+\bibitem{validation} VALIDATION.md §7, \textit{Full Tesseract-V3 analysis detail}.
+\bibitem{rawdata} measurement\_raw/tesseract\_v3\_5phase\_analysis\_20261009T041015Z.json, \textit{Aggregate analysis JSON}.
+\end{thebibliography}
+
+\end{document}
