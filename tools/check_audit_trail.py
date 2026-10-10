@@ -134,7 +134,7 @@ def inspect_records() -> tuple[list[dict[str, object]], list[str]]:
 
     files = sorted(RAW_DIR.glob("*.json"))
     # Exclude analysis/summary/audit files — they are derived products, not raw job records
-    EXCLUDE_PATTERNS = ("_analysis.json", "_analysis_v2.json", "_audit_", "tesseract_5phase_audit_")
+    EXCLUDE_PATTERNS = ("_analysis.json", "_analysis_v2.json", "_analysis_", "_audit_", "tesseract_5phase_audit_")
     files = [f for f in files if not any(p in f.name for p in EXCLUDE_PATTERNS)]
     if not files:
         return summaries, [f"no *.json records found under {RAW_DIR.relative_to(ROOT)}"]

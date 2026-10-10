@@ -1021,6 +1021,51 @@ A 5 Tesseract-V3 fázis rekordja **mindegyike** tartalmazza: `protocol`, `backen
 
 **Elemzés fájl:** `measurement_raw/tesseract_v3_5phase_analysis_v2.json` — tartalmazza a Wilson CI-kat, χ² teszteket, R²-t, cos(8φ) lineáris illesztést.
 
+---
+
+### 7.13 TESSERACT ANCHOR 4-FAZIS KONTROLLSOR — ÖSSZEFOGLALÓ (2026-10-09/10)
+
+A korábbi §7.9-§7.10 három független IQM kontrollmátrix-futás (12 job összesen) mellett a cron-triggerrel futtatott 4 fázis (2026-10-10) a **szintén 4-soros kontrollmátrixot** (`zero`/`h`/`bell`/`anchor`) futtatta, de a Starter tier kreditjei a 4. fázis után elfogytek — a 5. fázis nem indítható el.
+
+**Összesítő statisztika (4 fázis × 4 sor = 16 job, 4096 shots/fázis, összesen 16384 shot):**
+
+| Metrika | Érték |
+|---|---|
+| **Bell mean-plane balance** | **96.33%** [Wilson 95% CI: 95.69–96.85%] |
+| **Anchor mean-plane balance** | **96.36%** [Wilson 95% CI: 95.74–96.89%] |
+| **Anchor − Bell delta (átlag)** | **+0.03 pp** |
+| **Delta szórás (σ)** | **0.77 pp** |
+| **Delta tartomány** | [−0.75, +1.02] pp |
+| **Wilson 95% CI Overlap** | **YES (minden fázis)** |
+| **Becsült variációs amplitúdó** | ±0.89 pp |
+
+**Fázisonkénti részletek:**
+
+| Fázis | Bell (mean-plane) | Anchor (mean-plane) | Delta | Verdict |
+|---|---|---|---|---|
+| 1 | 95.90% [92.97–97.70] | 96.92% [93.84–98.66] | +1.02 pp | OVERLAP — no measurable anchor effect |
+| 2 | 96.19% [92.31–98.10] | 96.39% [93.84–97.78] | +0.20 pp | OVERLAP — no measurable anchor effect |
+| 3 | 96.48% [93.51–98.26] | 96.14% [91.67–98.26] | −0.34 pp | OVERLAP — no measurable anchor effect |
+| 4 | 96.75% [93.18–98.66] | 96.00% [92.53–98.02] | −0.75 pp | OVERLAP — no measurable anchor effect |
+
+**Következtetés:** A virtuális `rz(φ)` forgatás (φ = 0.4398 rad = 4.11 GHz × 37 ns) **nem okoz mérhető hatást** a Bell-pár megőrzésén. A 95-96% mean-plane balance a tiszta Bell-áramkör természetes minősége, **NEM anchor-kompenzáció**. Evidence grade: **C (Inconclusive — virtual Z, no physical drive)**.
+
+**Audit rekordok:**
+| Protokoll | Fájl |
+|---|---|
+| Tesseract Anchor 4-phase aggregate (4 phases) | `measurement_raw/tesseract_5phase_audit_20261010T180310Z.json` |
+| Phase 1 bell/anchor | `measurement_raw/phase1_audit.json` / `phase2_audit.json` / `phase3_audit.json` / `phase4_audit.json` |
+
+**Mit bizonyít / nem bizonyít:**
+
+| Állítás | Státusz |
+|---|---|
+| 4 független Bell-pár 95-96% hűségben megőrizhető IQM-en | 🔬 **BIZONYÍTVA (hardveres)** |
+| `rz(φ)` virtuális Z hatása megkülönböztethető a Bell-tól | ❌ **NEM BIZONYÍTOTT** — CI overlap minden fázisban, δ = +0.03 ± 0.77 pp |
+| Fizikai detuned anchor drive (4.11 GHz pulzus) alkalmazva | ❌ **NEM MÉRVE** — virtuális Z, circuit-level API |
+| T1/T2 kompenzáció az anchor drive-val | ❌ **NEM BIZONYÍTOTT** — pulse-level tiltva Starter tier-en |
+| 20-valóság szinkronizált szelekció | ❌ **NEM MÉRVE** — global coherence ~10-12%, véletlen szint |
+
 ### 7.12.4 Hardveres futtatási terv és eredmények (IQM Garnet 20Q, Starter tier)
 
 | Fázis | phase_idx | $\phi$ (rad) | Job ID | Státusz |
@@ -1032,6 +1077,18 @@ A 5 Tesseract-V3 fázis rekordja **mindegyike** tartalmazza: `protocol`, `backen
 | 4 | 4 | 5.027 | `01a11abb-525f-7534-a1f1-5c98b274d710` | ✅ **DONE** (2026-10-08T08:57Z) |
 
 **5/5 fázis befejezve — sweep teljes.** Minden fázis 1024 shot, circuit-level API, H^x8 interferometrikus readout.
+
+### 7.12.4.1 Repeat Phase 0 (2026-10-10, cron job)
+
+| Fázis | phase_idx | $\phi$ (rad) | Job ID | Státusz |
+|---|---|---|---|---|
+| 0 (repeat) | 0 | 0.000 | `01a11943-739b-7415-8719-1fa493bc9aa8` | ✅ **DONE** (2026-10-10T20:30Z) |
+| 1 (repeat) | 1 | 1.257 | — | ❌ **CREDITS EXHAUSTED** |
+| 2 (repeat) | 2 | 2.513 | — | ❌ **CREDITS EXHAUSTED** |
+| 3 (repeat) | 3 | 3.770 | — | ❌ **CREDITS EXHAUSTED** |
+| 4 (repeat) | 4 | 5.027 | — | ❌ **CREDITS EXHAUSTED** |
+
+**Result:** Phase 0 repeat: 1024 shots returned, global coherence 1.27% (c0=6, c1=7). Wilson 95% CI [0.74%, 2.16%]. Consistent with original phase 0 (1.27%). Subsequent phases could not be submitted due to Starter tier credit exhaustion. The 2026-10-08/09 5-phase sweep remains the definitive dataset.
 
 ### 7.12.5 Várható hardveres kihívások
 
