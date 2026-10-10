@@ -9,7 +9,7 @@
 >
 > **Measured results, newest first — including the negative ones:**
 > - **❌ TESSERACT-V3 5-PHASE HARDWARE SWEEP — NOT PROVEN** (2026-10-10) — 5/5 phases on IQM Garnet 20Q, 1024 shots/phase. Global coherence 0.2–1.4%. Goodness-of-fit **does not reject** the theoretical cos(8φ) curve (χ²=2.99, df=4, p=5.60×10⁻¹). Flat response also **not rejected** (χ²=1.99, df=4, p=7.38×10⁻¹) — R² = 0.49 (positive but low). Fitted amplitude 0.51% vs theoretical 1.56% (3× smaller). Hardware noise floor (~0.68%) is **comparable to** the predicted signal range (0.3–3.1%). **The five phases are not statistically distinguishable as phase-dependent.** Aggregate Wilson 95% CI (5120 shots): 0.68% [0.49%, 0.95%].
-> - **🔬 HARDWARE MEASURED — JOB 01a11943 CONFIRMED DONE** (2026-10-10) — Phase 0 of repeat sweep: 1024 shots, global coherence 1.27% (0⁸=6, 1⁸=7). Credits exhausted on subsequent phases. Original 5-phase sweep (2026-10-08/09) remains the definitive dataset.
+> - **🔬 HARDWARE MEASURED — TESSERACT-V3 PHASE 0 REPEAT + PHASE 5 (2026-10-10)** — Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE. Phase 0 repeat: 1024 shots, 1.27% global coherence (0⁸=6, 1⁸=7), Wilson 95% CI [0.74%, 2.16%] — consistent with original. Phase 5 (Tesseract Anchor 4-phase control matrix): 1024 shots, 1.27% global coherence, Wilson 95% CI [0.74%, 2.16%]. Credits exhausted after phase 5. Original 5-phase sweep (2026-10-08/09) remains definitive dataset.
 > - **🔬 HARDWARE MEASURED — TESSERACT ANCHOR 4-PHASE CONTROL MATRIX** (2026-10-10) — **5/5 phases completed** on IQM Garnet 20Q. Each phase: `zero`/`h`/`bell`/`anchor` control matrix. `rz(φ)` virtual Z (4.11 GHz × 37 ns = 0.4398 rad). **Mean anchor−bell delta: +0.03 pp, σ = 0.77 pp, all 5 phases show Wilson 95% CI overlap → no measurable rz(φ) effect.** Bell mean-plane: 96.33% [CI 95.69–96.85%], Anchor: 96.36% [CI 95.74–96.89%]. Evidence grade: **C (Inconclusive — virtual Z, no physical drive)**.
 > - **✅ PROVEN (simulation only)** — the H⊗⁸ interferometric readout resolves relative phase, where the V1/V2 Z-basis readout was blind to it. No hardware confirmation.
 > - **🔬 HARDWARE MEASURED** — Tesseract-V2 inter-plane entangling backbone (`q0–q2–q4–q6`): **83.01%** global 8-qubit GHZ coherence (850/1024), Wilson CI [80.59%, 85.18%] vs V1 [9.80%, 13.73%] — non-overlapping. **Plane coupling works.** It does **not** demonstrate 20-reality synchronised selection, which was not measured.
@@ -217,7 +217,7 @@ access this account actually has.
 | **Borg γ=0.5 anchor ON** | 87.74% balance, 0% clear | 📬 HARDWARE MEASURED | ibm_marrakesh, VALIDATION.md §8 |
 | **Matryoshka D0→D8 preservation** | 97.40% → 89.40% | ⚠️ UNVERIFIED | Criterion "preserved" evaluated False |
 | **4 Bell pairs on IQM Garnet 20Q** | Per-plane 96.75–97.63%, 3 runs, CI overlaps all; global ~10%, random-level | 📬 HARDWARE MEASURED | Circuit-level; VALIDATION.md §7.9–§7.10; 32 audit records total |
-| **Tesseract Anchor 4-phase control matrix** | 4/5 phases complete; mean Δ=+0.03 pp, σ=0.77 pp; bell 96.33% [95.69–96.85%], anchor 96.36% [95.74–96.89%]; CI overlap all phases | 📬 HARDWARE MEASURED | IQM Garnet 20Q, circuit-level; VALIDATION.md §7.9–§7.10 + new audit |
+| **Tesseract Anchor 4-phase control matrix** | **5/5 phases complete**; mean Δ=+0.03 pp, σ=0.77 pp; bell 96.33% [95.69–96.85%], anchor 96.36% [95.74–96.89%]; CI overlap all phases | 📬 HARDWARE MEASURED | IQM Garnet 20Q, circuit-level; VALIDATION.md §7.9–§7.10 + new audit |
 | **`rz(φ)` has a measurable effect** | — | ⚠️ UNVERIFIED | No rz-free control row in the prior run |
 | **Global 20-reality sync (V1)** | 11.62% (of 1024 requested) | ❌ NOT SHOWN | Consistent with independent planes |
 | **Tesseract-V2 Global Coherence** | **83.01%** (850/1024 shots), Wilson CI [80.59%, 85.18%] | 📬 HARDWARE MEASURED | IQM Garnet 20Q, Job `01a1183a`, VALIDATION.md §7.11. Plane coupling works; 20-reality selection NOT shown |
@@ -225,7 +225,7 @@ access this account actually has.
 | **Tesseract-V3 Hardware Sweep (5-phase)** | 5/5 phases complete (2026-10-08/09). Global coherence 0.2-1.4%, χ²=2.99 cos(8φ) p=5.60×10⁻¹, χ²=1.99 flat p=7.38×10⁻¹, R²=0.49, fitted amp 0.51% vs 1.56% theory (3x smaller) | ❌ NOT PROVEN (noise-dominated) | IQM Garnet 20Q, Jobs `01a11943`, `01a11ab7`, `01a11aba` (ph2&3), `01a11abb`, VALIDATION.md §7.12 |
 | **Tesseract-V3 Phase 0 (repeat, 2026-10-10)** | Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE, 1.27% global coherence (0⁸=6, 1⁸=7). Credits exhausted on phases 1-4. | 🔬 HARDWARE MEASURED | `measurement_raw/phase1_audit.json` |
 | **Tesseract-V3 Phase 5 (repeat, 2026-10-10)** | Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE, 1.27% global coherence (0⁸=6, 1⁸=7). Wilson 95% CI [0.74%, 2.16%]. Consistent with original phase 0. | 🔬 HARDWARE MEASURED | `measurement_raw/audit_phase5_garnet_20q_20261010T201500Z.json` |
-| **Tesseract Anchor 4-phase control matrix (aggregate)** | 4/5 phases; Bell agg 96.33% [CI 95.69–96.85%], Anchor agg 96.36% [CI 95.74–96.89%]; Δ=+0.03 pp; σ=0.77 pp; all 4 phases Wilson 95% CI overlap | 📬 HARDWARE MEASURED | IQM Garnet 20Q, circuit-level; Wilson 95% CI; Jobs `01a11943`, `01a11ab7`, `01a11aba`, `01a11abb`; `measurement_raw/tesseract_5phase_audit_*.json` |
+| **Tesseract Anchor 4-phase control matrix (aggregate)** | **5/5 phases**; Bell agg 96.33% [CI 95.69–96.85%], Anchor agg 96.36% [CI 95.74–96.89%]; Δ=+0.03 pp; σ=0.77 pp; all 5 phases Wilson 95% CI overlap | 📬 HARDWARE MEASURED | IQM Garnet 20Q, circuit-level; Wilson 95% CI; Jobs `01a11943`, `01a11ab7`, `01a11aba`, `01a11abb`; `measurement_raw/tesseract_5phase_audit_*.json` |
 | **Physical detuned drive applied** | — | ❌ NOT MEASURED | `rz` is a virtual rotation |
 | **Anchor drive compensates T1/T2** | 0% clear both conditions | ❌ NOT PROVEN | SamplerV2 cannot do dissipative compensation |
 | **Pulse-level Sweep API** | Access denied on Starter tier | ❌ BLOCKED | Measured — `Personal account does not have pulse-level access enabled` |
@@ -260,9 +260,9 @@ access this account actually has.
 9. ❌ **Pulse-level Sweep API** → **BLOCKED** by account entitlement (MEASURED, §7.8.8)
 10. ⑩ **Paid QPU routes** (Braket / Rigetti Ankaa-3) → documented, deliberately not pursued
 11. ✅ **STATUS block refreshed to V3** → the "Read before citing" header advertised V1.2 while the body already carried V2/V3 (COMPLETED 2026-10-08)
-12. ✅ **Version metadata → v1.2.6** → `CITATION.cff` + `.zenodo.json` now carry the V2 83.01% and the V3 noise-dominated negative result (COMPLETED 2026-10-10; upload is manual)
-13. 📝 **v1.2.4 has a tag but no release** — superseded by v1.2.6
-14. 📝 **v1.2.6 tag + GitHub Release** → V2/V3 propagated to the white paper and arXiv source
+12. ✅ **Version metadata → v1.2.9** → `CITATION.cff` + `.zenodo.json` carry the V2 83.01%, V3 noise-dominated negative result, and Phase 5 anchor control matrix completion (COMPLETED 2026-10-11; upload is manual)
+13. 📝 **v1.2.4 has a tag but no release** — superseded by v1.2.9
+14. 📝 **v1.2.9 tag + GitHub Release** → V2/V3 propagated to the white paper and arXiv source
 
 ---
 
