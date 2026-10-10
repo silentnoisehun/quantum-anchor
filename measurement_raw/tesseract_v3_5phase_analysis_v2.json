@@ -78,13 +78,13 @@
       "theoretical_cos8phi_pct": 0.2988
     }
   ],
-  "chi2_cos8phi": 2.99,
+  "chi2_cos8phi": 30.7171,
   "chi2_cos8phi_df": 4,
-  "chi2_cos8phi_pvalue": 0.56,
-  "chi2_flat": 1.99,
+  "chi2_cos8phi_pvalue": 6e-06,
+  "chi2_flat": 20.2857,
   "chi2_flat_df": 4,
-  "chi2_flat_pvalue": 0.738,
-  "r2_cos8phi": 0.49,
+  "chi2_flat_pvalue": 0.000515,
+  "r2_cos8phi": -4.4083,
   "cos8phi_fit": {
     "offset": 0.6839,
     "amplitude": 0.5142,
@@ -97,9 +97,5 @@
   },
   "avg_global_coherence_pct": 0.68,
   "theoretical_max_signal_pct": 1.56,
-  "conclusion": "Hardware noise dominates. Goodness-of-fit does NOT reject the theoretical cos(8phi) curve (chi2=2.99, df=4, p=5.60×10⁻¹). Flat response also NOT rejected (chi2=1.99, df=4, p=7.38×10⁻¹). R^2 = 0.49 (positive but low). Fitted amplitude 0.51% vs theoretical 1.56% (3x smaller). The five phases are not statistically distinguishable as phase-dependent.",
-  "counts": {
-    "total_successes": 35,
-    "total_trials": 5120
-  }
+  "conclusion": "Hardware noise dominates. cos(8phi) curve REJECTED (p=0.000006). Flat response REJECTED (p=0.000515). R^2 = -4.4083 (worse than mean). Theoretical signal (0-1.56%) sits at/below noise floor (~0.68%). Five phases not statistically distinguishable as phase-dependent."
 }

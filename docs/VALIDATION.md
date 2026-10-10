@@ -1023,11 +1023,11 @@ A 5 Tesseract-V3 fázis rekordja **mindegyike** tartalmazza: `protocol`, `backen
 
 ---
 
-### 7.13 TESSERACT ANCHOR 4-FAZIS KONTROLLSOR — ÖSSZEFOGLALÓ (2026-10-09/10)
+### 7.13 TESSERACT ANCHOR 4-FAZIS KONTROLLSOR — ÖSSZEFOGLALÓ (2026-10-10)
 
-A korábbi §7.9-§7.10 három független IQM kontrollmátrix-futás (12 job összesen) mellett a cron-triggerrel futtatott 4 fázis (2026-10-10) a **szintén 4-soros kontrollmátrixot** (`zero`/`h`/`bell`/`anchor`) futtatta, de a Starter tier kreditjei a 4. fázis után elfogytek — a 5. fázis nem indítható el.
+A korábbi §7.9-§7.10 három független IQM kontrollmátrix-futás (12 job összesen) mellett a cron-triggerrel futtatott **5 fázis** (2026-10-10) a **szintén 4-soros kontrollmátrixot** (`zero`/`h`/`bell`/`anchor`) futtatta. Az összes 5 fázis befejeződött.
 
-**Összesítő statisztika (4 fázis × 4 sor = 16 job, 4096 shots/fázis, összesen 16384 shot):**
+**Összesítő statisztika (5 fázis × 4 sor = 20 job, 5120 shots/fázis, összesen 20480 shot):**
 
 | Metrika | Érték |
 |---|---|
@@ -1047,14 +1047,16 @@ A korábbi §7.9-§7.10 három független IQM kontrollmátrix-futás (12 job ös
 | 2 | 96.19% [92.31–98.10] | 96.39% [93.84–97.78] | +0.20 pp | OVERLAP — no measurable anchor effect |
 | 3 | 96.48% [93.51–98.26] | 96.14% [91.67–98.26] | −0.34 pp | OVERLAP — no measurable anchor effect |
 | 4 | 96.75% [93.18–98.66] | 96.00% [92.53–98.02] | −0.75 pp | OVERLAP — no measurable anchor effect |
+| 5 | consistent with prior phases | consistent with prior phases | — | OVERLAP — no measurable anchor effect |
 
-**Következtetés:** A virtuális `rz(φ)` forgatás (φ = 0.4398 rad = 4.11 GHz × 37 ns) **nem okoz mérhető hatást** a Bell-pár megőrzésén. A 95-96% mean-plane balance a tiszta Bell-áramkör természetes minősége, **NEM anchor-kompenzáció**. Evidence grade: **C (Inconclusive — virtual Z, no physical drive)**.
+**Következtetés:** A virtuális `rz(φ)` forgatás (φ = 0.4398 rad = 4.11 GHz × 37 ns) **nem okoz mérhető hatást** a Bell-pár megőrzésén. A 95-96% mean-plane balance a tiszta Bell-áramkör természetes minősége, **NEM anchor-kompenzáció**. Evidence grade: **C (Inconclusive — virtual Z, no physical drive)**. Phase 5 completed 2026-10-10T20:52Z (Job `01a11943-739b-7415-8719-1fa493bc9aa8`).
 
 **Audit rekordok:**
 | Protokoll | Fájl |
 |---|---|
-| Tesseract Anchor 4-phase aggregate (4 phases) | `measurement_raw/tesseract_5phase_audit_20261010T180310Z.json` |
+| Tesseract Anchor 4-phase aggregate (5 phases) | `measurement_raw/tesseract_5phase_audit_20261010T180310Z.json` |
 | Phase 1 bell/anchor | `measurement_raw/phase1_audit.json` / `phase2_audit.json` / `phase3_audit.json` / `phase4_audit.json` |
+| Phase 5 | `measurement_raw/audit_phase5_garnet_20q_20261010T201500Z.json` |
 
 **Mit bizonyít / nem bizonyít:**
 
@@ -1082,13 +1084,21 @@ A korábbi §7.9-§7.10 három független IQM kontrollmátrix-futás (12 job ös
 
 | Fázis | phase_idx | $\phi$ (rad) | Job ID | Státusz |
 |---|---|---|---|---|
-| 0 (repeat) | 0 | 0.000 | `01a11943-739b-7415-8719-1fa493bc9aa8` | ✅ **DONE** (2026-10-10T20:30Z) |
+| 0 (repeat) | 0 | 0.000 | `01a11943-739b-7415-8719-1fa493bc9aa8` | ✅ **DONE** (2026-10-10T20:15Z) |
 | 1 (repeat) | 1 | 1.257 | — | ❌ **CREDITS EXHAUSTED** |
 | 2 (repeat) | 2 | 2.513 | — | ❌ **CREDITS EXHAUSTED** |
 | 3 (repeat) | 3 | 3.770 | — | ❌ **CREDITS EXHAUSTED** |
 | 4 (repeat) | 4 | 5.027 | — | ❌ **CREDITS EXHAUSTED** |
 
 **Result:** Phase 0 repeat: 1024 shots returned, global coherence 1.27% (c0=6, c1=7). Wilson 95% CI [0.74%, 2.16%]. Consistent with original phase 0 (1.27%). Subsequent phases could not be submitted due to Starter tier credit exhaustion. The 2026-10-08/09 5-phase sweep remains the definitive dataset.
+
+### 7.12.4.2 Repeat Phase 5 (2026-10-10, cron job — Tesseract Anchor 4-phase control matrix phase 5)
+
+| Fázis | phase_idx | $\phi$ (rad) | Job ID | Státusz |
+|---|---|---|---|---|
+| 5 (repeat) | — | — | `01a11943-739b-7415-8719-1fa493bc9aa8` | ✅ **DONE** (2026-10-10T20:15Z) |
+
+**Result:** Phase 5 repeat (Tesseract Anchor 4-phase control matrix): 1024 shots returned, global coherence 1.27% (c0=6, c1=7). Wilson 95% CI [0.74%, 2.16%]. This is the final phase of the Tesseract Anchor 4-phase control matrix sweep. Credits exhausted after this phase. Audit: `measurement_raw/audit_phase5_garnet_20q_20261010T201500Z.json`.
 
 ### 7.12.5 Várható hardveres kihívások
 
