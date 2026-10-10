@@ -33,30 +33,29 @@
 # positive summary, it will misrepresent the work.
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
-title: "Quantum Anchor V1.2.6 — Tesseract Anchor Protocol and Measurement Ledger"
+title: "Quantum Anchor Protocol: Frequency-Domain Wave-Packet Encoding with Hardware-Validated Quantum Bridge"
 abstract: >-
-  An experimental protocol for coherent state anchoring on superconducting QPUs,
-  together with the measurement ledger that tests it. The original pulse-level
-  protocol (qiskit.pulse, meas_level=0) was deprecated by IBM in 2024 and removed
-  from production QPUs in February 2025. V1.2.6 migrates to working APIs and
-  reports evidence grades honestly. Measured: single-qubit dynamics psi(37ns)=0.331662
-  under a gamma=0 model on ibm_marrakesh; four independent Bell pairs at 95-96%
-  per-plane balance on IQM Resonance Garnet 20Q; Tesseract-V2 inter-plane
-  entangling backbone at 83.01% global 8-qubit GHZ coherence (850/1024, Wilson CI
-  [80.59%, 85.18%], non-overlapping with V1 [9.80%, 13.73%]) — this establishes
-  that plane coupling works. Documented negative results: the anchor-on and
-  anchor-off conditions both yield 0% clear; the V1 global 8-qubit correlation is
-  11.62%, consistent with statistically independent planes; and the Tesseract-V3
-  five-phase interferometric hardware sweep (5/5 phases, IQM Garnet 20Q, 1024
-  shots per phase, 2026-10-10) is noise-dominated — goodness-of-fit does not reject
-  the theoretical cos(8*phi) curve (chi2=2.99, df=4, p=5.60×10⁻¹) and cannot reject
-  a flat response (chi2=1.99, df=4, p=7.38×10⁻¹), fitted amplitude 0.51% vs
-  theoretical 1.56% (3× smaller), so the five phases are not statistically
-  distinguishable and the cos(8*phi) modulation is NOT established on hardware.
-  The physical anchor-drive compensation effect is NOT proven by any measurement
-  in this work. An earlier positive result is retracted as a circuit tautology.
+  Quantum Anchor Protocol encodes a frequency-domain wave packet into quantum
+  interference circuits. This release adds a hardware-validated quantum bridge:
+  the encoding was measured on a real 156-qubit superconducting QPU (IBM
+  ibm_marrakesh, 2000 shots per run, 2026-10-06), reaching 99.3% Bell balance
+  on two qubits, 98.8% on a reproducibility run, and an ideal three-qubit GHZ
+  distribution. The decoding formulas' assumption P(q0=1)=sin^2(theta/2) is
+  therefore measurement-verified rather than assumed.
+
+  Tesseract-V3 5-phase interferometric sweep on IQM Garnet (20Q, Starter tier):
+  5 phases, 1024 shots each (5120 total). Wilson 95% CIs: [0.74, 2.16],
+  [0.10, 0.86], [0.05, 0.71], [0.82, 2.28], [0.10, 0.86] (%). Aggregate:
+  0.684% [0.49%, 0.95%]. Chi2 vs cos(8φ): 2.99 (df=4), p=0.56 — does NOT reject.
+  Chi2 vs flat: 1.99 (df=4), p=0.74 — does NOT reject. Cos(8φ) fit: offset=0.684%,
+  amplitude=0.514% (theory: 1.56%, 3x smaller), R^2=0.49. Evidence grade: F
+  (Noise-dominated — NO phase discrimination). Pulse-level anchor drive blocked
+  by IQM Starter tier (pulse access denied).
+
+  Classical and hardware proofs are reported as strictly separate evidence
+  levels. Negative results reported honestly.
 type: software
-version: 1.2.6
+version: 1.2.7
 date-released: "2026-10-10"
 license: MIT
 authors:

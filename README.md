@@ -4,7 +4,7 @@
 
 > ## ⚠️ STATUS — Read before citing
 >
-> This repository documents the **Quantum Anchor V1.2.6 (Tesseract Anchor)** protocol. The measurement ladder is currently at the **Tesseract-V3 interferometric readout** stage.
+> This repository documents the **Quantum Anchor V1.2.7 (Tesseract Anchor)** protocol. The measurement ladder is currently at the **Tesseract-V3 interferometric readout** stage.
 > The original pulse-level protocol (`qiskit.pulse`, `meas_level=0`) was **deprecated by IBM in 2024, removed Feb 2025** (F1–F2 in VALIDATION.md).
 >
 > **Measured results, newest first — including the negative ones:**
