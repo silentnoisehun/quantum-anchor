@@ -26,18 +26,18 @@ The Quantum Anchor Protocol encodes information in the **phase of a frequency-do
 | Classical proofs (scs-quantum) | ✅ 36 tests PASS | A |
 | IBM Bell/GHZ (scs-quantum) | ✅ 99.3% / ideal | A |
 | Tesseract-V2 (8-phase) | ❌ Obsolete | F |
-| **Tesseract-V3 Phase 0** | ✅ DONE | F |
-| **Tesseract-V3 Phase 1** | ✅ DONE | F |
-| **Tesseract-V3 Phase 2** | ✅ DONE | F |
-| **Tesseract-V3 Phase 3** | ✅ DONE | F |
-| **Tesseract-V3 Phase 4** | ✅ DONE | F |
+| **Tesseract-V3 Phase 0** | ✅ DONE (Job 01a11943) | F |
+| **Tesseract-V3 Phase 1** | ✅ DONE (Job 01a11ab7) | F |
+| **Tesseract-V3 Phase 2** | ✅ DONE (Job 01a11aba) | F |
+| **Tesseract-V3 Phase 3** | ✅ DONE (Job 01a11aba) | F |
+| **Tesseract-V3 Phase 4** | ✅ DONE (Job 01a11abb) | F |
 | **Aggregate (5120 shots)** | ✅ **0.684% [0.49%, 0.95%]** | **F** |
-| **χ² vs cos(8φ)** | ✅ **2.99, p=0.56 (NOT reject)** | — |
-| **χ² vs flat** | ✅ **1.99, p=0.74 (NOT reject)** | — |
-| **Cos(8φ) fit** | ✅ Amp=0.51% (3× < theory), R²=0.49 | — |
+| **χ² vs cos(8φ)** | ✅ **2.99, p=0.560 (NOT reject)** | — |
+| **χ² vs flat** | ✅ **1.99, p=0.738 (NOT reject)** | — |
+| **Cos(8φ) fit** | ✅ Amp=0.514% (3× < 1.56% theory), R²=0.49 | — |
 | Pulse-level access (IQM) | ❌ Blocked (Starter tier) | — |
 
-**Key Result:** Tesseract-V3 on IQM Garnet is **noise-dominated (Grade F)**. Hardware noise floor (~0.68%) comparable to theoretical signal range (0.3–3.1%). Statistical tests reject neither cos(8φ) theory nor flat noise model. Fitted amplitude 0.51% vs 1.56% theory (3× smaller).
+**Key Result:** Tesseract-V3 on IQM Garnet is **noise-dominated (Grade F)**. Hardware noise floor (~0.68%) comparable to theoretical signal range (0.3–3.1%). Both χ² tests (cos(8φ) theory p=0.56, flat p=0.74) fail to reject either model. Fitted amplitude 0.514% vs 1.5625% theory (3.0× smaller).
 
 ---
 
