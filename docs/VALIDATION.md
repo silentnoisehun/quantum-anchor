@@ -998,11 +998,11 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 - A mért amplitúdó (0.511%) **háromszorosánként kisebb** az elméletinél (1.5625%)
 
 **Chi-squared goodness-of-fit tesztek:**
-- Elméleti cos(8φ) görbe: chi² = 1.12 (df=4), p = 0.56 → **NEM elutasítja az elméleti görbét**
-- Flat (no modulation) hipotezis: chi² = 1.98 (df=4), p = 0.74 → **egyenes görbe sem elutasítható**
-- **R² = 0.48** → az illesztés pozitív de alacsony; az adat nem illeszkedik jelentősen se az elméleti görbehez, se az egyeneshez
+- Elméleti cos(8φ) görbe: chi² = 30.72 (df=4), p = 6×10⁻⁶ → **ELUTASÍTJA az elméleti görbét**
+- Flat (no modulation) hipotezis: chi² = 20.29 (df=4), p = 5.2×10⁻⁴ → **az egyenes görbe is ELUTASÍTHATÓ**
+- **R² = -4.41** → az illesztés rosszabb, mint az átlag; az adat sem az elméleti görbehez, sem az egyeneshez nem illeszkedik jelentősen
 
-**Következmény:** A hardware zajszint (~0.2–1.4% globális koherencia) **összehasonlítható az elméleti jellel** (0.298–3.125%). Az 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett. A cos(8φ) moduláció hardveresen **NEM igazolt**. Minden Wilson 95% CI tartalmazza a nullát és átfedő — egyetlen fázis sem mutat statisztikailag szignifikáns koherenciát a zaj felett. Fitted amplitude 0.51% vs 1.56% theory (3x smaller).
+**Következmény:** A hardware zajszint (~0.2–1.4% globális koherencia) **összehasonlítható az elméleti jellel** (0.298–3.125%). Az 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett. A cos(8φ) moduláció hardveresen **NEM igazolt**. Mindkét modell (cos(8φ) és flat) **ELUTASÍTOTT** a χ² tesztek szerint (p < 0.001). Fitted amplitude 0.51% vs 1.56% theory (3x smaller).
 
 **Aggregate Wilson 95% CI (5120 shots total, 5 phases × 1024):**
 - Global coherence: 0.68% [0.49%, 0.95%]
@@ -1118,8 +1118,8 @@ A korábbi §7.9-§7.10 három független IQM kontrollmátrix-futás (12 job ös
 | Állítás | Státusz |
 |---|---|
 | H^x8 readout megkülönbözteti a 5 fázist (szimulációban) | ✅ **BIZONYÍTVA (szimuláció)** |
-| H^x8 readout megkülönbözteti a 5 fázist (hardveren) | ❌ **NEM BIZONYÍTOTT** — zaj dominál, χ²=1.99 flat p=7.4×10⁻¹, R²=0.49 |
-| Az 5 fázis szelekciója (anchor mechanizmus) hardveresen működik | ❌ **NEM BIZONYÍTOTT** — nincs mérhető moduláció, χ²=2.99 NEM elutasítja az elméleti cos(8φ) görbét (p=5.6×10⁻¹) |
+| H^x8 readout megkülönbözteti a 5 fázist (hardveren) | ❌ **NEM BIZONYÍTOTT** — mindkét modell elutasítva: χ²=20.29 flat p=5.2×10⁻⁴, χ²=30.72 cos(8φ) p=6×10⁻⁶, R²=-4.41 |
+| Az 5 fázis szelekciója (anchor mechanizmus) hardveresen működik | ❌ **NEM BIZONYÍTOTT** — mindkét modell elutasítva, nincs mérhető moduláció, fitted amp 0.51% vs 1.56% theory (3x smaller) |
 | Pulse-level fizikai anchor drive | ❌ **BLOKKOLVA** — Starter tier tiltás |
 
 ---
@@ -1134,7 +1134,7 @@ A korábbi §7.9-§7.10 három független IQM kontrollmátrix-futás (12 job ös
 6. ✅ **Zenodo metaadat** → `.zenodo.json` + `CITATION.cff` (kész, DOI mintelés kézi)
 7. ✅ **Bell Control Matrix** → 3 független futás, 12 job, `rz(φ)` hatás kimérve: **NINCS** (kész)
 8. ✅ **Tesseract-V2 Globális Koherencia** → 83.01% IQM Garnet-en (kész)
-9. ✅ **Tesseract-V3 5-fázis Interferometrikus Sweep** → 5/5 fázis befejezve (2026-10-10) — **zaj dominál, NINCS megkülönböztetés, χ²=2.99 cos(8φ) p=5.60×10⁻¹, χ²=1.99 flat p=7.38×10⁻¹, R²=0.49, fitted amp 0.51% vs 1.56% theory (3x kisebb)** (kész)
+9. ✅ **Tesseract-V3 5-fázis Interferometrikus Sweep** → 5/5 fázis befejezve (2026-10-10) — **zaj dominál, NINCS megkülönböztetés, mindkét modell elutasítva: χ²=30.72 cos(8φ) p=6×10⁻⁶, χ²=20.29 flat p=5.2×10⁻⁴, R²=-4.41, fitted amp 0.51% vs 1.56% theory (3x smaller)** (kész)
 10. ⏳ **Pulse-level Sweep** → **pénzes tier VAGY külön engedély** (mérve tiltva a §7.8.8-ban)
 11. ⏳ **Braket Pulse** (Rigetti) → alternatíva, ha az IQM nem ad engedélyt
 12. ✅ **README.md** → V3 eredmények az Evidence Grades táblázatban ÉS a „STATUS — Read before citing" fejlécben (kész 2026-10-10)
