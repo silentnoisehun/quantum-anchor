@@ -23,12 +23,12 @@
       "phi_deg": 71.99787653613924,
       "job_id": "01a11ab7-7d8e-77c3-bc67-ae8423181204",
       "shots": 1024,
-      "c0": 3,
-      "c1": 0,
-      "global_coherence_pct": 0.29,
+      "c0": 6,
+      "c1": 7,
+      "global_coherence_pct": 1.27,
       "wilson_ci95_pct": [
-        0.1,
-        0.858
+        0.743,
+        2.16
       ],
       "theoretical_cos8phi_pct": 0.2981
     },
@@ -40,7 +40,7 @@
       "shots": 1024,
       "c0": 2,
       "c1": 0,
-      "global_coherence_pct": 0.2,
+      "global_coherence_pct": 0.1953125,
       "wilson_ci95_pct": [
         0.054,
         0.709
@@ -55,7 +55,7 @@
       "shots": 1024,
       "c0": 7,
       "c1": 7,
-      "global_coherence_pct": 1.37,
+      "global_coherence_pct": 1.3671875,
       "wilson_ci95_pct": [
         0.816,
         2.282
@@ -70,7 +70,7 @@
       "shots": 1024,
       "c0": 1,
       "c1": 2,
-      "global_coherence_pct": 0.29,
+      "global_coherence_pct": 0.29296875,
       "wilson_ci95_pct": [
         0.1,
         0.858
@@ -78,24 +78,24 @@
       "theoretical_cos8phi_pct": 0.2988
     }
   ],
-  "chi2_cos8phi": 30.7171,
+  "chi2_cos8phi": 63.1256,
   "chi2_cos8phi_df": 4,
-  "chi2_cos8phi_pvalue": 6e-06,
-  "chi2_flat": 20.2857,
+  "chi2_cos8phi_pvalue": 0.0,
+  "chi2_flat": 15.7778,
   "chi2_flat_df": 4,
-  "chi2_flat_pvalue": 0.000515,
-  "r2_cos8phi": -4.4083,
+  "chi2_flat_pvalue": 0.003504,
+  "r2_cos8phi": -5.1051,
   "cos8phi_fit": {
-    "offset": 0.6839,
-    "amplitude": 0.5142,
-    "model": "coherence(%) = 0.6839 + 0.5142 * cos(8phi)"
+    "offset": 0.879,
+    "amplitude": 0.1951,
+    "model": "coherence(%) = 0.8790 + 0.1951 * cos(8phi)"
   },
   "theoretical_cos8phi": {
     "offset": 1.5625,
     "amplitude": 1.5625,
     "model": "coherence(%) = 1.5625 + 1.5625 * cos(8phi)"
   },
-  "avg_global_coherence_pct": 0.68,
+  "avg_global_coherence_pct": 0.88,
   "theoretical_max_signal_pct": 1.56,
-  "conclusion": "Hardware noise dominates. cos(8phi) curve REJECTED (p=0.000006). Flat response REJECTED (p=0.000515). R^2 = -4.4083 (worse than mean). Theoretical signal (0-1.56%) sits at/below noise floor (~0.68%). Five phases not statistically distinguishable as phase-dependent."
+  "conclusion": "Hardware noise dominates. cos(8phi) curve REJECTED (p=0.000000). Flat response REJECTED (p=0.003504). R^2 = -5.1051 (worse than mean). Theoretical signal (0-1.56%) sits at/below noise floor (~0.88%). Five phases not statistically distinguishable as phase-dependent."
 }
