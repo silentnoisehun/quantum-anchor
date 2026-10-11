@@ -25,8 +25,9 @@ def load_json(path):
 
 # Phase 0 - from phase0_audit_latest.json
 phase0 = load_json(raw_dir / "phase0_audit_latest.json")
-c0_0 = phase0["counts"].get("00000000", 0)
-c1_0 = phase0["counts"].get("11111111", 0)
+# Phase 0 has c0 and c1 as top-level fields, not in counts dict
+c0_0 = phase0.get("c0", phase0["counts"].get("00000000", 0))
+c1_0 = phase0.get("c1", phase0["counts"].get("11111111", 0))
 
 # Phase 1
 phase1 = load_json(raw_dir / "iqm_tesseract_v3_interferometric_01a11ab7_phase1_20261008T085544Z.json")
@@ -49,7 +50,7 @@ c0_4 = phase4["counts"].get("00000000", 0)
 c1_4 = phase4["counts"].get("11111111", 0)
 
 phases = [
-    {"phase_idx": 0, "phi_rad": 0.0, "job_id": "01a11943-739b-7415-8719-1fa493bc9aa8", "returned": 1024, "c0": c0_0, "c1": c1_0, "global_coherence_pct": phase0["global_coherence_pct"]},
+    {"phase_idx": 0, "phi_rad": 0.0, "job_id": "01a11943-739b-7415-8719-1fa493bc9aa8", "returned": 1024, "c0": c0_0, "c1": c1_0, "global_coherence_pct": phase0["global_coherence_percent"]},
     {"phase_idx": 1, "phi_rad": 1.2566, "job_id": "01a11ab7-7d8e-77c3-bc67-ae8423181204", "returned": 1024, "c0": c0_1, "c1": c1_1, "global_coherence_pct": phase1["global_coherence_pct"]},
     {"phase_idx": 2, "phi_rad": 2.5133, "job_id": "01a11aba-531f-73ae-8da7-c705c729038d", "returned": 1024, "c0": c0_2, "c1": c1_2, "global_coherence_pct": phase2["global_coherence_pct"]},
     {"phase_idx": 3, "phi_rad": 3.7699, "job_id": "01a11aba-c6d7-736a-ac56-a5c0525d2cc4", "returned": 1024, "c0": c0_3, "c1": c1_3, "global_coherence_pct": phase3["global_coherence_pct"]},

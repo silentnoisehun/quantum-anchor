@@ -976,36 +976,36 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 
 **V2 minden fázisra azonos (vak). V3 megkülönbözteti — az "anchor szelekció" lehetséges.**
 
-### 7.12.8 Hardveres eredmények (IQM Garnet 20Q, 1024 shots/fázis, 2026-10-09)
+### 7.12.8 Hardveres eredmények (IQM Garnet 20Q, 1024 shots/fázis, 2026-10-08/09)
 
 | phase_idx | Job ID | φ (rad) | c0 (0^8) | c1 (1^8) | Sum | Global coherence % | Wilson 95% CI (%) |
 |---|---|---|---|---|---|---|---|
 | 0 | `01a11943-739b-7415-8719-1fa493bc9aa8` | 0.0000 | 6 | 7 | 13 | 1.27% | [0.74, 2.16] |
-| 1 | `01a11ab7-7d8e-77c3-bc67-ae8423181204` | 1.2566 | 6 | 7 | 13 | 1.27% | [0.74, 2.16] |
+| 1 | `01a11ab7-7d8e-77c3-bc67-ae8423181204` | 1.2566 | 3 | 0 | 3 | 0.29% | [0.10, 0.86] |
 | 2 | `01a11aba-531f-73ae-8da7-c705c729038d` | 2.5133 | 2 | 0 | 2 | 0.20% | [0.05, 0.71] |
 | 3 | `01a11aba-c6d7-736a-ac56-a5c0525d2cc4` | 3.7699 | 7 | 7 | 14 | 1.37% | [0.82, 2.28] |
 | 4 | `01a11abb-525f-7534-a1f1-5c98b274d710` | 5.0265 | 1 | 2 | 3 | 0.29% | [0.10, 0.86] |
 
 **Elemzés (frissítve 2026-10-11, korrigált statisztikával — 5/5 fázis DONE):**
-- A mért értékek: phase 3 → 1.37% legmagasabb, phase 0/1 → 1.27%, phase 4 → 0.29%, phase 2 → 0.20%.
-- Phase 0 (elméletben 3.125%) → 1.27%, phase 1 (elméletben 0.298%) → 1.27%, phase 2 (elméletben 2.045%) → 0.20%, phase 3 (elméletben 2.045%) → 1.37%, phase 4 (elméletben 0.299%) → 0.29%.
+- A mért értékek: phase 3 → 1.37% legmagasabb, phase 0 → 1.27%, phase 1 → 0.29%, phase 4 → 0.29%, phase 2 → 0.20%.
+- Phase 0 (elméletben 3.125%) → 1.27%, phase 1 (elméletben 0.298%) → 0.29%, phase 2 (elméletben 2.045%) → 0.20%, phase 3 (elméletben 2.045%) → 1.37%, phase 4 (elméletben 0.299%) → 0.29%.
 - Mind a 5 fázis mért koherenciája **rendrenddel alacsonyabb** az elméleti predikciónál (max 1.37% vs 3.125%).
-- Átlagos koherencia: 0.88%. Elméleti jel tartománya: 0.298%–3.125%. **A zaj alapszint (~0.88%) azonos nagyságrendű, mint a jel.**
+- Átlagos koherencia: 0.68%. Elméleti jel tartománya: 0.298%–3.125%. **A zaj alapszint (~0.68%) azonos nagyságrendű, mint a jel.**
 
 **Cos(8φ) illesztés a mért adatokra (lineáris modell: coherence = a + b·cos(8φ)):**
-- Fitted: offset = 0.879%, amplitude = 0.195%, R² = -5.11
+- Fitted: offset = 0.684%, amplitude = 0.514%, R² = -4.41
 - Elméleti: offset = 1.5625%, amplitude = 1.5625%
-- A mért amplitúdó (0.195%) **nyolcaszor kisebb** az elméletinél (1.5625%)
+- A mért amplitúdó (0.514%) **nyolcaszor kisebb** az elméletinél (1.5625%)
 
 **Chi-squared goodness-of-fit tesztek:**
-- Elméleti cos(8φ) görbe: chi² = 63.13 (df=4), p < 10⁻⁶ → **ELUTASÍTJA az elméleti görbét**
-- Flat (no modulation) hipotezis: chi² = 15.78 (df=4), p = 3.5×10⁻³ → **az egyenes görbe is ELUTASÍTHATÓ**
-- **R² = -5.11** → az illesztés rosszabb, mint az átlag; az adat sem az elméleti görbehez, sem az egyeneshez nem illeszkedik jelentősen
+- Elméleti cos(8φ) görbe: chi² = 30.72 (df=4), p = 6×10⁻⁶ → **ELUTASÍTJA az elméleti görbét**
+- Flat (no modulation) hipotezis: chi² = 20.29 (df=4), p = 5.2×10⁻⁴ → **az egyenes görbe is ELUTASÍTHATÓ**
+- **R² = -4.41** → az illesztés rosszabb, mint az átlag; az adat sem az elméleti görbehez, sem az egyeneshez nem illeszkedik jelentősen
 
 **Következmény:** A hardware zajszint (~0.2–1.4% globális koherencia) **összehasonlítható az elméleti jellel** (0.298–3.125%). Az 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett. A cos(8φ) moduláció hardveresen **NEM igazolt**. Mindkét modell (cos(8φ) és flat) **ELUTASÍTOTT** a χ² tesztek szerint (p < 0.01). Fitted amplitude 0.20% vs 1.56% theory (8x smaller).
 
 **Aggregate Wilson 95% CI (5120 shots total, 5 phases × 1024):**
-- Global coherence: 0.88% [0.62%, 1.22%]
+- Global coherence: 0.68% [0.45%, 1.01%]
 
 ### 7.12.9 Audit Trail (V3 5-fázis sweep)
 
