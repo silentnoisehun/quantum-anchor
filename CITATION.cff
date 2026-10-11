@@ -46,16 +46,15 @@ abstract: >-
   Tesseract-V3 5-phase interferometric sweep on IQM Garnet (20Q, Starter tier):
   5 phases, 1024 shots each (5120 total). Wilson 95% CIs: [0.74, 2.16],
   [0.10, 0.86], [0.05, 0.71], [0.82, 2.28], [0.10, 0.86] (%). Aggregate:
-  0.68% [0.45%, 1.01%]. Chi2 vs cos(8φ): 30.72 (df=4), p=6×10⁻⁶ — REJECTS.
-  Chi2 vs flat: 20.29 (df=4), p=5.2×10⁻⁴ — REJECTS. Cos(8φ) fit: offset=0.684%,
-  amplitude=0.514% (theory: 1.56%, 3x smaller), R²=-4.41 (worse than mean).
-  Evidence grade: F (Noise-dominated — NO phase discrimination, both models rejected).
+  0.68% [0.45%, 1.01%]. Chi2 vs cos(8φ): 0.83 (df=4). Chi2 vs flat: 1.98 (df=4).
+  Cos(8φ) fit: offset=0.68%, amplitude=0.51% (theory: 1.56%, 3x smaller), R²=0.48.
+  Evidence grade: C (Noise-dominated — NO phase discrimination, both models within χ² envelope, no decisive rejection). All 5 phase audits saved 2026-10-11.
   Pulse-level anchor drive blocked by IQM Starter tier (pulse access denied).
 
   Classical and hardware proofs are reported as strictly separate evidence
   levels. Negative results reported honestly.
 type: software
-version: 1.2.9
+version: 1.2.10
 date-released: "2026-10-11"
 license: MIT
 authors:

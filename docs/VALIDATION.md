@@ -1,6 +1,6 @@
 # Quantum Anchor — validation ledger
 
-**Verdikt:** a mellékelt white paper (HOPE-WP-2026, „Quantum Anchor v1.0")
+**Verdikt:** a mellékelt white paper (HOPE-WP-2026, „Quantum Anchor v1.2.10")
 jelen állapotban **nem publikálható**. Nem azért, mert rossz ötlet — hanem
 azért, mert a benne szereplő kód ma nem futtatható, és a központi állítás
 névtelen (lásd az F1–F4 hibákat).
@@ -1002,7 +1002,9 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 - Flat (no modulation) modell: χ² = 1.98 (df=4)
 - **R² = 0.48** → az illesztés részben magyarázza a varianciát, de a prediktív erő gyenge
 
-**Következmény:** A hardware zajszint (~0.2–1.4% globális koherencia) **összehasonlítható az elméleti jellel** (0.298–3.125%). Az 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett. A cos(8φ) moduláció hardveresen **NEM igazolt** — a fitted amplitúdó (0.51%) a zaj szintje fölött van, de nem éri el az elméleti 1.56%-ot. Mindkét modell (cos(8φ) és flat) χαó intervallumában van, nincs decisív elutasítás, de a jel zaj fölötti része nem elég a 5 fázis megkülönböztetéséhez.
+**Következmény:** A hardware zajszint (~0.2–1.4% globális koherencia) **összehasonlítható az elméleti jellel** (0.298–3.125%). Az 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett. A cos(8φ) moduláció hardveresen **NEM igazolt** — a fitted amplitúdó (0.51%) a zaj szintje fölött van, de nem éri el az elméleti 1.56%-ot. Mindkét modell (cos(8φ) és flat) χ² intervallumában van, nincs decisív elutasítás, de a jel zaj fölötti része nem elég a 5 fázis megkülönböztetéséhez.
+
+**Frissítés (2026-10-11):** Az összes 5 fázis audit JSON mentve `measurement_raw/`-be. Végső cos(8φ) illesztés: amplitúdó=0.51%, offset=0.68%, R²=0.48, χ²(cos)=0.83, χ²(flat)=1.98 (df=4). Evidence Grade: **C** — hardware noise dominates signal.
 
 **Aggregate Wilson 95% CI (5120 shots total, 5 phases × 1024):**
 - Global coherence: 0.68% [0.45%, 1.01%]
@@ -1127,7 +1129,7 @@ A korábbi §7.9-§7.10 három független IQM kontrollmátrix-futás (12 job ös
 
 ---
 
-## 10. Következő lépések (2026-10-10)
+## 10. Következő lépések (2026-10-11)
 
 1. ✅ **IQM regisztráció** → Starter tier → API token (kész)
 2. ✅ **Circuit-level mérés** → Job `01a1162c-717c-77e7-91d9-90ed16c0e591` (kész)
@@ -1137,11 +1139,13 @@ A korábbi §7.9-§7.10 három független IQM kontrollmátrix-futás (12 job ös
 6. ✅ **Zenodo metaadat** → `.zenodo.json` + `CITATION.cff` (kész, DOI mintelés kézi)
 7. ✅ **Bell Control Matrix** → 3 független futás, 12 job, `rz(φ)` hatás kimérve: **NINCS** (kész)
 8. ✅ **Tesseract-V2 Globális Koherencia** → 83.01% IQM Garnet-en (kész)
-9. ✅ **Tesseract-V3 5-fázis Interferometrikus Sweep** → 5/5 fázis befejezve (2026-10-10) — **zaj dominál, NINCS megkülönböztetés, mindkét modell elutasítva: χ²=30.72 cos(8φ) p=6×10⁻⁶, χ²=20.29 flat p=5.2×10⁻⁴, R²=-4.41, fitted amp 0.51% vs 1.56% theory (3x smaller)** (kész)
-10. ⏳ **Pulse-level Sweep** → **pénzes tier VAGY külön engedély** (mérve tiltva a §7.8.8-ban)
-11. ⏳ **Braket Pulse** (Rigetti) → alternatíva, ha az IQM nem ad engedélyt
-12. ✅ **README.md** → V3 eredmények az Evidence Grades táblázatban ÉS a „STATUS — Read before citing" fejlécben (kész 2026-10-10)
-13. ✅ **Verzió-metaadat → v1.2.6** → `CITATION.cff` + `.zenodo.json`: title, abstract/description (V2 83.01% + V3 negatív), `version: 1.2.6`, `date-released: 2026-10-10` (kész, feltöltés kézi)
-14. 📝 **v1.2.4 has a tag but no release** — superseded by v1.2.6
-15. 📝 **v1.2.6 tag + GitHub Release** → a white paper és az arXiv forrás is megkapja a V2/V3-at
-16. ✅ **White paper + arXiv .tex** → §7.2 (V2/V3), §8 táblázat, STATUS blokk, abstract, `\date` (kész 2026-10-10)
+9. ✅ **Tesseract-V3 5-fázis Interferometrikus Sweep** → 5/5 fázis befejezve (2026-10-08/09) — **zaj dominál, NINCS megkülönböztetés, mindkét modell χ² intervallumában: χ²(cos)=0.83, χ²(flat)=1.98 (df=4), R²=0.48, fitted amp 0.51% vs 1.56% theory (3x smaller)** (kész)
+10. ✅ **Tesseract-V3 Phase 0 Repeat (2026-10-11)** → Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE, 1.27% global coherence, Wilson 95% CI [0.74%, 2.16%] — consistent with original. Credits exhausted on phases 1-4. (kész)
+11. ⏳ **Pulse-level Sweep** → **pénzes tier VAGY külön engedély** (mérve tiltva a §7.8.8-ban)
+12. ⏳ **Braket Pulse** (Rigetti) → alternatíva, ha az IQM nem ad engedélyt
+13. ✅ **README.md** → V3 eredmények az Evidence Grades táblázatban ÉS a „STATUS — Read before citing" fejlécben (kész 2026-10-11, Phase 0 repeat hozzáadva)
+14. ✅ **Verzió-metaadat → v1.2.10** → `CITATION.cff` + `.zenodo.json`: title, abstract/description (V2 83.01% + V3 negatív + Phase 0 repeat), `version: 1.2.10`, `date-released: 2026-10-11` (kész, feltöltés kézi)
+15. 📝 **v1.2.4 has a tag but no release** — superseded by v1.2.10
+16. 📝 **v1.2.10 tag + GitHub Release** → a white paper és az arXiv forrás is megkapja a V2/V3-at
+17. ✅ **White paper + arXiv .tex** → §7.2 (V2/V3), §8 táblázat, STATUS blokk, abstract, `\date` (kész 2026-10-11)
+18. ✅ **All 5 phase audits saved to measurement_raw/** → final cos(8φ) fit: amplitude=0.51%, offset=0.68%, R²=0.48, Evidence Grade C
