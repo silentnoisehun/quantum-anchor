@@ -1,0 +1,22 @@
+{
+  "job_id": "01a11943-739b-7415-8719-1fa493bc9aa8",
+  "backend": "garnet",
+  "num_qubits": 20,
+  "status": "DONE",
+  "shots_returned": 1024,
+  "shots_requested": 1024,
+  "counts": {
+    "11111111": 7,
+    "00000000": 6
+  },
+  "global_coherence": 1.2695,
+  "c0": 6,
+  "c1": 7,
+  "global_balance_pct": 1.2695,
+  "global_balance_ci95_pct": [
+    0.743,
+    2.16
+  ],
+  "timestamp": "2026-10-10T20:52:37.664947Z",
+  "phase": "phase5_repeat"
+}
