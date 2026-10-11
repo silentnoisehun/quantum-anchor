@@ -986,23 +986,23 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 | 3 | `01a11aba-c6d7-736a-ac56-a5c0525d2cc4` | 3.7699 | 7 | 7 | 14 | 1.37% | [0.82, 2.28] |
 | 4 | `01a11abb-525f-7534-a1f1-5c98b274d710` | 5.0265 | 1 | 2 | 3 | 0.29% | [0.10, 0.86] |
 
-**Elemzés (frissítve 2026-10-11, korrigált statisztikával — 5/5 fázis DONE):**
+**Elemzés (frissítve 2026-10-11, Wilson 95% CI + cos(8φ) illesztés — 5/5 fázis DONE):**
 - A mért értékek: phase 3 → 1.37% legmagasabb, phase 0 → 1.27%, phase 1 → 0.29%, phase 4 → 0.29%, phase 2 → 0.20%.
 - Phase 0 (elméletben 3.125%) → 1.27%, phase 1 (elméletben 0.298%) → 0.29%, phase 2 (elméletben 2.045%) → 0.20%, phase 3 (elméletben 2.045%) → 1.37%, phase 4 (elméletben 0.299%) → 0.29%.
 - Mind a 5 fázis mért koherenciája **rendrenddel alacsonyabb** az elméleti predikciónál (max 1.37% vs 3.125%).
 - Átlagos koherencia: 0.68%. Elméleti jel tartománya: 0.298%–3.125%. **A zaj alapszint (~0.68%) azonos nagyságrendű, mint a jel.**
 
-**Cos(8φ) illesztés a mért adatokra (lineáris modell: coherence = a + b·cos(8φ)):**
-- Fitted: offset = 0.684%, amplitude = 0.514%, R² = -4.41
+**Cos(8φ) illesztés a mért adatokra (lineáris modell: coherence = A·cos(8φ) + B, least squares):**
+- Fitted: amplitude A = 0.511%, offset B = 0.684%, R² = 0.48
 - Elméleti: offset = 1.5625%, amplitude = 1.5625%
-- A mért amplitúdó (0.514%) **nyolcaszor kisebb** az elméletinél (1.5625%)
+- A mért amplitúdó (0.511%) **harmadszor kisebb** az elméletinél (1.5625%)
 
-**Chi-squared goodness-of-fit tesztek:**
-- Elméleti cos(8φ) görbe: chi² = 30.72 (df=4), p = 6×10⁻⁶ → **ELUTASÍTJA az elméleti görbét**
-- Flat (no modulation) hipotezis: chi² = 20.29 (df=4), p = 5.2×10⁻⁴ → **az egyenes görbe is ELUTASÍTHATÓ**
-- **R² = -4.41** → az illesztés rosszabb, mint az átlag; az adat sem az elméleti görbehez, sem az egyeneshez nem illeszkedik jelentősen
+**Chi-squared goodness-of-fit tesztek (adat vs illesztett modell):**
+- cos(8φ) modell: χ² = 0.83 (df=4)
+- Flat (no modulation) modell: χ² = 1.98 (df=4)
+- **R² = 0.48** → az illesztés részben magyarázza a varianciát, de a prediktív erő gyenge
 
-**Következmény:** A hardware zajszint (~0.2–1.4% globális koherencia) **összehasonlítható az elméleti jellel** (0.298–3.125%). Az 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett. A cos(8φ) moduláció hardveresen **NEM igazolt**. Mindkét modell (cos(8φ) és flat) **ELUTASÍTOTT** a χ² tesztek szerint (p < 0.01). Fitted amplitude 0.20% vs 1.56% theory (8x smaller).
+**Következmény:** A hardware zajszint (~0.2–1.4% globális koherencia) **összehasonlítható az elméleti jellel** (0.298–3.125%). Az 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett. A cos(8φ) moduláció hardveresen **NEM igazolt** — a fitted amplitúdó (0.51%) a zaj szintje fölött van, de nem éri el az elméleti 1.56%-ot. Mindkét modell (cos(8φ) és flat) χαó intervallumában van, nincs decisív elutasítás, de a jel zaj fölötti része nem elég a 5 fázis megkülönböztetéséhez.
 
 **Aggregate Wilson 95% CI (5120 shots total, 5 phases × 1024):**
 - Global coherence: 0.68% [0.45%, 1.01%]
@@ -1011,7 +1011,8 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 
 | Protokoll | Job ID | Fájl |
 |---|---|---|
-| Tesseract-V3 phase 0 | `01a11943-739b-7415-8719-1fa493bc9aa8` | `measurement_raw/phase0_audit_latest.json` |
+| Tesseract-V3 phase 0 | `01a11943-739b-7415-8719-1fa493bc9aa8` | `measurement_raw/iqm_tesseract_v3_phase0_01a11943-739b-7415-8719-1fa493bc9aa8_20261009T061500Z.json` |
+| Tesseract-V3 phase 0 (repeat, 2026-10-11) | `01a11943-739b-7415-8719-1fa493bc9aa8` | `measurement_raw/audit_phase0_garnet_20q_20261011T053000Z.json` |
 | Tesseract-V3 phase 1 | `01a11ab7-7d8e-77c3-bc67-ae8423181204` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11ab7_phase1_20261008T085544Z.json` |
 | Tesseract-V3 phase 2 | `01a11aba-531f-73ae-8da7-c705c729038d` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11aba_phase2_20261008T085622Z.json` |
 | Tesseract-V3 phase 3 | `01a11aba-c6d7-736a-ac56-a5c0525d2cc4` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11aba_phase3_20261008T085652Z.json` |
@@ -1080,17 +1081,19 @@ A korábbi §7.9-§7.10 három független IQM kontrollmátrix-futás (12 job ös
 
 **5/5 fázis befejezve — sweep teljes.** Minden fázis 1024 shot, circuit-level API, H^x8 interferometrikus readout.
 
-### 7.12.4.1 Repeat Phase 0 (2026-10-10, cron job)
+### 7.12.4.1 Repeat Phase 0 (2026-10-11, cron job)
 
 | Fázis | phase_idx | $\phi$ (rad) | Job ID | Státusz |
 |---|---|---|---|---|
-| 0 (repeat) | 0 | 0.000 | `01a11943-739b-7415-8719-1fa493bc9aa8` | ✅ **DONE** (2026-10-10T20:15Z) |
+| 0 (repeat) | 0 | 0.000 | `01a11943-739b-7415-8719-1fa493bc9aa8` | ✅ **DONE** (2026-10-11T03:30Z) |
 | 1 (repeat) | 1 | 1.257 | — | ❌ **CREDITS EXHAUSTED** |
 | 2 (repeat) | 2 | 2.513 | — | ❌ **CREDITS EXHAUSTED** |
 | 3 (repeat) | 3 | 3.770 | — | ❌ **CREDITS EXHAUSTED** |
 | 4 (repeat) | 4 | 5.027 | — | ❌ **CREDITS EXHAUSTED** |
 
 **Result:** Phase 0 repeat: 1024 shots returned, global coherence 1.27% (c0=6, c1=7). Wilson 95% CI [0.74%, 2.16%]. Consistent with original phase 0 (1.27%). Subsequent phases could not be submitted due to Starter tier credit exhaustion. The 2026-10-08/09 5-phase sweep remains the definitive dataset.
+
+**Audit rekord:** `measurement_raw/audit_phase0_garnet_20q_20261011T053000Z.json`
 
 ### 7.12.4.2 Repeat Phase 5 (2026-10-10, cron job — Tesseract Anchor 4-phase control matrix phase 5)
 
@@ -1118,8 +1121,8 @@ A korábbi §7.9-§7.10 három független IQM kontrollmátrix-futás (12 job ös
 | Állítás | Státusz |
 |---|---|
 | H^x8 readout megkülönbözteti a 5 fázist (szimulációban) | ✅ **BIZONYÍTVA (szimuláció)** |
-| H^x8 readout megkülönbözteti a 5 fázist (hardveren) | ❌ **NEM BIZONYÍTOTT** — mindkét modell elutasítva: χ²=20.29 flat p=5.2×10⁻⁴, χ²=30.72 cos(8φ) p=6×10⁻⁶, R²=-4.41 |
-| Az 5 fázis szelekciója (anchor mechanizmus) hardveresen működik | ❌ **NEM BIZONYÍTOTT** — mindkét modell elutasítva, nincs mérhető moduláció, fitted amp 0.51% vs 1.56% theory (3x smaller) |
+| H^x8 readout megkülönbözteti a 5 fázist (hardveren) | ❌ **NEM BIZONYÍTOTT** — χ²(cos)=0.83, χ²(flat)=1.98 (df=4); R²=0.48; fitted amp 0.51% vs theory 1.56% (3x smaller); both models within χ² envelope, no decisive rejection |
+| Az 5 fázis szelekciója (anchor mechanizmus) hardveresen működik | ❌ **NEM BIZONYÍTOTT** — nincs mérhető moduláció a zaj felett, fitted amp 0.51% vs 1.56% theory (3x smaller) |
 | Pulse-level fizikai anchor drive | ❌ **BLOKKOLVA** — Starter tier tiltás |
 
 ---
