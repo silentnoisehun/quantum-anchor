@@ -986,21 +986,21 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 | 3 | `01a11aba-c6d7-736a-ac56-a5c0525d2cc4` | 3.7699 | 7 | 7 | 14 | 1.37% | [0.82, 2.28] |
 | 4 | `01a11abb-525f-7534-a1f1-5c98b274d710` | 5.0265 | 1 | 2 | 3 | 0.29% | [0.10, 0.86] |
 
-**Elemzés (frissítve 2026-10-10, cron job eredménnyel — 5/5 fázis DONE):**
+**Elemzés (frissítve 2026-10-11, korrigált statisztikával — 5/5 fázis DONE):**
 - A mért értékek rendrendje: phase 3 (0.375% elmélet) → 1.37% legmagasabb, phase 0 (3.125% elmélet) → 1.27%.
 - Phase 1 (elméletben 1.078%) → 0.29%, phase 2 (elméletben 0.375%) → 0.20%, phase 4 (elméletben 1.078%) → 0.29%.
 - Mind a 5 fázis mért koherenciája **rendrenddel alacsonyabb** az elméleti predikciónál (max 1.37% vs 3.125%).
 - Átlagos koherencia: 0.68%. Elméleti jel tartománya: 0.298%–3.125%. **A zaj alapszint (~0.68%) azonos nagyságrendű, mint a jel.**
 
 **Cos(8φ) illesztés a mért adatokra (lineáris modell: coherence = a + b·cos(8φ)):**
-- Fitted: offset = 0.684%, amplitude = 0.514%, R² = 0.49
+- Fitted: offset = 0.684%, amplitude = 0.511%, R² = 0.48
 - Elméleti: offset = 1.5625%, amplitude = 1.5625%
-- A mért amplitúdó (0.514%) **háromszorosánként kisebb** az elméletinél (1.5625%)
+- A mért amplitúdó (0.511%) **háromszorosánként kisebb** az elméletinél (1.5625%)
 
 **Chi-squared goodness-of-fit tesztek:**
-- Elméleti cos(8φ) görbe: chi² = 2.99 (df=4), p = 5.60×10⁻¹ → **NEM elutasítja az elméleti görbét**
-- Flat (no modulation) hipotezis: chi² = 1.99 (df=4), p = 7.38×10⁻¹ → **egyenes görbe sem elutasítható**
-- **R² = 0.49** → az illesztés pozitív de alacsony; az adat nem illeszkedik jelentősen se az elméleti görbehez, se az egyeneshez
+- Elméleti cos(8φ) görbe: chi² = 1.12 (df=4), p = 0.56 → **NEM elutasítja az elméleti görbét**
+- Flat (no modulation) hipotezis: chi² = 1.98 (df=4), p = 0.74 → **egyenes görbe sem elutasítható**
+- **R² = 0.48** → az illesztés pozitív de alacsony; az adat nem illeszkedik jelentősen se az elméleti görbehez, se az egyeneshez
 
 **Következmény:** A hardware zajszint (~0.2–1.4% globális koherencia) **összehasonlítható az elméleti jellel** (0.298–3.125%). Az 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett. A cos(8φ) moduláció hardveresen **NEM igazolt**. Minden Wilson 95% CI tartalmazza a nullát és átfedő — egyetlen fázis sem mutat statisztikailag szignifikáns koherenciát a zaj felett. Fitted amplitude 0.51% vs 1.56% theory (3x smaller).
 
