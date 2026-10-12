@@ -1015,7 +1015,7 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 |---|---|---|
 | Tesseract-V3 phase 0 | `01a11943-739b-7415-8719-1fa493bc9aa8` | `measurement_raw/iqm_tesseract_v3_phase0_01a11943-739b-7415-8719-1fa493bc9aa8_20261009T061500Z.json` |
 | Tesseract-V3 phase 0 (repeat, 2026-10-11) | `01a11943-739b-7415-8719-1fa493bc9aa8` | `measurement_raw/audit_phase0_garnet_20q_20261011T053000Z.json` |
-| Tesseract-V3 phase 0 (repeat, 2026-10-12) | `01a11943-739b-7415-8719-1fa493bc9aa8` | `measurement_raw/audit_phase0_garnet_20q_20261012T001843Z.json` |
+| Tesseract-V3 phase 0 (repeat, 2026-10-12) | `01a11943-739b-7415-8719-1fa493bc9aa8` | `measurement_raw/audit_phase0_garnet_20q_20261012T024640Z.json` |
 | Tesseract-V3 phase 1 | `01a11ab7-7d8e-77c3-bc67-ae8423181204` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11ab7_phase1_20261008T085544Z.json` |
 | Tesseract-V3 phase 2 | `01a11aba-531f-73ae-8da7-c705c729038d` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11aba_phase2_20261008T085622Z.json` |
 | Tesseract-V3 phase 3 | `01a11aba-c6d7-736a-ac56-a5c0525d2cc4` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11aba_phase3_20261008T085652Z.json` |
