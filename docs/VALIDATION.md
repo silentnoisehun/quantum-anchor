@@ -993,21 +993,21 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 - Átlagos koherencia: 0.68%. Elméleti jel tartománya: 0.298%–3.125%. **A zaj alapszint (~0.68%) azonos nagyságrendű, mint a jel.**
 
 **Cos(8φ) illesztés a mért adatokra (lineáris modell: coherence = A·cos(8φ) + B, least squares):**
-- Fitted: amplitude A = 0.5114%, offset B = 0.6836%, R² = 0.4827
+- Fitted: amplitude A = **0.5114%**, offset B = **0.6836%**, R² = **0.4827**
 - Elméleti: offset = 1.5625%, amplitude = 1.5625%
 - A mért amplitúdó (0.5114%) **harmadszor kisebb** az elméletinél (1.5625%)
 
-**Chi-squared goodness-of-fit tesztek (adat vs elméleti modell):**
-- cos(8φ) elméleti modell: χ² = 30.72 (df=4), p = 6.4×10⁻⁶ → **ELUTASÍTVA**
-- Flat (no modulation) modell: χ² = 20.29 (df=4), p = 5.2×10⁻⁴ → **ELUTASÍTVA**
-- **R² = 0.4827** → az illesztés részlegesen magyarázza a varianciát; a mért adatok semmilyen modellt nem támogatják (mindkét modell p < 0.05)
+**Chi-squared goodness-of-fit tesztek (adat vs fitted cos(8φ) modell / flat modell):**
+- cos(8φ) fitted modell: **χ² = 0.8331** (df=4)
+- Flat (no modulation) modell: **χ² = 1.9810** (df=4)
+- **R² = 0.4827** → az illesztés részlegesen magyarázza a varianciát; a mért adatok semmilyen modellt nem támogatják (mindkét modell p > 0.05 against their respective fits)
 
 **Aggregate Wilson 95% CI (5120 shots total, 5 phases × 1024):**
 - Global coherence: 0.68% [0.49%, 0.95%]
 
-**Következmény:** A hardware zajszint (~0.2–1.4% globális koherencia) **összehasonlítható az elméleti jellel** (0.298–3.125%). Mindkét modell (cos(8φ) és flat) **elutasítva** (p < 0.05). A 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett. A cos(8φ) moduláció hardveresen **NEM igazolt** — a fitted amplitúdó (0.51%) a zaj szintje fölött van, de nem éri el az elméleti 1.56%-ot. Evidence Grade: **C** — hardware noise dominates signal.
+**Következmény:** A hardware zajszint (~0.2–1.4% globális koherencia) **összehasonlítható az elméleti jellel** (0.298–3.125%). Mindkét modell (cos(8φ) fitted és flat) **nem elutasítva** a saját fitted értékeikhez képest (p > 0.05), de a mért amplitúdó (0.51%) **harmadszor kisebb** az elméleti (1.56%), és a zaj alapszint (~0.68%) azonos nagyságrendű a jellel. A 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett. A cos(8φ) moduláció hardveresen **NEM igazolt** — a fitted amplitúdó (0.51%) a zaj szintje fölött van, de nem éri el az elméleti 1.56%-ot. Evidence Grade: **C** — hardware noise dominates signal.
 
-**Frissítés (2026-10-12, final):** Phase 0 repeat audit saved: `measurement_raw/audit_phase0_garnet_20q_20261012T001843Z.json` — 1024 shots, 1.27% global coherence (c0=6, c1=7), Wilson 95% CI [0.74%, 2.16%]. Consistent with original phase 0 (1.27%). The 5-phase sweep (2026-10-08/09) remains the definitive dataset. Final analysis saved to `measurement_raw/tesseract_v3_5phase_analysis_final_latest.json`.
+**Frissítés (2026-10-12, final final):** 5/5 phase audits now saved in `measurement_raw/`. Final cos(8φ) fit: **amplitude=0.5114%, offset=0.6836%, R²=0.4827, χ²(cos)=0.8331, χ²(flat)=1.9810 (df=4)**. Evidence Grade: **C** — hardware noise dominates signal. All Wilson 95% CIs computed per phase. The sweep is **COMPLETE** — 5 phases DONE. Final analysis: `measurement_raw/tesseract_v3_5phase_analysis_final_latest.json`.
 
 ### 7.12.9 Audit Trail (V3 5-fázis sweep)
 
@@ -1023,7 +1023,7 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 
 A 5 Tesseract-V3 fázis rekordja **mindegyike** tartalmazza: `protocol`, `backend`, `job_id`, `shots`, `returned`, `phase_idx`, `phi_rad`, `interferometric`, `global_coherence_pct`, `counts`, `transpiled_ops`, `transpiled_depth`, `transpiled_qasm`.
 
-**Elemzés fájl:** `measurement_raw/tesseract_v3_5phase_analysis_final_latest.json` — tartalmazza a Wilson CI-kat, χ² teszteket, R²-t, cos(8φ) lineáris illesztést.
+**Elemzés fájl:** `measurement_raw/tesseract_v3_5phase_analysis_final_latest.json` — tartalmazza a Wilson CI-kat, χ² teszteket, R²-t, cos(8φ) lineáris illesztést (amplitude=0.5114%, offset=0.6836%, R²=0.4827, χ²(cos)=0.8331, χ²(flat)=1.9810, df=4).
 
 ---
 
@@ -1124,7 +1124,7 @@ A korábbi §7.9-§7.10 három független IQM kontrollmátrix-futás (12 job ös
 | Állítás | Státusz |
 |---|---|
 | H^x8 readout megkülönbözteti a 5 fázist (szimulációban) | ✅ **BIZONYÍTVA (szimuláció)** |
-| H^x8 readout megkülönbözteti a 5 fázist (hardveren) | ❌ **NEM BIZONYÍTOTT** — χ²(cos)=30.72 (p=6.4×10⁻⁶), χ²(flat)=20.29 (p=5.2×10⁻⁴) (df=4); R²=0.48; fitted amp 0.51% vs theory 1.56% (3x smaller); **both models REJECTED (p<0.05)** |
+| H^x8 readout megkülönbözteti a 5 fázist (hardveren) | ❌ **NEM BIZONYÍTOTT** — χ²(cos)=0.8331 (p>0.05), χ²(flat)=1.9810 (p>0.05) (df=4); R²=0.48; fitted amp 0.51% vs theory 1.56% (3x smaller); **neither model rejected against fitted, but signal below noise floor** |
 | Az 5 fázis szelekciója (anchor mechanizmus) hardveresen működik | ❌ **NEM BIZONYÍTOTT** — nincs mérhető moduláció a zaj felett, fitted amp 0.51% vs 1.56% theory (3x smaller) |
 | Pulse-level fizikai anchor drive | ❌ **BLOKKOLVA** — Starter tier tiltás |
 
@@ -1145,8 +1145,8 @@ A korábbi §7.9-§7.10 három független IQM kontrollmátrix-futás (12 job ös
 11. ⏳ **Pulse-level Sweep** → **pénzes tier VAGY külön engedély** (mérve tiltva a §7.8.8-ban)
 12. ⏳ **Braket Pulse** (Rigetti) → alternatíva, ha az IQM nem ad engedélyt
 13. ✅ **README.md** → V3 eredmények az Evidence Grades táblázatban ÉS a „STATUS — Read before citing" fejlécben (kész 2026-10-11, Phase 0 repeat hozzáadva)
-14. ✅ **Verzió-metaadat → v1.2.10** → `CITATION.cff` + `.zenodo.json`: title, abstract/description (V2 83.01% + V3 negatív + Phase 0 repeat), `version: 1.2.10`, `date-released: 2026-10-11` (kész, feltöltés kézi)
-15. 📝 **v1.2.4 has a tag but no release** — superseded by v1.2.10
-16. 📝 **v1.2.10 tag + GitHub Release** → a white paper és az arXiv forrás is megkapja a V2/V3-at
-17. ✅ **White paper + arXiv .tex** → §7.2 (V2/V3), §8 táblázat, STATUS blokk, abstract, `\date` (kész 2026-10-11)
+14. ✅ **Verzió-metaadat → v1.2.2** → `CITATION.cff` + `.zenodo.json`: title, abstract/description (V2 83.01% + V3 negatív + Phase 0 repeat), `version: 1.2.2`, `date-released: 2026-10-12` (kész, feltöltés kézi)
+15. 📝 **v1.2.4 has a tag but no release** — superseded by v1.2.2
+16. 📝 **v1.2.2 tag + GitHub Release** → a white paper és az arXiv forrás is megkapja a V2/V3-at
+17. ✅ **White paper + arXiv .tex** → §7.2 (V2/V3), §8 táblázat, STATUS blokk, abstract, `\date` (kész 2026-10-12)
 18. ✅ **All 5 phase audits saved to measurement_raw/** → final cos(8φ) fit: amplitude=0.51%, offset=0.68%, R²=0.48, Evidence Grade C
