@@ -54,8 +54,8 @@ abstract: >-
   Classical and hardware proofs are reported as strictly separate evidence
   levels. Negative results reported honestly.
 type: software
-version: 1.2.10
-date-released: "2026-10-11"
+version: 1.2.11
+date-released: "2026-10-12"
 license: MIT
 authors:
   - name: "Máté Róbert"

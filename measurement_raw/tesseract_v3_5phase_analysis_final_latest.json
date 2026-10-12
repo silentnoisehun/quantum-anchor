@@ -84,7 +84,7 @@
     "chi2_flat": 1.981,
     "model": "coherence(phi) = 0.5114 * cos(8*phi) + 0.6836"
   },
-  "verdict": "Cos(8phi) fit: amplitude=0.51%, offset=0.68%, R^2=0.483. Cos(8φ) fit amplitude compatible with noise floor (theoretical max 3.125%). Evidence Grade: C — hardware noise dominates signal.",
+  "verdict": "Cos(8phi) fit: amplitude=0.51%, offset=0.68%, R^2=0.483. Amplitude compatible with noise floor (theoretical max 3.125%). Evidence Grade: C — hardware noise dominates signal.",
   "evidence_grade": "C",
   "physical_anchor_compensation_proven": false,
   "global_20_reality_sync_proven": false,

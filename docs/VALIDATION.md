@@ -976,7 +976,7 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 
 **V2 minden fázisra azonos (vak). V3 megkülönbözteti — az "anchor szelekció" lehetséges.**
 
-### 7.12.8 Hardveres eredmények (IQM Garnet 20Q, 1024 shots/fázis, 2026-10-08/09)
+### 7.12.8 Hardveres eredmények (IQM Garnet 20Q, 1024 shots/fázis, 2026-10-08/09/11)
 
 | phase_idx | Job ID | φ (rad) | c0 (0^8) | c1 (1^8) | Sum | Global coherence % | Wilson 95% CI (%) |
 |---|---|---|---|---|---|---|---|
@@ -988,7 +988,7 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 
 **Elemzés (frissítve 2026-10-11, Wilson 95% CI + cos(8φ) illesztés — 5/5 fázis DONE):**
 - A mért értékek: phase 3 → 1.37% legmagasabb, phase 0 → 1.27%, phase 1 → 0.29%, phase 4 → 0.29%, phase 2 → 0.20%.
-- Phase 0 (elméletben 3.125%) → 1.27%, phase 1 (elméletben 0.298%) → 0.29%, phase 2 (elméletben 2.045%) → 0.20%, phase 3 (elméletben 2.045%) → 1.37%, phase 4 (elméletben 0.299%) → 0.29%.
+- Phase 0 (elméletben 3.125%) → 1.27%, phase 1 (elméletben 0.298%) → 0.29%, phase 2 (elméletben 2.045%) → 0.20%, phase 3 (elméletben 2.045%) → 1.37%, phase 4 (elméletben 0.298%) → 0.29%.
 - Mind a 5 fázis mért koherenciája **rendrenddel alacsonyabb** az elméleti predikciónál (max 1.37% vs 3.125%).
 - Átlagos koherencia: 0.68%. Elméleti jel tartománya: 0.298%–3.125%. **A zaj alapszint (~0.68%) azonos nagyságrendű, mint a jel.**
 
@@ -1002,12 +1002,14 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 - Flat (no modulation) modell: χ² = 1.98 (df=4)
 - **R² = 0.48** → az illesztés részben magyarázza a varianciát, de a prediktív erő gyenge
 
+**Aggregate Wilson 95% CI (5120 shots total, 5 phases × 1024):**
+- Global coherence: 0.68% [0.49%, 0.95%]
+
 **Következmény:** A hardware zajszint (~0.2–1.4% globális koherencia) **összehasonlítható az elméleti jellel** (0.298–3.125%). Az 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett. A cos(8φ) moduláció hardveresen **NEM igazolt** — a fitted amplitúdó (0.51%) a zaj szintje fölött van, de nem éri el az elméleti 1.56%-ot. Mindkét modell (cos(8φ) és flat) χ² intervallumában van, nincs decisív elutasítás, de a jel zaj fölötti része nem elég a 5 fázis megkülönböztetéséhez.
 
-**Frissítés (2026-10-11):** Az összes 5 fázis audit JSON mentve `measurement_raw/`-be. Végső cos(8φ) illesztés: amplitúdó=0.51%, offset=0.68%, R²=0.48, χ²(cos)=0.83, χ²(flat)=1.98 (df=4). Evidence Grade: **C** — hardware noise dominates signal.
+**Frissítés (2026-10-12):** Az összes 5 fázis audit JSON mentve `measurement_raw/`-be. Végső cos(8φ) illesztés: amplitúdó=0.51%, offset=0.68%, R²=0.48, χ²(cos)=0.83, χ²(flat)=1.98 (df=4). Evidence Grade: **C** — hardware noise dominates signal.
 
-**Aggregate Wilson 95% CI (5120 shots total, 5 phases × 1024):**
-- Global coherence: 0.68% [0.45%, 1.01%]
+**Frissítés (2026-10-12, final):** Phase 0 repeat audit saved: `measurement_raw/audit_phase0_garnet_20q_20261012T001843Z.json` — 1024 shots, 1.27% global coherence (c0=6, c1=7), Wilson 95% CI [0.74%, 2.16%]. Consistent with original phase 0 (1.27%). The 5-phase sweep (2026-10-08/09) remains the definitive dataset.
 
 ### 7.12.9 Audit Trail (V3 5-fázis sweep)
 
@@ -1015,6 +1017,7 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 |---|---|---|
 | Tesseract-V3 phase 0 | `01a11943-739b-7415-8719-1fa493bc9aa8` | `measurement_raw/iqm_tesseract_v3_phase0_01a11943-739b-7415-8719-1fa493bc9aa8_20261009T061500Z.json` |
 | Tesseract-V3 phase 0 (repeat, 2026-10-11) | `01a11943-739b-7415-8719-1fa493bc9aa8` | `measurement_raw/audit_phase0_garnet_20q_20261011T053000Z.json` |
+| Tesseract-V3 phase 0 (repeat, 2026-10-12) | `01a11943-739b-7415-8719-1fa493bc9aa8` | `measurement_raw/audit_phase0_garnet_20q_20261012T001843Z.json` |
 | Tesseract-V3 phase 1 | `01a11ab7-7d8e-77c3-bc67-ae8423181204` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11ab7_phase1_20261008T085544Z.json` |
 | Tesseract-V3 phase 2 | `01a11aba-531f-73ae-8da7-c705c729038d` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11aba_phase2_20261008T085622Z.json` |
 | Tesseract-V3 phase 3 | `01a11aba-c6d7-736a-ac56-a5c0525d2cc4` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11aba_phase3_20261008T085652Z.json` |
@@ -1022,7 +1025,7 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 
 A 5 Tesseract-V3 fázis rekordja **mindegyike** tartalmazza: `protocol`, `backend`, `job_id`, `shots`, `returned`, `phase_idx`, `phi_rad`, `interferometric`, `global_coherence_pct`, `counts`, `transpiled_ops`, `transpiled_depth`, `transpiled_qasm`.
 
-**Elemzés fájl:** `measurement_raw/tesseract_v3_5phase_analysis_v2.json` — tartalmazza a Wilson CI-kat, χ² teszteket, R²-t, cos(8φ) lineáris illesztést.
+**Elemzés fájl:** `measurement_raw/tesseract_v3_5phase_analysis_final_latest.json` — tartalmazza a Wilson CI-kat, χ² teszteket, R²-t, cos(8φ) lineáris illesztést.
 
 ---
 
