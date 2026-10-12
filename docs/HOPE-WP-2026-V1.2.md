@@ -2,8 +2,8 @@
 
 ## Post-Pulse Experimental Protocol for Coherent State Anchoring on Superconducting QPUs
 
-**Version:** 1.2 (Tesseract Anchor)  
-**Date:** 2026-10-07  
+**Version:** 1.2.2 (Tesseract Anchor)  
+**Date:** 2026-10-12  
 **Authors:** Máté Róbert, Hope Ecosystem  
 **Status:** MEASURED, CLAIM NOT PROVEN — see §8  
 **Repositories:** `quantum-anchor` (protocol), `scs-quantum` (bridge)  
@@ -13,11 +13,11 @@
 
 ## ⚠️ STATUS — Read Before Citing
 
-This paper documents the **Quantum Anchor V1.2.6 (Tesseract Anchor)** protocol, at the **Tesseract-V3 interferometric readout** stage.
+This paper documents the **Quantum Anchor V1.2.2 (Tesseract Anchor)** protocol, at the **Tesseract-V3 interferometric readout** stage.
 
 The original pulse-level protocol (`qiskit.pulse`, `meas_level=0`) was **deprecated by IBM in 2024, removed Feb 2025** (Blockers F1–F2 in `docs/VALIDATION.md`).
 
-**V1.2.6 migrates to working APIs and reports evidence grades honestly:**
+**V1.2.2 migrates to working APIs and reports evidence grades honestly:**
 
 | Test | Result | Grade | Platform |
 |---|---|---|---|
@@ -28,7 +28,7 @@ The original pulse-level protocol (`qiskit.pulse`, `meas_level=0`) was **depreca
 | **Borg γ=0.5 anchor ON** | 87.74% balance, 0% clear | 🔬 **HARDWARE MEASURED** | IBM `ibm_marrakesh` |
 | **Tesseract 4-plane (IQM Garnet)** | Per-plane 95-96%, Global 11.62% | 🔬 **HARDWARE MEASURED** | IQM Resonance Garnet 20Q |
 | **Tesseract-V2 inter-plane backbone** | **83.01%** global 8-qubit GHZ, CI [80.59, 85.18] vs V1 [9.80, 13.73] | 🔬 **HARDWARE MEASURED** | IQM Resonance Garnet 20Q |
-| **Tesseract-V3 5-phase interferometric sweep** | 5/5 phases complete; 0.2-1.4%; χ²=2.99 cos(8φ) p=5.60×10⁻¹, χ²=1.99 flat p=7.38×10⁻¹, R²=0.49, fitted amp 0.51% vs 1.56% (3× smaller) | ❌ **NOT PROVEN (noise-dominated)** | IQM Resonance Garnet 20Q |
+| **Tesseract-V3 5-phase interferometric sweep** | 5/5 phases complete; 0.2-1.4%; χ²(cos)=30.72 (p=6.4×10⁻⁶), χ²(flat)=20.29 (p=5.2×10⁻⁴), R²=0.48, fitted amp 0.51% vs 1.56% (3× smaller) | ❌ **NOT PROVEN (both models rejected, noise-dominated)** | IQM Resonance Garnet 20Q |
 
 **The central claim — that a weak drive can compensate T1/T2 dissipation — is
 NOT proven by any measurement in this paper.** The two anchor-on/off rows above
