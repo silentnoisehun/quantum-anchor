@@ -976,7 +976,7 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 
 **V2 minden fázisra azonos (vak). V3 megkülönbözteti — az "anchor szelekció" lehetséges.**
 
-### 7.12.8 Hardveres eredmények (IQM Garnet 20Q, 1024 shots/fázis, 2026-10-08/09/11)
+### 7.12.8 Hardveres eredmények (IQM Garnet 20Q, 1024 shots/fázis, 2026-10-08/09/11/12)
 
 | phase_idx | Job ID | φ (rad) | c0 (0^8) | c1 (1^8) | Sum | Global coherence % | Wilson 95% CI (%) |
 |---|---|---|---|---|---|---|---|
@@ -986,7 +986,7 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 | 3 | `01a11aba-c6d7-736a-ac56-a5c0525d2cc4` | 3.7699 | 7 | 7 | 14 | 1.37% | [0.82, 2.28] |
 | 4 | `01a11abb-525f-7534-a1f1-5c98b274d710` | 5.0265 | 1 | 2 | 3 | 0.29% | [0.10, 0.86] |
 
-**Elemzés (frissítve 2026-10-11, Wilson 95% CI + cos(8φ) illesztés — 5/5 fázis DONE):**
+**Elemzés (frissítve 2026-10-12, Wilson 95% CI + cos(8φ) illesztés + χ² tesztek — 5/5 fázis DONE):**
 - A mért értékek: phase 3 → 1.37% legmagasabb, phase 0 → 1.27%, phase 1 → 0.29%, phase 4 → 0.29%, phase 2 → 0.20%.
 - Phase 0 (elméletben 3.125%) → 1.27%, phase 1 (elméletben 0.298%) → 0.29%, phase 2 (elméletben 2.045%) → 0.20%, phase 3 (elméletben 2.045%) → 1.37%, phase 4 (elméletben 0.298%) → 0.29%.
 - Mind a 5 fázis mért koherenciája **rendrenddel alacsonyabb** az elméleti predikciónál (max 1.37% vs 3.125%).
@@ -997,19 +997,17 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 - Elméleti: offset = 1.5625%, amplitude = 1.5625%
 - A mért amplitúdó (0.511%) **harmadszor kisebb** az elméletinél (1.5625%)
 
-**Chi-squared goodness-of-fit tesztek (adat vs illesztett modell):**
-- cos(8φ) modell: χ² = 0.83 (df=4)
-- Flat (no modulation) modell: χ² = 1.98 (df=4)
-- **R² = 0.48** → az illesztés részben magyarázza a varianciát, de a prediktív erő gyenge
+**Chi-squared goodness-of-fit tesztek (adat vs elméleti modell):**
+- cos(8φ) elméleti modell: χ² = 30.72 (df=4), p = 6.4×10⁻⁶ → **ELUTASÍTVA**
+- Flat (no modulation) modell: χ² = 20.29 (df=4), p = 5.2×10⁻⁴ → **ELUTASÍTVA**
+- **R² = 0.48** → az illesztés részlegesen magyarázza a varianciát; a mért adatok semmilyen modellt nem támogatják (mindkét modell p < 0.05)
 
 **Aggregate Wilson 95% CI (5120 shots total, 5 phases × 1024):**
 - Global coherence: 0.68% [0.49%, 0.95%]
 
-**Következmény:** A hardware zajszint (~0.2–1.4% globális koherencia) **összehasonlítható az elméleti jellel** (0.298–3.125%). Az 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett. A cos(8φ) moduláció hardveresen **NEM igazolt** — a fitted amplitúdó (0.51%) a zaj szintje fölött van, de nem éri el az elméleti 1.56%-ot. Mindkét modell (cos(8φ) és flat) χ² intervallumában van, nincs decisív elutasítás, de a jel zaj fölötti része nem elég a 5 fázis megkülönböztetéséhez.
+**Következmény:** A hardware zajszint (~0.2–1.4% globális koherencia) **összehasonlítható az elméleti jellel** (0.298–3.125%). Mindkét modell (cos(8φ) és flat) **elutasítva** (p < 0.05). A 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett. A cos(8φ) moduláció hardveresen **NEM igazolt** — a fitted amplitúdó (0.51%) a zaj szintje fölött van, de nem éri el az elméleti 1.56%-ot. Evidence Grade: **C** — hardware noise dominates signal.
 
-**Frissítés (2026-10-12):** Az összes 5 fázis audit JSON mentve `measurement_raw/`-be. Végső cos(8φ) illesztés: amplitúdó=0.51%, offset=0.68%, R²=0.48, χ²(cos)=0.83, χ²(flat)=1.98 (df=4). Evidence Grade: **C** — hardware noise dominates signal.
-
-**Frissítés (2026-10-12, final):** Phase 0 repeat audit saved: `measurement_raw/audit_phase0_garnet_20q_20261012T001843Z.json` — 1024 shots, 1.27% global coherence (c0=6, c1=7), Wilson 95% CI [0.74%, 2.16%]. Consistent with original phase 0 (1.27%). The 5-phase sweep (2026-10-08/09) remains the definitive dataset.
+**Frissítés (2026-10-12, final):** Phase 0 repeat audit saved: `measurement_raw/audit_phase0_garnet_20q_20261012T001843Z.json` — 1024 shots, 1.27% global coherence (c0=6, c1=7), Wilson 95% CI [0.74%, 2.16%]. Consistent with original phase 0 (1.27%). The 5-phase sweep (2026-10-08/09) remains the definitive dataset. Final analysis saved to `measurement_raw/tesseract_v3_5phase_analysis_v2.json`.
 
 ### 7.12.9 Audit Trail (V3 5-fázis sweep)
 
@@ -1126,7 +1124,7 @@ A korábbi §7.9-§7.10 három független IQM kontrollmátrix-futás (12 job ös
 | Állítás | Státusz |
 |---|---|
 | H^x8 readout megkülönbözteti a 5 fázist (szimulációban) | ✅ **BIZONYÍTVA (szimuláció)** |
-| H^x8 readout megkülönbözteti a 5 fázist (hardveren) | ❌ **NEM BIZONYÍTOTT** — χ²(cos)=0.83, χ²(flat)=1.98 (df=4); R²=0.48; fitted amp 0.51% vs theory 1.56% (3x smaller); both models within χ² envelope, no decisive rejection |
+| H^x8 readout megkülönbözteti a 5 fázist (hardveren) | ❌ **NEM BIZONYÍTOTT** — χ²(cos)=30.72 (p=6.4×10⁻⁶), χ²(flat)=20.29 (p=5.2×10⁻⁴) (df=4); R²=0.48; fitted amp 0.51% vs theory 1.56% (3x smaller); **both models REJECTED (p<0.05)** |
 | Az 5 fázis szelekciója (anchor mechanizmus) hardveresen működik | ❌ **NEM BIZONYÍTOTT** — nincs mérhető moduláció a zaj felett, fitted amp 0.51% vs 1.56% theory (3x smaller) |
 | Pulse-level fizikai anchor drive | ❌ **BLOKKOLVA** — Starter tier tiltás |
 
@@ -1142,7 +1140,7 @@ A korábbi §7.9-§7.10 három független IQM kontrollmátrix-futás (12 job ös
 6. ✅ **Zenodo metaadat** → `.zenodo.json` + `CITATION.cff` (kész, DOI mintelés kézi)
 7. ✅ **Bell Control Matrix** → 3 független futás, 12 job, `rz(φ)` hatás kimérve: **NINCS** (kész)
 8. ✅ **Tesseract-V2 Globális Koherencia** → 83.01% IQM Garnet-en (kész)
-9. ✅ **Tesseract-V3 5-fázis Interferometrikus Sweep** → 5/5 fázis befejezve (2026-10-08/09) — **zaj dominál, NINCS megkülönböztetés, mindkét modell χ² intervallumában: χ²(cos)=0.83, χ²(flat)=1.98 (df=4), R²=0.48, fitted amp 0.51% vs 1.56% theory (3x smaller)** (kész)
+9. ✅ **Tesseract-V3 5-fázis Interferometrikus Sweep** → 5/5 fázis befejezve (2026-10-08/09) — **zaj dominál, NINCS megkülönböztetés, mindkét modell ELUTASÍTVA: χ²(cos)=30.72 (p=6.4×10⁻⁶), χ²(flat)=20.29 (p=5.2×10⁻⁴) (df=4), R²=0.48, fitted amp 0.51% vs 1.56% theory (3x smaller)** (kész)
 10. ✅ **Tesseract-V3 Phase 0 Repeat (2026-10-11)** → Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE, 1.27% global coherence, Wilson 95% CI [0.74%, 2.16%] — consistent with original. Credits exhausted on phases 1-4. (kész)
 11. ⏳ **Pulse-level Sweep** → **pénzes tier VAGY külön engedély** (mérve tiltva a §7.8.8-ban)
 12. ⏳ **Braket Pulse** (Rigetti) → alternatíva, ha az IQM nem ad engedélyt

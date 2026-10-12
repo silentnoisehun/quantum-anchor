@@ -1,0 +1,87 @@
+{
+  "per_phase": [
+    {
+      "phase_idx": 0,
+      "phi_rad": 0.0,
+      "c0": 6,
+      "c1": 7,
+      "sum": 13,
+      "coherence_pct": 1.26953125,
+      "ci95": [
+        0.743,
+        2.16
+      ]
+    },
+    {
+      "phase_idx": 1,
+      "phi_rad": 1.256637,
+      "c0": 3,
+      "c1": 0,
+      "sum": 3,
+      "coherence_pct": 0.29296875,
+      "ci95": [
+        0.1,
+        0.858
+      ]
+    },
+    {
+      "phase_idx": 2,
+      "phi_rad": 2.513274,
+      "c0": 2,
+      "c1": 0,
+      "sum": 2,
+      "coherence_pct": 0.1953125,
+      "ci95": [
+        0.054,
+        0.709
+      ]
+    },
+    {
+      "phase_idx": 3,
+      "phi_rad": 3.769911,
+      "c0": 7,
+      "c1": 7,
+      "sum": 14,
+      "coherence_pct": 1.3671875,
+      "ci95": [
+        0.816,
+        2.282
+      ]
+    },
+    {
+      "phase_idx": 4,
+      "phi_rad": 5.026548,
+      "c0": 1,
+      "c1": 2,
+      "sum": 3,
+      "coherence_pct": 0.29296875,
+      "ci95": [
+        0.1,
+        0.858
+      ]
+    }
+  ],
+  "aggregate": {
+    "total_shots": 5120,
+    "total_successes": 35,
+    "coherence_pct": 0.68359375,
+    "ci95": [
+      0.492,
+      0.949
+    ]
+  },
+  "fit": {
+    "amplitude_pct": 0.5113344078837707,
+    "offset_pct": 0.6835937091713826,
+    "r_squared": 0.4826822392943353,
+    "theoretical_amplitude": 1.5625,
+    "theoretical_offset": 1.5625
+  },
+  "chi2": {
+    "cos_model": 30.72,
+    "flat_model": 20.29,
+    "p_cos": 6.39e-06,
+    "p_flat": 5.15e-04,
+    "df": 4
+  }
+}
