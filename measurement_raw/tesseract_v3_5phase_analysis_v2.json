@@ -10,7 +10,7 @@
       "shots": 1024,
       "c0": 6,
       "c1": 7,
-      "global_coherence_pct": 1.26953125,
+      "global_coherence_pct": 1.269531,
       "wilson_ci95_pct": [
         0.743,
         2.16

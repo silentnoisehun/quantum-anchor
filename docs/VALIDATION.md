@@ -993,21 +993,21 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 - Átlagos koherencia: 0.68%. Elméleti jel tartománya: 0.298%–3.125%. **A zaj alapszint (~0.68%) azonos nagyságrendű, mint a jel.**
 
 **Cos(8φ) illesztés a mért adatokra (lineáris modell: coherence = A·cos(8φ) + B, least squares):**
-- Fitted: amplitude A = 0.511%, offset B = 0.684%, R² = 0.48
+- Fitted: amplitude A = 0.5114%, offset B = 0.6836%, R² = 0.4827
 - Elméleti: offset = 1.5625%, amplitude = 1.5625%
-- A mért amplitúdó (0.511%) **harmadszor kisebb** az elméletinél (1.5625%)
+- A mért amplitúdó (0.5114%) **harmadszor kisebb** az elméletinél (1.5625%)
 
 **Chi-squared goodness-of-fit tesztek (adat vs elméleti modell):**
 - cos(8φ) elméleti modell: χ² = 30.72 (df=4), p = 6.4×10⁻⁶ → **ELUTASÍTVA**
 - Flat (no modulation) modell: χ² = 20.29 (df=4), p = 5.2×10⁻⁴ → **ELUTASÍTVA**
-- **R² = 0.48** → az illesztés részlegesen magyarázza a varianciát; a mért adatok semmilyen modellt nem támogatják (mindkét modell p < 0.05)
+- **R² = 0.4827** → az illesztés részlegesen magyarázza a varianciát; a mért adatok semmilyen modellt nem támogatják (mindkét modell p < 0.05)
 
 **Aggregate Wilson 95% CI (5120 shots total, 5 phases × 1024):**
 - Global coherence: 0.68% [0.49%, 0.95%]
 
 **Következmény:** A hardware zajszint (~0.2–1.4% globális koherencia) **összehasonlítható az elméleti jellel** (0.298–3.125%). Mindkét modell (cos(8φ) és flat) **elutasítva** (p < 0.05). A 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett. A cos(8φ) moduláció hardveresen **NEM igazolt** — a fitted amplitúdó (0.51%) a zaj szintje fölött van, de nem éri el az elméleti 1.56%-ot. Evidence Grade: **C** — hardware noise dominates signal.
 
-**Frissítés (2026-10-12, final):** Phase 0 repeat audit saved: `measurement_raw/audit_phase0_garnet_20q_20261012T001843Z.json` — 1024 shots, 1.27% global coherence (c0=6, c1=7), Wilson 95% CI [0.74%, 2.16%]. Consistent with original phase 0 (1.27%). The 5-phase sweep (2026-10-08/09) remains the definitive dataset. Final analysis saved to `measurement_raw/tesseract_v3_5phase_analysis_v2.json`.
+**Frissítés (2026-10-12, final):** Phase 0 repeat audit saved: `measurement_raw/audit_phase0_garnet_20q_20261012T001843Z.json` — 1024 shots, 1.27% global coherence (c0=6, c1=7), Wilson 95% CI [0.74%, 2.16%]. Consistent with original phase 0 (1.27%). The 5-phase sweep (2026-10-08/09) remains the definitive dataset. Final analysis saved to `measurement_raw/tesseract_v3_5phase_analysis_final_latest.json`.
 
 ### 7.12.9 Audit Trail (V3 5-fázis sweep)
 
