@@ -16,11 +16,8 @@
       "c0": 6,
       "c1": 7,
       "shots": 1024,
-      "global_coherence_pct": 1.2695,
-      "wilson_ci95_pct": [
-        0.743,
-        2.160
-      ],
+      "global_coherence_pct": 1.27,
+      "wilson_ci95_pct": [0.743, 2.16],
       "job_id": "01a11943-739b-7415-8719-1fa493bc9aa8"
     },
     {
@@ -30,10 +27,7 @@
       "c1": 0,
       "shots": 1024,
       "global_coherence_pct": 0.293,
-      "wilson_ci95_pct": [
-        0.100,
-        0.858
-      ],
+      "wilson_ci95_pct": [0.1, 0.858],
       "job_id": "01a11ab7-7d8e-77c3-bc67-ae8423181204"
     },
     {
@@ -43,10 +37,7 @@
       "c1": 0,
       "shots": 1024,
       "global_coherence_pct": 0.195,
-      "wilson_ci95_pct": [
-        0.054,
-        0.709
-      ],
+      "wilson_ci95_pct": [0.054, 0.709],
       "job_id": "01a11aba-531f-73ae-8da7-c705c729038d"
     },
     {
@@ -56,10 +47,7 @@
       "c1": 7,
       "shots": 1024,
       "global_coherence_pct": 1.367,
-      "wilson_ci95_pct": [
-        0.816,
-        2.282
-      ],
+      "wilson_ci95_pct": [0.816, 2.282],
       "job_id": "01a11aba-c6d7-736a-ac56-a5c0525d2cc4"
     },
     {
@@ -69,10 +57,7 @@
       "c1": 2,
       "shots": 1024,
       "global_coherence_pct": 0.293,
-      "wilson_ci95_pct": [
-        0.100,
-        0.858
-      ],
+      "wilson_ci95_pct": [0.1, 0.858],
       "job_id": "01a11abb-525f-7534-a1f1-5c98b274d710"
     }
   ],
@@ -81,21 +66,12 @@
     "offset_pct": 0.6836,
     "r_squared": 0.4827,
     "chi2_cos8phi": 0.8331,
-    "chi2_flat": 1.9810,
+    "chi2_flat": 1.981,
     "model": "coherence(phi) = 0.5114 * cos(8*phi) + 0.6836"
   },
-  "verdict": "Cos(8phi) fit: amplitude=0.51%, offset=0.68%, R^2=0.483. Amplitude compatible with noise floor (theoretical max 3.125%). Evidence Grade: C -- hardware noise dominates signal.",
+  "verdict": "Cos(8phi) fit: amplitude=0.51%, offset=0.68%, R^2=0.483. Amplitude compatible with noise floor (theoretical max 3.125%). Evidence Grade: C — hardware noise dominates signal.",
   "evidence_grade": "C",
   "physical_anchor_compensation_proven": false,
   "global_20_reality_sync_proven": false,
-  "ci_method": "Wilson score interval, 95%",
-  "aggregate": {
-    "total_shots": 5120,
-    "total_successes": 35,
-    "global_coherence_pct": 0.684,
-    "wilson_ci95_pct": [
-      0.492,
-      0.949
-    ]
-  }
+  "ci_method": "Wilson score interval, 95%"
 }

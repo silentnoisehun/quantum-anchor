@@ -1009,6 +1009,47 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 
 **Frissítés (2026-10-12, final final):** 5/5 phase audits now saved in `measurement_raw/`. Final cos(8φ) fit: **amplitude=0.5114%, offset=0.6836%, R²=0.4827, χ²(cos)=0.8331, χ²(flat)=1.9810 (df=4)**. Evidence Grade: **C** — hardware noise dominates signal. All Wilson 95% CIs computed per phase. The sweep is **COMPLETE** — 5 phases DONE. Final analysis: `measurement_raw/tesseract_v3_5phase_analysis_final_latest.json`.
 
+### 7.12.10 TESSERACT-V3 5-FAZIS — VÉGLEGES KIÉRTÉKELÉS (2026-10-12, JOB 01a11943-739b-7415-8719-1fa493bc9aa8 DONE)
+
+A fenti §7.12.8 már tartalmazza a teljes 5-fázis sweep eredményét. Itt a végső összefoglaló a Publikációs Csomag (README.md, Evidence Grades, GitHub Release) szempontjából:
+
+**Mért adatok összefoglalva:**
+
+| Phase | φ (rad) | 8φ (rad) | cos(8φ) | c0 | c1 | Sum | Data % | Elmélet % | Wilson 95% CI |
+|-------|---------|----------|---------|----|----|-----|--------|-----------|---------------|
+| 0 | 0.0000 | 0.000 | +1.000 | 6 | 7 | 13 | 1.27% | 3.125% | [0.74, 2.16] |
+| 1 | 1.2566 | 10.053 | -0.809 | 3 | 0 | 3 | 0.29% | 0.298% | [0.10, 0.86] |
+| 2 | 2.5133 | 20.106 | +0.309 | 2 | 0 | 2 | 0.20% | 2.045% | [0.05, 0.71] |
+| 3 | 3.7699 | 30.159 | +0.309 | 7 | 7 | 14 | 1.37% | 2.045% | [0.82, 2.28] |
+| 4 | 5.0265 | 40.212 | -0.809 | 1 | 2 | 3 | 0.29% | 0.298% | [0.10, 0.86] |
+
+**Cos(8φ) Fit eredmény (least squares):**
+- Amplitude A = **0.5114%** (elmélet: 1.5625%)
+- Offset B = **0.6836%** (elmélet: 1.5625%)
+- R² = **0.4827**
+- χ²(cos) = **0.8331** (df=4)
+- χ²(flat) = **1.9810** (df=4)
+
+**Model predictions vs data:**
+| Phase | cos(8φ) | Data % | Fit % | Residual |
+|-------|---------|--------|-------|----------|
+| 0 | +1.000 | 1.27 | 1.20 | +0.07 |
+| 1 | -0.809 | 0.29 | 0.27 | +0.02 |
+| 2 | +0.309 | 0.20 | 0.84 | -0.65 |
+| 3 | +0.309 | 1.37 | 0.84 | +0.53 |
+| 4 | -0.809 | 0.29 | 0.27 | +0.02 |
+
+**Végső verdikt (Evidence Grade C):**
+- A hardveres zaj szintje (~0.2–1.4% globális koherencia) **összehasonlítható az elméleti jellel** (0.298–3.125%).
+- A mért amplitúdó (0.51%) a zaj szintje fölött van, de **harmadszor kisebb az elméletinél** (1.56%).
+- Mindkét modell (cos(8φ) fitted és flat) nem elutasítható a saját illesztett értékeikhez képest (p > 0.05).
+- A 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett.
+- **Evidence Grade: C** — hardware noise dominates signal.
+- **physical_anchor_compensation_proven: false**
+- **global_20_reality_sync_proven: false**
+
+**A sweep KOMPLETT:** 5/5 fázis megmérve, összes Wilson 95% CI számolva, cos(8φ) fit elkészítve. Nincs több mérés szükséges ezen a protokollon.
+
 ### 7.12.9 Audit Trail (V3 5-fázis sweep)
 
 | Protokoll | Job ID | Fájl |
