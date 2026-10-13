@@ -18,8 +18,8 @@
       "shots": 1024,
       "global_coherence_pct": 1.27,
       "wilson_ci95_pct": [
-        0.1,
-        0.858
+        0.743,
+        2.16
       ],
       "job_id": "01a11943-739b-7415-8719-1fa493bc9aa8"
     },
@@ -44,8 +44,8 @@
       "shots": 1024,
       "global_coherence_pct": 0.195,
       "wilson_ci95_pct": [
-        0.1,
-        0.858
+        0.054,
+        0.709
       ],
       "job_id": "01a11aba-531f-73ae-8da7-c705c729038d"
     },
@@ -57,8 +57,8 @@
       "shots": 1024,
       "global_coherence_pct": 1.367,
       "wilson_ci95_pct": [
-        0.1,
-        0.858
+        0.816,
+        2.282
       ],
       "job_id": "01a11aba-c6d7-736a-ac56-a5c0525d2cc4"
     },
