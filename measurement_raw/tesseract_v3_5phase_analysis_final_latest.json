@@ -6,7 +6,7 @@
   "measured_kind": "circuit_level_bitstrings",
   "is_meas_level_0": false,
   "is_physical_detuned_drive": false,
-  "phase_formula": "phi = 2*pi * f_GHz * t_ns mod 2pi",
+  "phase_formula": "phi = 2*pi * phase_idx / 5",
   "freq_ghz": 4.11,
   "duration_ns": 37,
   "phases": [
@@ -25,7 +25,7 @@
     },
     {
       "phase_idx": 1,
-      "phi_rad": 1.2566,
+      "phi_rad": 1.2566370614359172,
       "c0": 3,
       "c1": 0,
       "shots": 1024,
@@ -38,7 +38,7 @@
     },
     {
       "phase_idx": 2,
-      "phi_rad": 2.5133,
+      "phi_rad": 2.5132741228718345,
       "c0": 2,
       "c1": 0,
       "shots": 1024,
@@ -51,7 +51,7 @@
     },
     {
       "phase_idx": 3,
-      "phi_rad": 3.7699,
+      "phi_rad": 3.7699111843077517,
       "c0": 7,
       "c1": 7,
       "shots": 1024,
@@ -64,7 +64,7 @@
     },
     {
       "phase_idx": 4,
-      "phi_rad": 5.0265,
+      "phi_rad": 5.026548245743669,
       "c0": 1,
       "c1": 2,
       "shots": 1024,
@@ -77,12 +77,12 @@
     }
   ],
   "cos8phi_fit": {
-    "amplitude_pct": 0.5114,
+    "amplitude_pct": 0.5113,
     "offset_pct": 0.6836,
     "r_squared": 0.4827,
     "chi2_cos8phi": 0.8331,
     "chi2_flat": 1.981,
-    "model": "coherence(phi) = 0.5114 * cos(8*phi) + 0.6836"
+    "model": "coherence(phi) = 0.5113 * cos(8*phi) + 0.6836"
   },
   "verdict": "Cos(8phi) fit: amplitude=0.51%, offset=0.68%, R^2=0.483. Amplitude compatible with noise floor (theoretical max 3.125%). Evidence Grade: C — hardware noise dominates signal.",
   "evidence_grade": "C",
