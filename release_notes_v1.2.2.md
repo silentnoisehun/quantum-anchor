@@ -1,49 +1,30 @@
-## Quantum Anchor v1.2.2
+# v1.2.2 — Tesseract-V3 5-phase sweep complete, noise-dominated
 
-### Tesseract-V3 Interferometric Readout — 5-Phase Sweep Complete (IQM Garnet 20Q)
+## Summary
+All 5 phases of the Tesseract-V3 interferometric sweep completed on IQM Garnet 20Q (Starter tier, 1024 shots/phase).
 
-**Result: Evidence Grade C — hardware noise dominates signal**
-
-All 5 phases measured on IQM Garnet 20Q (1024 shots/phase):
-
-| Phase | φ (rad) | c0 (0^8) | c1 (1^8) | Global Coherence | Wilson 95% CI |
-|-------|---------|----------|----------|------------------|---------------|
-| 0 | 0.0000 | 6 | 7 | 1.27% | [0.74%, 2.16%] |
-| 1 | 1.2566 | 3 | 0 | 0.29% | [0.10%, 0.86%] |
-| 2 | 2.5133 | 2 | 0 | 0.20% | [0.05%, 0.71%] |
-| 3 | 3.7699 | 7 | 7 | 1.37% | [0.82%, 2.28%] |
-| 4 | 5.0265 | 1 | 2 | 0.29% | [0.10%, 0.86%] |
-
-### Cos(8φ) Fit (Least Squares)
-- **Amplitude A = 0.5114%** (theoretical: 1.5625% — **3x smaller**)
-- **Offset B = 0.6836%** (theoretical: 1.5625%)
-- **R² = 0.4827**
-- **χ²(cos) = 0.8331** (df=4, p > 0.05 vs fitted)
-- **χ²(flat) = 1.9810** (df=4, p > 0.05 vs fitted)
-- **Neither model rejected** against its own fit
-
-### Aggregate Wilson 95% CI (5120 total shots)
-- Global coherence: **0.68% [0.49%, 0.95%]**
-
-### Key Conclusions
-- The hardware noise floor (~0.68%) sits **at or above** the predicted signal range (0.3–3.1%)
-- Fitted amplitude (0.51%) is **3x smaller** than theoretical (1.56%)
-- The 5 phases are **not statistically distinguishable** as phase-dependent
+## Key Results
+- **5/5 phases measured**: Jobs `01a11943`, `01a11ab7`, `01a11aba` (phases 2&3), `01a11abb`
+- **Global coherence range**: 0.20%–1.37% (theoretical: 0.298%–3.125%)
+- **Cos(8φ) fit**: amplitude=0.5114%, offset=0.6836%, R²=0.4827
+- **χ² tests**: χ²(cos)=0.8331, χ²(flat)=1.9810 (df=4) — neither model rejected against its fit
+- **Fitted amplitude 3× smaller** than theoretical (0.51% vs 1.56%)
+- **Evidence Grade: C** — hardware noise dominates signal
 - **physical_anchor_compensation_proven: false**
 - **global_20_reality_sync_proven: false**
 
-### Other Highlights in v1.2.2
-- **Tesseract-V2**: 83.01% global 8-qubit GHZ coherence (Wilson CI [80.59%, 85.18%] vs V1 [9.80%, 13.73%]) — **plane coupling proven**
-- **Tesseract Anchor 4-phase control matrix**: 5/5 phases complete, mean Δ=+0.03 pp, all phases CI overlap — **no measurable rz(φ) effect**
-- **Borg anchor compensation**: 0% clear both conditions (earlier 100% clear retracted as circuit tautology)
-- **Pulse-level access**: Measured denial on Starter tier — "Personal account does not have pulse-level access enabled"
+## Additional Results (from prior commits in this tag)
+- **Tesseract-V2**: 83.01% global coherence (850/1024), Wilson CI [80.59%, 85.18%] — **plane coupling proven**, 20-reality sync NOT shown
+- **Tesseract Anchor 4-phase control matrix**: 5/5 phases, mean Δ=+0.03 pp, σ=0.77 pp, all Wilson 95% CI overlap → **no measurable rz(φ) effect**
+- **Borg anchor compensation**: 0% clear both conditions (100% clear result retracted as circuit tautology)
+- **Pulse-level access**: **Blocked** on Starter tier — measured denial `Personal account does not have pulse-level access enabled`
+- **Phase 0 repeat** (2026-10-12, 2026-10-13): consistent 1.27% global coherence, Wilson CI [0.74%, 2.16%]
 
-### Files Updated
-- docs/VALIDATION.md §7.12 — complete 5-phase analysis with Wilson CI, cos(8φ) fit, χ² tests
-- README.md — evidence grades table, Next Steps updated
-- All 5 phase audits saved to measurement_raw/
-- Final analysis: measurement_raw/tesseract_v3_5phase_analysis_final_latest.json
+## Files Updated
+- `README.md` — Evidence Grades table with complete V2/V3 results
+- `docs/VALIDATION.md` — §7.12 with final cos(8φ) fit, Wilson CIs, χ² tests
+- `measurement_raw/` — All 5 phase audits + final analysis JSONs
+- `arxiv/quantum_anchor_v1.2.tex` — Updated with V2/V3 results
 
-### Phase 0 Repeat Confirmation
-- 2026-10-12: 1.27%, CI [0.74%, 2.16%]
-- 2026-10-13: 1.27%, CI [0.74%, 2.16%] — consistent
+## Deliverables
+All offline checks pass (14/14). Circuit-level measurements complete. Pulse-level access remains blocked by account entitlement.
