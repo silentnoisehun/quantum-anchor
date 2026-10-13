@@ -1,0 +1,92 @@
+{
+  "protocol": "tesseract_5phase_cos8phi",
+  "platform": "IQM Resonance",
+  "backend": "garnet",
+  "backend_qubits": 20,
+  "measured_kind": "circuit_level_bitstrings",
+  "is_meas_level_0": false,
+  "is_physical_detuned_drive": false,
+  "phase_formula": "phi = 2*pi * f_GHz * t_ns mod 2pi",
+  "freq_ghz": 4.11,
+  "duration_ns": 37,
+  "phases": [
+    {
+      "phase_idx": 0,
+      "phi_rad": 0.0,
+      "c0": 6,
+      "c1": 7,
+      "shots": 1024,
+      "global_coherence_pct": 1.27,
+      "wilson_ci95_pct": [
+        0.1,
+        0.858
+      ],
+      "job_id": "01a11943-739b-7415-8719-1fa493bc9aa8"
+    },
+    {
+      "phase_idx": 1,
+      "phi_rad": 1.2566,
+      "c0": 3,
+      "c1": 0,
+      "shots": 1024,
+      "global_coherence_pct": 0.293,
+      "wilson_ci95_pct": [
+        0.1,
+        0.858
+      ],
+      "job_id": "01a11ab7-7d8e-77c3-bc67-ae8423181204"
+    },
+    {
+      "phase_idx": 2,
+      "phi_rad": 2.5133,
+      "c0": 2,
+      "c1": 0,
+      "shots": 1024,
+      "global_coherence_pct": 0.195,
+      "wilson_ci95_pct": [
+        0.1,
+        0.858
+      ],
+      "job_id": "01a11aba-531f-73ae-8da7-c705c729038d"
+    },
+    {
+      "phase_idx": 3,
+      "phi_rad": 3.7699,
+      "c0": 7,
+      "c1": 7,
+      "shots": 1024,
+      "global_coherence_pct": 1.367,
+      "wilson_ci95_pct": [
+        0.1,
+        0.858
+      ],
+      "job_id": "01a11aba-c6d7-736a-ac56-a5c0525d2cc4"
+    },
+    {
+      "phase_idx": 4,
+      "phi_rad": 5.0265,
+      "c0": 1,
+      "c1": 2,
+      "shots": 1024,
+      "global_coherence_pct": 0.293,
+      "wilson_ci95_pct": [
+        0.1,
+        0.858
+      ],
+      "job_id": "01a11abb-525f-7534-a1f1-5c98b274d710"
+    }
+  ],
+  "cos8phi_fit": {
+    "amplitude_pct": 0.5114,
+    "offset_pct": 0.6836,
+    "r_squared": 0.4827,
+    "chi2_cos8phi": 0.8331,
+    "chi2_flat": 1.981,
+    "model": "coherence(phi) = 0.5114 * cos(8*phi) + 0.6836"
+  },
+  "verdict": "Cos(8phi) fit: amplitude=0.51%, offset=0.68%, R^2=0.483. Cos(8φ) fit amplitude compatible with noise floor (theoretical max 3.125%). Evidence Grade: C — hardware noise dominates signal.",
+  "evidence_grade": "C",
+  "physical_anchor_compensation_proven": false,
+  "global_20_reality_sync_proven": false,
+  "ci_method": "Wilson score interval, 95%"
+}
