@@ -4,11 +4,11 @@
 
 > ## ⚠️ STATUS — Read before citing
 >
-> This repository documents the **Quantum Anchor V1.2.2 (Tesseract Anchor)** protocol. The measurement ladder is currently at the **Tesseract-V3 interferometric readout** stage.
+> This repository documents the **Quantum Anchor V1.2.3 (Tesseract Anchor)** protocol. The measurement ladder is currently at the **Tesseract-V3 interferometric readout** stage.
 > The original pulse-level protocol (`qiskit.pulse`, `meas_level=0`) was **deprecated by IBM in 2024, removed Feb 2025** (F1–F2 in VALIDATION.md).
 >
 > **Measured results, newest first — including the negative ones:**
-> - **🔬 HARDWARE MEASURED — TESSERACT-V3 PHASE 0 REPEAT (2026-10-13)** — Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE. Phase 0 repeat: 1024 shots, 1.27% global coherence (0⁸=6, 1⁸=7), Wilson 95% CI [0.74%, 2.16%] — consistent with original.
+> - **🔬 HARDWARE MEASURED — TESSERACT-V3 PHASE 0 REPEAT (2026-10-14)** — Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE. Phase 0 repeat: 1024 shots, 1.27% global coherence (0⁸=6, 1⁸=7), Wilson 95% CI [0.74%, 2.16%] — consistent with prior repeats (2026-10-11/12/13). Full audit JSON saved: `measurement_raw/iqm_anchor_01a11943-739b-7415-8719-1fa493bc9aa8_20261014T021837Z.json`.
 > - **❌ TESSERACT-V3 5-PHASE HARDWARE SWEEP — NOT PROVEN** (2026-10-13) — 5/5 phases on IQM Garnet 20Q, 1024 shots/phase. Global coherence 0.2–1.4%. Goodness-of-fit: χ²(cos(8φ))=0.8331 (p>0.05), χ²(flat)=1.9810 (p>0.05) (df=4); R²=0.4827. **Neither model rejected against its own fit, but fitted amplitude 0.5114% vs theoretical 1.5625% (3× smaller) — signal below noise floor.** Hardware noise floor (~0.68%) sits **at or above** the predicted signal range (0.3–3.1%). **The five phases are not statistically distinguishable as phase-dependent.** Aggregate Wilson 95% CI (5120 shots): 0.68% [0.49%, 0.95%].
 > - **🔬 HARDWARE MEASURED — TESSERACT-V3 ALL 5 PHASE AUDITS SAVED (2026-10-13)** — All 5 phases now have complete audit JSONs in `measurement_raw/`. Final cos(8φ) fit: amplitude=0.5114%, offset=0.6836%, R²=0.4827, χ²(cos)=0.8331, χ²(flat)=1.9810 (df=4). Evidence Grade: C — hardware noise dominates signal.
 > - **🔬 HARDWARE MEASURED — TESSERACT ANCHOR 4-PHASE CONTROL MATRIX** (2026-10-10) — **5/5 phases completed** on IQM Garnet 20Q. Each phase: `zero`/`h`/`bell`/`anchor` control matrix. `rz(φ)` virtual Z (4.11 GHz × 37 ns = 0.4398 rad). **Mean anchor−bell delta: +0.03 pp, σ = 0.77 pp, all 5 phases show Wilson 95% CI overlap → no measurable rz(φ) effect.** Bell mean-plane: 96.33% [CI 95.69–96.85%], Anchor: 96.36% [CI 95.74–96.89%]. Evidence grade: **C (Inconclusive — virtual Z, no physical drive)**.
@@ -208,7 +208,7 @@ access this account actually has.
 
 ---
 
-## Current Hardware Status (2026-10-10)
+## Current Hardware Status (2026-10-14)
 
 | Test | Result | Grade | Source |
 |---|---|---|---|
@@ -227,6 +227,7 @@ access this account actually has.
 | **Tesseract-V3 Phase 0 (repeat, 2026-10-11)** | Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE, 1.27% global coherence (0⁸=6, 1⁸=7), Wilson 95% CI [0.74%, 2.16%]. Credits exhausted on phases 1-4. Audit: `measurement_raw/audit_phase0_garnet_20q_20261011T053000Z.json`. | 🔬 HARDWARE MEASURED | `measurement_raw/audit_phase0_garnet_20q_20261011T053000Z.json` |
 | **Tesseract-V3 Phase 0 (repeat, 2026-10-12)** | Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE, 1.27% global coherence (0⁸=6, 1⁸=7), Wilson 95% CI [0.74%, 2.16%]. Audit: `measurement_raw/audit_phase0_garnet_20q_20261012T024640Z.json`. | 🔬 HARDWARE MEASURED | `measurement_raw/audit_phase0_garnet_20q_20261012T024640Z.json` |
 | **Tesseract-V3 Phase 0 (repeat, 2026-10-13)** | Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE, 1.27% global coherence (0⁸=6, 1⁸=7), Wilson 95% CI [0.74%, 2.16%]. Audit: `measurement_raw/audit_phase0_garnet_20q_20261013T014825Z.json`. | 🔬 HARDWARE MEASURED | `measurement_raw/audit_phase0_garnet_20q_20261013T014825Z.json` |
+| **Tesseract-V3 Phase 0 (repeat, 2026-10-14)** | Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE, 1.27% global coherence (0⁸=6, 1⁸=7), Wilson 95% CI [0.74%, 2.16%]. Audit: `measurement_raw/iqm_anchor_01a11943-739b-7415-8719-1fa493bc9aa8_20261014T021837Z.json`. | 🔬 HARDWARE MEASURED | `measurement_raw/iqm_anchor_01a11943-739b-7415-8719-1fa493bc9aa8_20261014T021837Z.json` |
 | **Tesseract-V3 Phase 5 (repeat, 2026-10-10)** | Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE, 1.27% global coherence (0⁸=6, 1⁸=7). Wilson 95% CI [0.74%, 2.16%]. Consistent with original phase 0. | 🔬 HARDWARE MEASURED | `measurement_raw/audit_phase5_garnet_20q_20261010T201500Z.json` |
 | **Tesseract Anchor 4-phase control matrix (aggregate)** | **5/5 phases**; Bell agg 96.33% [CI 95.69–96.85%], Anchor agg 96.36% [CI 95.74–96.89%]; Δ=+0.03 pp; σ=0.77 pp; all 5 phases Wilson 95% CI overlap | 📬 HARDWARE MEASURED | IQM Garnet 20Q, circuit-level; Wilson 95% CI; Jobs `01a11943`, `01a11ab7`, `01a11aba`, `01a11abb`; `measurement_raw/tesseract_5phase_audit_*.json` |
 | **Physical detuned drive applied** | — | ❌ NOT MEASURED | `rz` is a virtual rotation |
@@ -268,6 +269,8 @@ access this account actually has.
 14. ✅ **All 5 phase audits saved to measurement_raw/** → final cos(8φ) fit: amplitude=0.5114%, offset=0.6836%, R²=0.4827, Evidence Grade C
 15. ✅ **Phase 0 repeat (2026-10-12)** → Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE, 1.27% global coherence, Wilson 95% CI [0.74%, 2.16%]. Audit saved.
 16. ✅ **Phase 0 repeat (2026-10-13)** → Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE, 1.27% global coherence, Wilson 95% CI [0.74%, 2.16%]. Audit saved.
+17. ✅ **Phase 0 repeat (2026-10-14)** → Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE, 1.27% global coherence, Wilson 95% CI [0.74%, 2.16%]. Full audit JSON with counts + memory saved.
+18. ✅ **Version metadata → v1.2.3** → Updated README status block to V1.2.3, all 5 phase audits + Phase 0 repeat confirmed.
 
 ---
 
