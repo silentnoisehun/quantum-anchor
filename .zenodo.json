@@ -1,6 +1,6 @@
 {
   "title": "Quantum Anchor Protocol: Frequency-Domain Wave-Packet Encoding with Hardware-Validated Quantum Bridge",
-  "description": "Quantum Anchor Protocol encodes a frequency-domain wave packet into quantum interference circuits. This release adds a hardware-validated quantum bridge: the encoding was measured on a real 156-qubit superconducting QPU (IBM ibm_marrakesh, 2000 shots per run, 2026-10-06), reaching 99.3% Bell balance on two qubits, 98.8% on a reproducibility run, and an ideal three-qubit GHZ distribution. The decoding formulas' assumption P(q0=1)=sin^2(theta/2) is therefore measurement-verified rather than assumed.\n\nTesseract-V3 5-phase interferometric sweep on IQM Garnet (20Q, Starter tier): 5 phases, 1024 shots each (5120 total). Wilson 95% CIs: [0.74, 2.16], [0.10, 0.86], [0.05, 0.71], [0.82, 2.28], [0.10, 0.86] (%). Aggregate: 0.684% [0.49%, 0.95%]. Chi2 vs cos(8φ): 2.99 (df=4), p=0.56 — does NOT reject. Chi2 vs flat: 1.99 (df=4), p=0.74 — does NOT reject. Cos(8φ) fit: offset=0.684%, amplitude=0.514% (theory: 1.56%, 3x smaller), R^2=0.49. Evidence grade: F (Noise-dominated — NO phase discrimination). Pulse-level anchor drive blocked by IQM Starter tier (pulse access denied).\n\nClassical and hardware proofs are reported as strictly separate evidence levels. Negative results reported honestly.",
+  "description": "Quantum Anchor Protocol encodes a frequency-domain wave packet into quantum interference circuits. This release adds a hardware-validated quantum bridge: the encoding was measured on a real 156-qubit superconducting QPU (IBM ibm_marrakesh, 2000 shots per run, 2026-10-06), reaching 99.3% Bell balance on two qubits, 98.8% on a reproducibility run, and an ideal three-qubit GHZ distribution. The decoding formulas' assumption P(q0=1)=sin^2(theta/2) is therefore measurement-verified rather than assumed.\n\nTesseract-V3 5-phase interferometric sweep on IQM Garnet (20Q, Starter tier): 5 phases, 1024 shots each (5120 total). Wilson 95% CIs: [0.74, 2.16], [0.10, 0.86], [0.05, 0.71], [0.82, 2.28], [0.10, 0.86] (%). Aggregate: 0.684% [0.49%, 0.95%]. Chi2 vs cos(8φ): 0.83 (df=4), p=0.93 — does NOT reject. Chi2 vs flat: 1.98 (df=4), p=0.74 — does NOT reject. Cos(8φ) fit: offset=0.684%, amplitude=0.511% (theory: 1.56%, 3x smaller), R^2=0.48. Evidence grade: F (Noise-dominated — NO phase discrimination). Pulse-level anchor drive blocked by IQM Starter tier (pulse access denied).\n\nClassical and hardware proofs are reported as strictly separate evidence levels. Negative results reported honestly.",
   "creators": [
     {
       "name": "Máté Róbert",
@@ -8,7 +8,7 @@
       "orcid": "0000-0000-0000-0000"
     }
   ],
-  "version": "1.2.7",
+  "version": "1.2.2",
   "keywords": [
     "quantum computing",
     "quantum encoding",
@@ -34,6 +34,6 @@
       "identifier": "quantum-computing"
     }
   ],
-  "notes": "Corrected analysis v1.2.7: fixes v1.2.6 erroneous chi2=30.72, p=2.6e-4, R2=0.85 values. All documentation updated to reflect actual noise-dominated results.",
-  "publication_date": "2026-10-10"
+  "notes": "Final analysis v1.2.2: fixes v1.2.7 interim values. Chi2 cos=0.83 (p=0.93), chi2 flat=1.98 (p=0.74), amplitude=0.511%, R2=0.48. All documentation updated to reflect final noise-dominated results.",
+  "publication_date": "2026-10-14"
 }

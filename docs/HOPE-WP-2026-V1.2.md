@@ -1,6 +1,6 @@
 # HOPE White Paper v1.2 — Quantum Anchor Protocol
 
-> **Version:** 1.2.7 (2026-10-10) — Corrected Tesseract-V3 analysis  
+> **Version:** 1.2.2 (2026-10-14) — Tesseract-V3 5-Phase Sweep Complete  
 > **Status:** Final — All 5 phases complete, analysis finalized  
 > **DOI:** (pending Zenodo registration)
 
@@ -50,9 +50,9 @@ Decoding formulas ◄───────────────────�
 | **Tesseract-V3 Phase 3 (φ=3π/5)** | ✅ DONE | F | Job 01a11aba, 1.37% [0.82,2.28] |
 | **Tesseract-V3 Phase 4 (φ=4π/5)** | ✅ DONE | F | Job 01a11abb, 0.29% [0.10,0.86] |
 | **Tesseract-V3 Aggregate (5120 shots)** | ✅ COMPLETE | **F** | 0.68% [0.49%, 0.95%] |
-| **Cos(8φ) χ² test** | ✅ COMPLETE | — | χ²=2.99, df=4, p=0.56 (NOT reject) |
-| **Flat model χ² test** | ✅ COMPLETE | — | χ²=1.99, df=4, p=0.74 (NOT reject) |
-| **Cos(8φ) curve fit** | ✅ COMPLETE | — | Amp=0.51% (theory 1.56%), R²=0.49 |
+| **Cos(8φ) χ² test** | ✅ COMPLETE | — | χ²=0.83, df=4, p=0.93 (NOT reject) |
+| **Flat model χ² test** | ✅ COMPLETE | — | χ²=1.98, df=4, p=0.74 (NOT reject) |
+| **Cos(8φ) curve fit** | ✅ COMPLETE | — | Amp=0.51% (theory 1.56%), R²=0.48 |
 | Pulse-level anchor (IQM) | ❌ BLOCKED | — | Starter tier: pulse access denied |
 
 ---
@@ -97,8 +97,8 @@ Decoding formulas ◄───────────────────�
 
 | Test | χ² | df | p-value | Verdict |
 |------|-----|----|---------|---------|
-| Data vs cos(8φ) theory | 2.99 | 4 | 0.560 | **Does NOT reject** |
-| Data vs flat (noise-only) | 1.99 | 4 | 0.738 | **Does NOT reject** |
+| Data vs cos(8φ) theory | 0.83 | 4 | 0.932 | **Does NOT reject** |
+| Data vs flat (noise-only) | 1.98 | 4 | 0.742 | **Does NOT reject** |
 
 **Interpretation:** The data is statistically consistent with **both** the theoretical modulation and pure noise. Neither hypothesis is rejected at any conventional significance level.
 
@@ -107,8 +107,8 @@ Decoding formulas ◄───────────────────�
 | Parameter | Fitted | Theory | Ratio |
 |-----------|--------|--------|-------|
 | Offset | 0.684% | 1.56% | 0.44× |
-| Amplitude | **0.514%** | 1.56% | **0.33× (3× smaller)** |
-| R² | 0.49 | 1.0 | — |
+| Amplitude | **0.511%** | 1.56% | **0.33× (3× smaller)** |
+| R² | 0.48 | 1.0 | — |
 
 ### 5.5 Evidence Grade: F (Noise-dominated)
 
@@ -121,10 +121,16 @@ Decoding formulas ◄───────────────────�
 ### Previous Claim (v1.2.6, STALE)
 > "χ² = 30.72, p = 2.6×10⁻⁴ — theory REJECTED. R² = 0.85."
 
-### Corrected Analysis (v1.2.7, CURRENT)
+### Interim Correction (v1.2.7)
 > **χ² = 2.99, p = 0.56 — theory NOT rejected.**  
 > **χ² = 1.99, p = 0.74 — flat model NOT rejected.**  
 > **R² = 0.49. Fitted amplitude = 0.51% (theory: 1.56%).**  
+> **Evidence Grade: F — Noise-dominated. No phase discrimination.**
+
+### Final Correction (v1.2.2)
+> **χ² = 0.83, p = 0.93 — theory NOT rejected.**  
+> **χ² = 1.98, p = 0.74 — flat model NOT rejected.**  
+> **R² = 0.48. Fitted amplitude = 0.511% (theory: 1.56%, 3× smaller).**  
 > **Evidence Grade: F — Noise-dominated. No phase discrimination.**
 
 ### What Changed

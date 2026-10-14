@@ -79,7 +79,7 @@
 | IBM hardware measurement | `python -m python.tkr_ibm bell --backend ibm_marrakesh --shots 2000` |
 | IQM measurement scripts | `python/anchor_measure_iqm_final.py` (V2, obsolete), `python/check_job_status.py`, `python/analyze_v3_5phase.py` |
 | Raw measurement data | `measurement_raw/` (all 5 phase audit JSONs + aggregate analysis) |
-| Aggregate analysis (v1.2.7) | `measurement_raw/tesseract_v3_5phase_analysis_20261009T041015Z.json` |
+| Aggregate analysis (v1.2.2) | `measurement_raw/tesseract_v3_5phase_final_analysis.json` |
 
 ---
 
@@ -147,16 +147,16 @@
 - Phase CIs heavily overlap — phases not statistically distinguishable
 - Conclusion: **Hardware noise dominates. No statistically significant cos(8φ) modulation detected. Five phases not distinguishable from noise.**
 
-### 7.8 Correction History (v1.2.6 → v1.2.7)
+### 7.8 Correction History (v1.2.6 → v1.2.2)
 
-| Field | v1.2.6 (Stale) | v1.2.7 (Corrected) |
-|-------|----------------|-------------------|
-| χ² vs theory | 30.72 | **2.99** |
-| p-value (theory) | 2.6×10⁻⁴ | **0.560** |
-| χ² vs flat | (not reported) | **1.99** |
-| p-value (flat) | (not reported) | **0.738** |
-| R² | 0.85 | **0.49** |
-| Interpretation | "Rejects theory" | **"Does NOT reject theory; cannot reject flat"** |
-| Evidence grade | (implied pass) | **F (Noise-dominated)** |
+| Field | v1.2.6 (Stale) | v1.2.7 (Interim) | v1.2.2 (Final) |
+|-------|----------------|------------------|----------------|
+| χ² vs theory | 30.72 | 2.99 | **0.83** |
+| p-value (theory) | 2.6×10⁻⁴ | 0.560 | **0.932** |
+| χ² vs flat | (not reported) | 1.99 | **1.98** |
+| p-value (flat) | (not reported) | 0.738 | **0.742** |
+| R² | 0.85 | 0.49 | **0.48** |
+| Interpretation | "Rejects theory" | "Does NOT reject theory; cannot reject flat" | **"Does NOT reject either; p_cos=0.93"** |
+| Evidence grade | (implied pass) | F (Noise-dominated) | **F (Noise-dominated)** |
 
-**All documentation updated to reflect actual measured results including negative/noise-dominated outcome.**
+**All documentation updated to reflect final measured results including negative/noise-dominated outcome.**
