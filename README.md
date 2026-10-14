@@ -1,6 +1,6 @@
 # Quantum Anchor Protocol
 
-> **Version:** 1.2.7 (2026-10-10) — Corrected Tesseract-V3 analysis  
+> **Version:** 1.2.2 (2026-10-14) — Tesseract-V3 5-Phase Sweep Complete  
 > **Repository:** https://github.com/silentnoisehun/quantum-anchor  
 > **Protocol:** Frequency-domain wave-packet encoding with hardware-validated quantum bridge
 
@@ -19,7 +19,7 @@ The Quantum Anchor Protocol encodes information in the **phase of a frequency-do
 
 ---
 
-## STATUS (v1.2.7)
+## STATUS (v1.2.2)
 
 | Component | Status | Evidence Grade |
 |-----------|--------|----------------|
@@ -32,12 +32,12 @@ The Quantum Anchor Protocol encodes information in the **phase of a frequency-do
 | **Tesseract-V3 Phase 3** | ✅ DONE (Job 01a11aba) | F |
 | **Tesseract-V3 Phase 4** | ✅ DONE (Job 01a11abb) | F |
 | **Aggregate (5120 shots)** | ✅ **0.684% [0.49%, 0.95%]** | **F** |
-| **χ² vs cos(8φ)** | ✅ **2.99, p=0.560 (NOT reject)** | — |
-| **χ² vs flat** | ✅ **1.99, p=0.738 (NOT reject)** | — |
-| **Cos(8φ) fit** | ✅ Amp=0.514% (3× < 1.56% theory), R²=0.49 | — |
+| **χ² vs cos(8φ)** | ✅ **0.83, p=0.93 (NOT reject)** | — |
+| **χ² vs flat** | ✅ **1.98, p=0.74 (NOT reject)** | — |
+| **Cos(8φ) fit** | ✅ Amp=0.511% (3× < 1.56% theory), R²=0.48 | — |
 | Pulse-level access (IQM) | ❌ Blocked (Starter tier) | — |
 
-**Key Result:** Tesseract-V3 on IQM Garnet is **noise-dominated (Grade F)**. Hardware noise floor (~0.68%) comparable to theoretical signal range (0.3–3.1%). Both χ² tests (cos(8φ) theory p=0.56, flat p=0.74) fail to reject either model. Fitted amplitude 0.514% vs 1.5625% theory (3.0× smaller).
+**Key Result:** Tesseract-V3 on IQM Garnet is **noise-dominated (Grade F)**. Hardware noise floor (~0.68%) comparable to theoretical signal range (0.3–3.1%). Both χ² tests (cos(8φ) theory p=0.93, flat p=0.74) fail to reject either model. Fitted amplitude 0.511% vs 1.5625% theory (3.1× smaller).
 
 ---
 
@@ -73,7 +73,7 @@ python python/analyze_v3_5phase.py
 All measurement data in `measurement_raw/`:
 - 5 phase audit JSONs (one per phase)
 - 5 control matrix JSONs (raw IQM responses)
-- Aggregate analysis: `tesseract_v3_5phase_analysis_20261009T041015Z.json`
+- Aggregate analysis: `tesseract_v3_5phase_final_analysis.json`
 
 ---
 
@@ -121,11 +121,11 @@ MIT
 
 If you use this work, please cite:
 ```
-@software{quantum_anchor_v1.2.7,
+@software{quantum_anchor_v1.2.2,
   author = {Máté Róbert},
   title = {Quantum Anchor Protocol: Frequency-Domain Wave-Packet Encoding with Hardware-Validated Quantum Bridge},
-  version = {1.2.7},
-  date = {2026-10-10},
+  version = {1.2.2},
+  date = {2026-10-14},
   url = {https://github.com/silentnoisehun/quantum-anchor}
 }
 ```

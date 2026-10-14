@@ -1,6 +1,6 @@
 # SCS Quantum — Validation Document
 
-> **Status:** v1.2.7 (2026-10-10) — Corrected Tesseract-V3 5-phase analysis  
+> **Status:** v1.2.2 (2026-10-14) — Tesseract-V3 5-phase sweep complete  
 > **Protocol:** SCS v0.3.0 / Tesseract-V3 Interferometric  
 > **Evidence Standard:** SCS Standard (strict separation: classical proofs ≠ hardware evidence)
 
@@ -43,7 +43,7 @@
 | Protocol | Circuit | Shots | Result | Evidence Grade |
 |----------|---------|-------|--------|----------------|
 | Tesseract-V2 (8-phase) | `anchor_measure_iqm_final.py` | 1024/phase | χ²=30.72, p=2.6×10⁻⁴ — **REJECTED** (refuted by V3) | F (obsolete) |
-| **Tesseract-V3 (5-phase interferometric)** | **5 phases, 1024 shots each** | **5120 total** | **χ²=2.99 (df=4), p=0.56 — does NOT reject cos(8φ); χ²=1.99, p=0.74 — does NOT reject flat** | **F (Noise-dominated)** |
+| **Tesseract-V3 (5-phase interferometric)** | **5 phases, 1024 shots each** | **5120 total** | **χ²=0.83 (df=4), p=0.93 — does NOT reject cos(8φ); χ²=1.98, p=0.74 — does NOT reject flat** | **F (Noise-dominated)** |
 
 ---
 
@@ -123,8 +123,8 @@
 
 | Test | χ² | df | p-value | Interpretation |
 |------|-----|----|---------|----------------|
-| vs. cos(8φ) theory | 2.99 | 4 | **0.560** | **Does NOT reject** theory |
-| vs. flat (noise-only) | 1.99 | 4 | **0.738** | **Does NOT reject** flat |
+| vs. cos(8φ) theory | 0.83 | 4 | **0.932** | **Does NOT reject** theory |
+| vs. flat (noise-only) | 1.98 | 4 | **0.742** | **Does NOT reject** flat |
 
 **Both models are statistically indistinguishable from the data.** Neither theory nor null hypothesis is rejected.
 
@@ -133,8 +133,8 @@
 | Parameter | Fitted Value | Theory | Ratio |
 |-----------|--------------|--------|-------|
 | Offset | 0.684% | 1.56% | 0.44× |
-| Amplitude | 0.514% | 1.56% | **0.33× (3× smaller)** |
-| R² | 0.49 | 1.0 | — |
+| Amplitude | 0.511% | 1.56% | **0.33× (3× smaller)** |
+| R² | 0.48 | 1.0 | — |
 
 **Fitted amplitude is 3× smaller than theory.** Hardware noise floor (~0.68%) is comparable to signal range (0.3–3.1%).
 
