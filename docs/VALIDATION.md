@@ -1077,7 +1077,7 @@ A fenti §7.12.8 már tartalmazza a teljes 5-fázis sweep eredményét. Itt a v�
 | 4 | 5.0265 | 40.212 | -0.809 | 1 | 2 | 3 | 0.29% | 0.298% | [0.10, 0.86] |
 
 **Cos(8φ) Fit eredmény (least squares):**
-- Amplitude A = **0.5114%** (elmélet: 1.5625%)
+- Amplitude A = **0.5113%** (elmélet: 1.5625%)
 - Offset B = **0.6836%** (elmélet: 1.5625%)
 - R² = **0.4827**
 - χ²(cos) = **0.8331** (df=4)
@@ -1120,7 +1120,7 @@ A fenti §7.12.8 már tartalmazza a teljes 5-fázis sweep eredményét. Itt a v�
 
 A 5 Tesseract-V3 fázis rekordja **mindegyike** tartalmazza: `protocol`, `backend`, `job_id`, `shots`, `returned`, `phase_idx`, `phi_rad`, `interferometric`, `global_coherence_pct`, `counts`, `transpiled_ops`, `transpiled_depth`, `transpiled_qasm`.
 
-**Elemzés fájl:** `measurement_raw/tesseract_v3_5phase_analysis_final_latest.json` — tartalmazza a Wilson CI-kat, χ² teszteket, R²-t, cos(8φ) lineáris illesztést (amplitude=0.5114%, offset=0.6836%, R²=0.4827, χ²(cos)=0.8331, χ²(flat)=1.9810, df=4).
+**Elemzés fájl:** `measurement_raw/tesseract_v3_5phase_analysis_final_latest.json` — tartalmazza a Wilson CI-kat, χ² teszteket, R²-t, cos(8φ) lineáris illesztést (amplitude=0.5113%, offset=0.6836%, R²=0.4827, χ²(cos)=0.8331, χ²(flat)=1.9810, df=4).
 
 ---
 
@@ -1221,8 +1221,8 @@ A korábbi §7.9-§7.10 három független IQM kontrollmátrix-futás (12 job ös
 | Állítás | Státusz |
 |---|---|
 | H^x8 readout megkülönbözteti a 5 fázist (szimulációban) | ✅ **BIZONYÍTVA (szimuláció)** |
-| H^x8 readout megkülönbözteti a 5 fázist (hardveren) | ❌ **NEM BIZONYÍTOTT** — χ²(cos)=0.8331 (p>0.05), χ²(flat)=1.9810 (p>0.05) (df=4); R²=0.48; fitted amp 0.51% vs theory 1.56% (3x smaller); **neither model rejected against fitted, but signal below noise floor** |
-| Az 5 fázis szelekciója (anchor mechanizmus) hardveresen működik | ❌ **NEM BIZONYÍTOTT** — nincs mérhető moduláció a zaj felett, fitted amp 0.51% vs 1.56% theory (3x smaller) |
+| H^x8 readout megkülönbözteti a 5 fázist (hardveren) | ❌ **NEM BIZONYÍTOTT** — χ²(cos)=0.8331 (p>0.05), χ²(flat)=1.9810 (p>0.05) (df=4); R²=0.48; fitted amp 0.5113% vs theory 1.5625% (3× smaller); **neither model rejected against its own fit, but signal below noise floor** |
+| Az 5 fázis szelekciója (anchor mechanizmus) hardveresen működik | ❌ **NEM BIZONYÍTOTT** — nincs mérhető moduláció a zaj felett, fitted amp 0.5113% vs 1.5625% theory (3× smaller) |
 | Pulse-level fizikai anchor drive | ❌ **BLOKKOLVA** — Starter tier tiltás |
 
 ---
@@ -1237,7 +1237,7 @@ A korábbi §7.9-§7.10 három független IQM kontrollmátrix-futás (12 job ös
 6. ✅ **Zenodo metaadat** → `.zenodo.json` + `CITATION.cff` (kész, DOI mintelés kézi)
 7. ✅ **Bell Control Matrix** → 3 független futás, 12 job, `rz(φ)` hatás kimérve: **NINCS** (kész)
 8. ✅ **Tesseract-V2 Globális Koherencia** → 83.01% IQM Garnet-en (kész)
-9. ✅ **Tesseract-V3 5-fázis Interferometrikus Sweep** → 5/5 fázis befejezve (2026-10-08/09) — **zaj dominál, NINCS megkülönböztetés, mindkét modell ELUTASÍTVA: χ²(cos)=30.72 (p=6.4×10⁻⁶), χ²(flat)=20.29 (p=5.2×10⁻⁴) (df=4), R²=0.48, fitted amp 0.51% vs 1.56% theory (3x smaller)** (kész)
+9. ✅ **Tesseract-V3 5-fázis Interferometrikus Sweep** → 5/5 fázis befejezve (2026-10-08/09) — **zaj dominál, NINCS megkülönböztetés, mindkét modell NEM elutasítva a saját illesztéséhez képest: χ²(cos)=0.8331 (p>0.05), χ²(flat)=1.9810 (p>0.05) (df=4), R²=0.48, fitted amp 0.5113% vs 1.5625% theory (3× smaller)** (kész)
 10. ✅ **Tesseract-V3 Phase 0 Repeat (2026-10-11)** → Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE, 1.27% global coherence, Wilson 95% CI [0.74%, 2.16%] — consistent with original. Credits exhausted on phases 1-4. (kész)
 11. ⏳ **Pulse-level Sweep** → **pénzes tier VAGY külön engedély** (mérve tiltva a §7.8.8-ban)
 12. ⏳ **Braket Pulse** (Rigetti) → alternatíva, ha az IQM nem ad engedélyt
@@ -1246,4 +1246,4 @@ A korábbi §7.9-§7.10 három független IQM kontrollmátrix-futás (12 job ös
 15. 📝 **v1.2.4 has a tag but no release** — superseded by v1.2.2
 16. 📝 **v1.2.2 tag + GitHub Release** → a white paper és az arXiv forrás is megkapja a V2/V3-at
 17. ✅ **White paper + arXiv .tex** → §7.2 (V2/V3), §8 táblázat, STATUS blokk, abstract, `\date` (kész 2026-10-12)
-18. ✅ **All 5 phase audits saved to measurement_raw/** → final cos(8φ) fit: amplitude=0.51%, offset=0.68%, R²=0.48, Evidence Grade C
+18. ✅ **All 5 phase audits saved to measurement_raw/** → final cos(8φ) fit: amplitude=0.5113%, offset=0.6836%, R²=0.4827, Evidence Grade C
