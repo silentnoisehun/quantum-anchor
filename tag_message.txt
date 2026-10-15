@@ -1,0 +1,51 @@
+v1.2.2 — Corrected Tesseract-V3 5-phase interferometric analysis (2026-10-10)
+
+This release contains the corrected statistical analysis of the Tesseract-V3 5-phase
+interferometric sweep on IQM Garnet 20Q (IQM Resonance, Starter tier).
+
+## Key Results
+
+**All 5 phases completed** (2026-10-08/09 dataset, definitive):
+- Phase 0: Job 01a11943-739b-7415-8719-1fa493bc9aa8 — 1.27% [0.74%, 2.16%]
+- Phase 1: Job 01a11ab7-7d8e-77c3-bc67-ae8423181204 — 0.29% [0.10%, 0.86%]
+- Phase 2: Job 01a11aba-531f-73ae-8da7-c705c729038d — 0.20% [0.05%, 0.71%]
+- Phase 3: Job 01a11aba-c6d7-736a-ac56-a5c0525d2cc4 — 1.37% [0.82%, 2.28%]
+- Phase 4: Job 01a11abb-525f-7534-a1f1-5c98b274d710 — 0.29% [0.10%, 0.86%]
+
+**Aggregate (5120 shots):**
+- Mean global coherence: 0.684%
+- Wilson 95% CI: [0.49%, 0.95%]
+
+**Statistical tests:**
+- χ² vs cos(8φ) theory: 2.99, df=4, p=0.560 → does NOT reject theory
+- χ² vs flat (noise-only): 1.99, df=4, p=0.738 → does NOT reject flat
+- Both models statistically indistinguishable from data
+
+**Cos(8φ) curve fit:**
+- Offset: 0.684% (theory 1.56%, ratio 0.44×)
+- Amplitude: 0.514% (theory 1.56%, ratio 0.33× — 3× smaller)
+- R²: 0.49
+
+**Evidence Grade: F (Noise-dominated — no phase discrimination)**
+
+## Constraints & Corrections
+
+- Wilson 95% CI used throughout (not normal approximation) — conservative for low-count bins
+- Circuit-level API only — Starter tier denies pulse-level access
+- Virtual Z (rz) is digital gate, NOT physical 4.11 GHz detuned drive
+- Previous v1.2.6 "rejected theory" claim retracted — was based on stale χ²=30.72 from Tesseract-V2
+- Retracted "100% clear" Borg result — was circuit tautology, not anchor effect
+
+## Raw Data & Scripts
+
+- All 5 phase audit JSONs in measurement_raw/
+- Aggregate analysis: measurement_raw/tesseract_v3_5phase_analysis_20261009T041015Z.json
+- VALIDATION.md §7.12 updated with corrected analysis
+- Analysis script: python/analyze_v3_5phase.py
+
+## Known Limitations
+
+- Pulse-level access blocked on IQM Starter tier
+- Hardware noise floor (~0.68%) at or above predicted signal range (0.3–3.1%)
+- IQM credits exhausted after Phase 5 — no further free-tier jobs possible
+- Consider paid QPU routes (Braket/Rigetti) for pulse-level anchor drive test
