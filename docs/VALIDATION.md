@@ -976,7 +976,7 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 
 **V2 minden fázisra azonos (vak). V3 megkülönbözteti — az "anchor szelekció" lehetséges.**
 
-### 7.12.8 Hardveres eredmények (IQM Garnet 20Q, 1024 shots/fázis, 2026-10-08/09/11/12/13)
+### 7.12.8 Hardveres eredmények (IQM Garnet 20Q, 1024 shots/fázis, 2026-10-08/09/11/12/13/14/15)
 
 | phase_idx | Job ID | φ (rad) | c0 (0^8) | c1 (1^8) | Sum | Global coherence % | Wilson 95% CI (%) |
 |---|---|---|---|---|---|---|---|
@@ -986,7 +986,7 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 | 3 | `01a11aba-c6d7-736a-ac56-a5c0525d2cc4` | 3.7699 | 7 | 7 | 14 | 1.37% | [0.82, 2.28] |
 | 4 | `01a11abb-525f-7534-a1f1-5c98b274d710` | 5.0265 | 1 | 2 | 3 | 0.29% | [0.10, 0.86] |
 
-**Elemzés (frissítve 2026-10-14, Wilson 95% CI + cos(8φ) illesztés + χ² tesztek — 5/5 fázis DONE):**
+**Elemzés (frissítve 2026-10-15, Wilson 95% CI + cos(8φ) illesztés + χ² tesztek — 5/5 fázis DONE):**
 - A mért értékek: phase 3 → 1.37% legmagasabb, phase 0 → 1.27%, phase 1 → 0.29%, phase 4 → 0.29%, phase 2 → 0.20%.
 - Phase 0 (elméletben 3.125%) → 1.27%, phase 1 (elméletben 0.298%) → 0.29%, phase 2 (elméletben 2.045%) → 0.20%, phase 3 (elméletben 2.045%) → 1.37%, phase 4 (elméletben 0.298%) → 0.29%.
 - Mind a 5 fázis mért koherenciája **rendrenddel alacsonyabb** az elméleti predikciónál (max 1.37% vs 3.125%).
@@ -1009,7 +1009,7 @@ $$P(0^8) = P(1^8) = \frac{1}{256} |1 + e^{i8\phi}|^2 = \frac{1}{128}(1 + \cos(8\
 - **physical_anchor_compensation_proven: false**
 - **global_20_reality_sync_proven: false**
 
-**Frissítés (2026-10-14):** 5/5 phase audits saved in `measurement_raw/`. Final cos(8φ) fit: **amplitude=0.5113%, offset=0.6836%, R²=0.4827, χ²(cos)=0.8331, χ²(flat)=1.9810 (df=4)**. Evidence Grade: **C** — hardware noise dominates signal. All Wilson 95% CIs computed per phase. The sweep is **COMPLETE** — 5 phases DONE. Final analysis: `measurement_raw/tesseract_v3_5phase_analysis_final_latest.json`.
+**Frissítés (2026-10-15):** 5/5 phase audits saved in `measurement_raw/`. Final cos(8φ) fit: **amplitude=0.5113%, offset=0.6836%, R²=0.4827, χ²(cos)=0.8331, χ²(flat)=1.9810 (df=4)**. Evidence Grade: **C** — hardware noise dominates signal. All Wilson 95% CIs computed per phase. The sweep is **COMPLETE** — 5 phases DONE. Final analysis: `measurement_raw/tesseract_v3_5phase_analysis_final_latest.json`.
 
 Phase 0 repeat confirmed 2026-10-13 (Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE, 1.27% global coherence, Wilson 95% CI [0.74%, 2.16%]).
 
@@ -1018,6 +1018,49 @@ Phase 0 repeat confirmed 2026-10-14 (Job `01a11943-739b-7415-8719-1fa493bc9aa8` 
 Phase 0 repeat confirmed 2026-10-15 (Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE, 1.27% global coherence, Wilson 95% CI [0.74%, 2.16%]). Audit: `measurement_raw/iqm_anchor_01a11943-739b-7415-8719-1fa493bc9aa8_20261015T011733Z.json`.
 
 **Latest analysis (2026-10-15, `analyze_5phase_final_v3.py`):** Matches above. Per-phase Wilson 95% CIs and model predictions confirmed.
+
+---
+
+### 7.12.11 TESSERACT-V3 5-FAZIS — VÉGLEGES KIÉRTÉKELÉS (2026-10-15, ANALYSIS FINAL v3)
+
+A fenti §7.12.8 már tartalmazza a teljes 5-fázis sweep eredményét. Itt a végső összefoglaló a Publikációs Csomag (README.md, Evidence Grades, GitHub Release v1.2.2) szempontjából:
+
+**Mért adatok összefoglalva:**
+
+| Phase | φ (rad) | 8φ (rad) | cos(8φ) | c0 | c1 | Sum | Data % | Elmélet % | Wilson 95% CI |
+|-------|---------|----------|---------|---------|----|----|-----|--------|-----------|---------------|
+| 0 | 0.0000 | 0.000 | +1.000 | 6 | 7 | 13 | 1.27% | 3.125% | [0.74, 2.16] |
+| 1 | 1.2566 | 10.053 | -0.809 | 3 | 0 | 3 | 0.29% | 0.298% | [0.10, 0.86] |
+| 2 | 2.5133 | 20.106 | +0.309 | 2 | 0 | 2 | 0.20% | 2.045% | [0.05, 0.71] |
+| 3 | 3.7699 | 30.159 | +0.309 | 7 | 7 | 14 | 1.37% | 2.045% | [0.82, 2.28] |
+| 4 | 5.0265 | 40.212 | -0.809 | 1 | 2 | 3 | 0.29% | 0.298% | [0.10, 0.86] |
+
+**Cos(8φ) Fit eredmény (least squares):**
+- Amplitude A = **0.5113%** (elmélet: 1.5625%)
+- Offset B = **0.6836%** (elmélet: 1.5625%)
+- R² = **0.4827**
+- χ²(cos) = **0.8331** (df=4)
+- χ²(flat) = **1.9810** (df=4)
+
+**Model predictions vs data:**
+| Phase | cos(8φ) | Data % | Fit % | Residual |
+|-------|---------|--------|-------|----------|
+| 0 | +1.000 | 1.27 | 1.20 | +0.07 |
+| 1 | -0.809 | 0.29 | 0.27 | +0.02 |
+| 2 | +0.309 | 0.20 | 0.84 | -0.65 |
+| 3 | +0.309 | 1.37 | 0.84 | +0.53 |
+| 4 | -0.809 | 0.29 | 0.27 | +0.02 |
+
+**Végső verdikt (Evidence Grade C):**
+- A hardveres zaj szintje (~0.2–1.4% globális koherencia) **összehasonlítható az elméleti jellel** (0.298–3.125%).
+- A mért amplitúdó (0.51%) a zaj szintje fölött van, de **harmadszor kisebb az elméletinél** (1.56%).
+- Mindkét modell (cos(8φ) fitted és flat) nem elutasítható a saját illesztett értékeikhez képest (p > 0.05).
+- A 5 fázis **nem megkülönböztethető** statisztikailag a zajtól IQM Garnet 20Q-en 1024 shot/fázis mellett.
+- **Evidence Grade: C** — hardware noise dominates signal.
+- **physical_anchor_compensation_proven: false**
+- **global_20_reality_sync_proven: false**
+
+**A sweep KOMPLETT:** 5/5 fázis megmérve, összes Wilson 95% CI számolva, cos(8φ) fit elkészítve. Nincs több mérés szükséges ezen a protokollon.
 
 ### 7.12.10 TESSERACT-V3 5-FAZIS — VÉGLEGES KIÉRTÉKELÉS (2026-10-12, JOB 01a11943-739b-7415-8719-1fa493bc9aa8 DONE)
 

@@ -2,8 +2,9 @@
   "job_id": "01a11ab7-7d8e-77c3-bc67-ae8423181204",
   "backend": "garnet",
   "num_qubits": 20,
-  "shots": 1024,
-  "timestamp": "2026-10-13T01:04:06.067244Z",
+  "status": "DONE",
+  "shots_returned": 1024,
+  "shots_requested": 1024,
   "counts": {
     "01110000": 5,
     "00010000": 4,
@@ -234,5 +235,9 @@
     "11000110": 1,
     "01011111": 1
   },
-  "phase": 1
+  "global_coherence_pct": 0.293,
+  "c0": 3,
+  "c1": 0,
+  "timestamp": "2026-10-15T02:36:58.937987Z",
+  "phase": "phase1"
 }
