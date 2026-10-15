@@ -1,30 +1,56 @@
-# v1.2.2 — Tesseract-V3 5-phase sweep complete, noise-dominated
+## Tesseract-V3 Interferometric Readout 5-Phase Sweep (IQM Garnet 20Q, Starter tier)
 
-## Summary
-All 5 phases of the Tesseract-V3 interferometric sweep completed on IQM Garnet 20Q (Starter tier, 1024 shots/phase).
+**Completed:** 5/5 phases measured (2026-10-08/09/11/12/13), 1024 shots each, 5120 total shots.
 
-## Key Results
-- **5/5 phases measured**: Jobs `01a11943`, `01a11ab7`, `01a11aba` (phases 2&3), `01a11abb`
-- **Global coherence range**: 0.20%–1.37% (theoretical: 0.298%–3.125%)
-- **Cos(8φ) fit**: amplitude=0.5114%, offset=0.6836%, R²=0.4827
-- **χ² tests**: χ²(cos)=0.8331, χ²(flat)=1.9810 (df=4) — neither model rejected against its fit
-- **Fitted amplitude 3× smaller** than theoretical (0.51% vs 1.56%)
+### Results
+
+| Phase | φ (rad) | cos(8φ) | c₀ (0⁸) | c₁ (1⁸) | Global Coherence | Wilson 95% CI |
+|-------|---------|---------|---------|---------|------------------|---------------|
+| 0 | 0.0000 | +1.000 | 6 | 7 | 1.27% | [0.74%, 2.16%] |
+| 1 | 1.2566 | -0.809 | 3 | 0 | 0.29% | [0.10%, 0.86%] |
+| 2 | 2.5133 | +0.309 | 2 | 0 | 0.20% | [0.05%, 0.71%] |
+| 3 | 3.7699 | +0.309 | 7 | 7 | 1.37% | [0.82%, 2.28%] |
+| 4 | 5.0265 | -0.809 | 1 | 2 | 0.29% | [0.10%, 0.86%] |
+
+### Cos(8φ) Fit (least squares)
+
+- **Amplitude A** = 0.5113% (theoretical: 1.5625%)
+- **Offset B** = 0.6836% (theoretical: 1.5625%)
+- **R²** = 0.4827
+- **χ²(cos)** = 0.8331 (df=4)
+- **χ²(flat)** = 1.9810 (df=4)
+
+### Verdict
+
 - **Evidence Grade: C** — hardware noise dominates signal
-- **physical_anchor_compensation_proven: false**
-- **global_20_reality_sync_proven: false**
+- Fitted amplitude is **3x smaller** than theoretical 1.5625%
+- Neither cos(8φ) nor flat model rejected against their own fits (p > 0.05)
+- **Signal below noise floor** — the 5 phases are not statistically distinguishable from noise at 1024 shots/phase
+- Aggregate Wilson 95% CI (5120 shots): 0.68% [0.49%, 0.95%]
 
-## Additional Results (from prior commits in this tag)
-- **Tesseract-V2**: 83.01% global coherence (850/1024), Wilson CI [80.59%, 85.18%] — **plane coupling proven**, 20-reality sync NOT shown
-- **Tesseract Anchor 4-phase control matrix**: 5/5 phases, mean Δ=+0.03 pp, σ=0.77 pp, all Wilson 95% CI overlap → **no measurable rz(φ) effect**
-- **Borg anchor compensation**: 0% clear both conditions (100% clear result retracted as circuit tautology)
-- **Pulse-level access**: **Blocked** on Starter tier — measured denial `Personal account does not have pulse-level access enabled`
-- **Phase 0 repeat** (2026-10-12, 2026-10-13): consistent 1.27% global coherence, Wilson CI [0.74%, 2.16%]
+### Tesseract Anchor 4-Phase Control Matrix
 
-## Files Updated
-- `README.md` — Evidence Grades table with complete V2/V3 results
-- `docs/VALIDATION.md` — §7.12 with final cos(8φ) fit, Wilson CIs, χ² tests
-- `measurement_raw/` — All 5 phase audits + final analysis JSONs
-- `arxiv/quantum_anchor_v1.2.tex` — Updated with V2/V3 results
+- **5/5 phases complete** (2026-10-10)
+- Mean anchor-bell delta: +0.03 pp, σ = 0.77 pp
+- All 5 phases show Wilson 95% CI overlap → **no measurable rz(φ) effect**
+- Evidence grade: **C (Inconclusive — virtual Z, no physical drive)**
 
-## Deliverables
-All offline checks pass (14/14). Circuit-level measurements complete. Pulse-level access remains blocked by account entitlement.
+### Tesseract-V2 Global Coherence
+
+- **83.01%** (850/1024 shots), Wilson CI [80.59%, 85.18%]
+- Inter-plane entangling backbone (q0-q2-q4-q6) **works on hardware**
+- Does NOT demonstrate 20-reality synchronized selection
+
+### Blockers Confirmed
+
+- [X] **Pulse-level access BLOCKED** on IQM Starter tier (measured: "Personal account does not have pulse-level access enabled")
+- [X] **Anchor drive T1/T2 compensation NOT proven** — SamplerV2 cannot implement dissipative compensation
+- [X] **20-reality synchronized selection NOT shown** — global coherence ~10%, random-level
+
+### Artifacts
+
+- Final analysis: `measurement_raw/tesseract_v3_5phase_analysis_final_latest.json`
+- All 5 phase audits in `measurement_raw/`
+- Full proof ledger: `docs/VALIDATION.md` §7.7-§7.12
+
+**Central claim** (weak drive compensates T1/T2 dissipation): **NOT proven by any measurement.**
