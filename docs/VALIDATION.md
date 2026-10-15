@@ -1015,7 +1015,9 @@ Phase 0 repeat confirmed 2026-10-13 (Job `01a11943-739b-7415-8719-1fa493bc9aa8` 
 
 Phase 0 repeat confirmed 2026-10-14 (Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE, 1.27% global coherence, Wilson 95% CI [0.74%, 2.16%]). Audit: `measurement_raw/iqm_anchor_01a11943-739b-7415-8719-1fa493bc9aa8_20261014T021837Z.json`.
 
-**Latest analysis (2026-10-14, `analyze_5phase_final_v3.py`):** Matches above. Per-phase Wilson 95% CIs and model predictions confirmed.
+Phase 0 repeat confirmed 2026-10-15 (Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE, 1.27% global coherence, Wilson 95% CI [0.74%, 2.16%]). Audit: `measurement_raw/iqm_anchor_01a11943-739b-7415-8719-1fa493bc9aa8_20261015T011733Z.json`.
+
+**Latest analysis (2026-10-15, `analyze_5phase_final_v3.py`):** Matches above. Per-phase Wilson 95% CIs and model predictions confirmed.
 
 ### 7.12.10 TESSERACT-V3 5-FAZIS — VÉGLEGES KIÉRTÉKELÉS (2026-10-12, JOB 01a11943-739b-7415-8719-1fa493bc9aa8 DONE)
 
@@ -1067,6 +1069,7 @@ A fenti §7.12.8 már tartalmazza a teljes 5-fázis sweep eredményét. Itt a v�
 | Tesseract-V3 phase 0 (repeat, 2026-10-12) | `01a11943-739b-7415-8719-1fa493bc9aa8` | `measurement_raw/audit_phase0_garnet_20q_20261012T024640Z.json` |
 | Tesseract-V3 phase 0 (repeat, 2026-10-13) | `01a11943-739b-7415-8719-1fa493bc9aa8` | `measurement_raw/audit_phase0_garnet_20q_20261013T014825Z.json` |
 | Tesseract-V3 phase 0 (repeat, 2026-10-14) | `01a11943-739b-7415-8719-1fa493bc9aa8` | `measurement_raw/iqm_anchor_01a11943-739b-7415-8719-1fa493bc9aa8_20261014T021837Z.json` |
+| Tesseract-V3 phase 0 (repeat, 2026-10-15) | `01a11943-739b-7415-8719-1fa493bc9aa8` | `measurement_raw/iqm_anchor_01a11943-739b-7415-8719-1fa493bc9aa8_20261015T011733Z.json` |
 | Tesseract-V3 phase 1 | `01a11ab7-7d8e-77c3-bc67-ae8423181204` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11ab7_phase1_20261008T085544Z.json` |
 | Tesseract-V3 phase 2 | `01a11aba-531f-73ae-8da7-c705c729038d` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11aba_phase2_20261008T085622Z.json` |
 | Tesseract-V3 phase 3 | `01a11aba-c6d7-736a-ac56-a5c0525d2cc4` | `measurement_raw/iqm_tesseract_v3_interferometric_01a11aba_phase3_20261008T085652Z.json` |
