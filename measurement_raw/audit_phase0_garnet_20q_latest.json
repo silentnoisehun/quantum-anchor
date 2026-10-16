@@ -4,6 +4,7 @@
   "backend": "garnet",
   "num_qubits": 20,
   "shots_returned": 1024,
+  "shots_requested": 1024,
   "global_coherence_pct": 1.27,
   "counts": {
     "10000100": 18,
@@ -19,5 +20,6 @@
   },
   "c0": 6,
   "c1": 7,
-  "timestamp": "2026-10-16T00:02:48.969797Z"
+  "timestamp": "2026-10-16T01:02:48.969797Z",
+  "phase": "phase0"
 }
