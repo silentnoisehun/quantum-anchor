@@ -1017,7 +1017,9 @@ Phase 0 repeat confirmed 2026-10-14 (Job `01a11943-739b-7415-8719-1fa493bc9aa8` 
 
 Phase 0 repeat confirmed 2026-10-15 (Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE, 1.27% global coherence, Wilson 95% CI [0.74%, 2.16%]). Audit: `measurement_raw/iqm_anchor_01a11943-739b-7415-8719-1fa493bc9aa8_20261015T011733Z.json`.
 
-**Latest analysis (2026-10-15, `analyze_5phase_final_v3.py`):** Matches above. Per-phase Wilson 95% CIs and model predictions confirmed.
+Phase 0 **CONFIRMED DONE** 2026-10-16 (Job `01a11943-739b-7415-8719-1fa493bc9aa8` DONE, 1.27% global coherence, Wilson 95% CI [0.74%, 2.16%]). Audit: `measurement_raw/audit_phase0_garnet_20q_latest.json`.
+
+**Latest analysis (2026-10-16, `analyze_5phase_final_v3.py`):** Matches above. Per-phase Wilson 95% CIs and model predictions confirmed. Cos(8φ) fit: amplitude=0.5113%, offset=0.6836%, R²=0.4827, χ²(cos)=0.8331 (df=4), χ²(flat)=1.9810 (df=4). Aggregate Wilson 95% CI (5120 shots): 0.68% [0.49%, 0.95%].
 
 ---
 

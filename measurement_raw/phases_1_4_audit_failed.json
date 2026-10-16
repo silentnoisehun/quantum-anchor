@@ -1,0 +1,21 @@
+{
+  "job_ids": [
+    "01a13e1a-dd87-7063-8452-7ffa9bc45232",
+    "01a13e1a-e771-71ae-b1c9-d9140fa52301",
+    "01a13e1a-f09d-73cc-b23b-6d3793c15b20",
+    "01a13e1a-f96d-704d-bf60-2647282af2f0"
+  ],
+  "backend": "garnet",
+  "phases": [
+    "zero",
+    "h",
+    "bell",
+    "anchor"
+  ],
+  "status": "FAILED",
+  "error": "Not enough credits to execute job",
+  "shots_requested": 1024,
+  "shots_returned": 0,
+  "counts": {},
+  "global_coherence_pct": 0.0
+}

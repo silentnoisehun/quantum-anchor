@@ -1,8 +1,10 @@
 {
   "job_id": "01a11943-739b-7415-8719-1fa493bc9aa8",
   "backend": "garnet",
-  "timestamp": "2026-10-14T05:46:13.884674",
-  "shots": 1024,
+  "phase": 0,
+  "status": "DONE",
+  "shots_requested": 1024,
+  "shots_returned": 1024,
   "counts": {
     "00101101": 7,
     "01010100": 1,
@@ -199,5 +201,8 @@
     "01001010": 1,
     "01010010": 1,
     "10011000": 1
-  }
+  },
+  "global_coherence_pct": 1.27,
+  "zero_state_count": 6,
+  "one_state_count": 7
 }
