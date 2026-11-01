@@ -49,7 +49,6 @@ from __future__ import annotations
 import json
 import re
 import sys
-import tempfile
 from pathlib import Path
 
 for _name in ("stdout", "stderr"):
@@ -71,7 +70,7 @@ ZENODO = ROOT / ".zenodo.json"
 ORCID_SENTINEL = re.compile(r"^0{4}-0{4}-0{4}-0{3}[\dX]$")
 ORCID_VALID = re.compile(r"^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$")
 
-PLACEHOLDER_DOI = re.compile(r"10\.5281/zenodo\.(?:X+|0+|placeholder)", re.I)
+PLACEHOLDER_DOI = re.compile(r"10\.5281/zenodo\.(?:X+|0+|placeholder)", re.IGNORECASE)
 
 
 # ---------------------------------------------------------------------------
@@ -246,7 +245,8 @@ def compare(cff: dict, zen: dict) -> list[str]:
     # The Zenodo record is the one that a DOI actually freezes. If it disagrees
     # with what the White Paper and the arXiv source say about the same person,
     # the DOI would permanently assert the wrong one.
-    doc_affs = {tuple(v) for v in collect_affiliations().values()}
+    collected_affs = collect_affiliations()
+    doc_affs = {tuple(v) for v in collected_affs.values()}
     doc_values = {a for group in doc_affs for a in group if a != "(none stated)"}
     for aff in sorted(zen_affs):
         if doc_values and aff not in doc_values:
@@ -293,9 +293,9 @@ def compare(cff: dict, zen: dict) -> list[str]:
 # resolved automatically.
 AFFILIATION_DOCS = {
     "docs/HOPE-WP-2026-V1.2.md": re.compile(
-        r"^\*\*Authors?:\*\*\s*(?P<authors>.+?)\s*$", re.M),
+        r"^\*\*Authors?:\*\*\s*(?P<authors>.+?)\s*$", re.MULTILINE),
     "arxiv/quantum_anchor_v1.2.tex": re.compile(
-        r"\\author\{(?P<authors>[^}]*)\}", re.M),
+        r"\\author\{(?P<authors>[^}]*)\}", re.MULTILINE),
 }
 
 
@@ -440,13 +440,13 @@ def main() -> int:
 
     problems = compare(cff, zen)
 
-    affs = collect_affiliations()
-    if affs:
+    doc_affs_map = collect_affiliations()
+    if doc_affs_map:
         print("affiliations stated in the documents:")
-        for rel, vals in sorted(affs.items()):
+        for rel, vals in sorted(doc_affs_map.items()):
             print(f"  {rel:<34} {', '.join(vals)}")
         print()
-        problems += check_affiliation_disagreement(affs)
+        problems += check_affiliation_disagreement(doc_affs_map)
 
     if problems:
         print("=" * 74)

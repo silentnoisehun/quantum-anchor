@@ -43,62 +43,62 @@ SCANNED = [
 RULES: list[tuple[str, re.Pattern[str], str, str]] = [
     (
         "pulse-level-available",
-        re.compile(r"pulse-level access available", re.I),
+        re.compile(r"pulse-level access available", re.IGNORECASE),
         "Claims IQM pulse-level access is available. It was MEASURED as denied "
         "on the account tier in use (VALIDATION.md 7.8.8).",
         "hard",
     ),
     (
         "meas-level-0-equivalent",
-        re.compile(r"meas[_ ]level\s*=\s*0 (?:equivalent|ekvivalens)", re.I),
+        re.compile(r"meas[_ ]level\s*=\s*0 (?:equivalent|ekvivalens)", re.IGNORECASE),
         "get_memory() returns decoded bitstrings, not analog IQ data. It is "
         "NOT a meas_level=0 equivalent.",
         "hard",
     ),
     (
         "full-memory-claim",
-        re.compile(r"1024 bitstrings? (?:captured|ment|számít|nyers)", re.I),
+        re.compile(r"1024 bitstrings? (?:captured|ment|számít|nyers)", re.IGNORECASE),
         "The IQM audit JSON stores only the first 10 memory bitstrings, not "
         "all 1024.",
         "hard",
     ),
     (
         "phase-formula-1e-9",
-        re.compile(r"(?:4\.11|4,11)\s*\*\s*37e-9|4\.11\s*GHz\s*\*\s*37\s*ns\s*=\s*0\.4398\s*rad", re.I),
+        re.compile(r"(?:4\.11|4,11)\s*\*\s*37e-9|4\.11\s*GHz\s*\*\s*37\s*ns\s*=\s*0\.4398\s*rad", re.IGNORECASE),
         "GHz*ns is already dimensionless cycles; multiplying by 1e-9 yields "
         "1.37e-7 rad instead of 0.4398 rad. The factor must not be present.",
         "hard",
     ),
     (
         "placeholder-doi",
-        re.compile(r"10\.5281/zenodo\.(?:X+|0+|placeholder)", re.I),
+        re.compile(r"10\.5281/zenodo\.(?:X+|0+|placeholder)", re.IGNORECASE),
         "A placeholder DOI can be copied into a real citation. Omit it instead.",
         "hard",
     ),
     (
         "retracted-as-proven",
-        re.compile(r"100% clear.{0,120}BIZONYÍTVA", re.I | re.S),
+        re.compile(r"100% clear.{0,120}BIZONYÍTVA", re.IGNORECASE | re.DOTALL),
         "The Borg 100% clear result was retracted as a circuit tautology "
         "(VALIDATION.md §9).",
         "hard",
     ),
     (
         "anchor-proven",
-        re.compile(r"anchor (?:drive )?(?:compensation )?(?:IS )?PROVEN", re.I),
+        re.compile(r"anchor (?:drive )?(?:compensation )?(?:IS )?PROVEN", re.IGNORECASE),
         "Anchor drive compensation is not proven by any measurement. Both "
         "anchor-on and anchor-off yield 0% clear.",
         "hard",
     ),
     (
         "tesseract-validated",
-        re.compile(r"Tesseract 4-plane architecture valid", re.I),
+        re.compile(r"Tesseract 4-plane architecture valid", re.IGNORECASE),
         "The 4-plane architecture executes, but 20-reality synchronized "
         "selection is not demonstrated (11.62% global).",
         "soft",
     ),
     (
         "token-on-cli",
-        re.compile(r"--token\s+[\"']?YOUR_TOKEN", re.I),
+        re.compile(r"--token\s+[\"']?YOUR_TOKEN", re.IGNORECASE),
         "Documenting a CLI token argument encourages passing secrets on the "
         "command line, where they persist in shell history.",
         "hard",
@@ -115,14 +115,14 @@ RULES: list[tuple[str, re.Pattern[str], str, str]] = [
     # remembered value, not from a measurement. Do not reinstate it.
     (
         "garnet-qubit-count",
-        re.compile(r"(?:Garnet|garnet)[^\n]{0,40}?\b19\s*Q\b", re.I),
+        re.compile(r"(?:Garnet|garnet)[^\n]{0,40}?\b19\s*Q\b", re.IGNORECASE),
         "The live SDK reports 20 qubits for garnet. This was measured, not "
         "remembered; the 19Q figure was a propagation error.",
         "hard",
     ),
     (
         "gamma-zero-reachable",
-        re.compile(r"(?:gamma|γ)\s*=\s*0\s+(?:hardver|hardware)(?:en|es)?\s*(?:elér|achiev|reach)", re.I),
+        re.compile(r"(?:gamma|γ)\s*=\s*0\s+(?:hardver|hardware)(?:en|es)?\s*(?:elér|achiev|reach)", re.IGNORECASE),
         "gamma=0 is not an established hardware state; finite T1/T2 make it "
         "physically unreachable.",
         "hard",
@@ -162,7 +162,7 @@ RETRACTION_MARKERS = re.compile(
     # A struck-through or explicitly-false quotation. A table that lists the
     # OLD claim in the left column and the measured reality in the right is the
     # corrected form; without this the scanner flags its own fix.
-    r"~~|—\s*false\b|\bfalse\b(?!\s*positive)|téves\s*\||_false_", re.I)
+    r"~~|—\s*false\b|\bfalse\b(?!\s*positive)|téves\s*\||_false_", re.IGNORECASE)
 
 # A rule fires on a phrase, but a phrase preceded by a negation is the OPPOSITE
 # of a defect: "NOT a meas_level=0 equivalent" is the corrected wording. Without
@@ -170,7 +170,7 @@ RETRACTION_MARKERS = re.compile(
 # and a linter that fires on the fix gets switched off within a week.
 NEGATION = re.compile(
     r"\bnot\b|\bno\b|\bnever\b|\bincorrect\b|\bwrong\b|"
-    r"is not|are not|cannot|must not|\bnem\b|\bnot(?:a| an| egy)\b", re.I)
+    r"is not|are not|cannot|must not|\bnem\b|\bnot(?:a| an| egy)\b", re.IGNORECASE)
 
 # A percentage that was computed against a stated denominator is fully
 # interpretable. These markers mean the reader is told what it was divided by —
@@ -180,7 +180,7 @@ DENOMINATOR_CONTEXT = re.compile(
     r"requested\s*shots?|actual\s*shots?|visszakapott|"
     # A parenthesised arithmetic form: "(74+45/1024)". The denominator is stated,
     # so the figure is fully interpretable even without the word "denominator".
-    r"/\s*(?:1024|1016)\b", re.I)
+    r"/\s*(?:1024|1016)\b", re.IGNORECASE)
 
 
 def _is_negated(line: str, match: re.Match[str]) -> bool:

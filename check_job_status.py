@@ -10,7 +10,7 @@ import sys
 if not os.getenv("IQM_TOKEN"):
     print("[HIBA] IQM_TOKEN környezeti változó nincs beállítva.")
     print("   A token soha ne menjen CLI argumentumként vagy fájlba.")
-    print("   PowerShell:  \$env:IQM_TOKEN = '...'")
+    print(r"   PowerShell:  \$env:IQM_TOKEN = '...'")
     sys.exit(1)
 
 try:

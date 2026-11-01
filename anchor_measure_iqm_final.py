@@ -122,7 +122,7 @@ def virtual_z_phase(freq_ghz: float, duration_ns: float) -> float:
 # Circuit-építés
 # ---------------------------------------------------------------------------
 
-def build_circuit(n_qubits: int, mode: str, phase_rad: float = 0.0) -> "QuantumCircuit":
+def build_circuit(n_qubits: int, mode: str, phase_rad: float = 0.0) -> QuantumCircuit:
     """Epíthet egy circuitet a megadott kontrollmódban.
 
     Módok:
@@ -678,7 +678,7 @@ def validate_offline(shots: int, freq_ghz: float, duration_ns: int,
     # nem érne el. A keresés ezért NEM a környezeti változó nevét, hanem a
     # KIFEJEZÉST keresi, amit a rossz kód használna: a provider konstrukcióját.
     src = Path(__file__).read_text(encoding="utf-8")
-    provider_call = re.search(r"IQMProvider\([^)]*\)", src, re.S)
+    provider_call = re.search(r"IQMProvider\([^)]*\)", src, re.DOTALL)
     assert provider_call is not None, (
         "az IQMProvider hívása eltűnt a scriptből — ezt az őr nem tudja "
         "értékelni, inkább bukjon el, mint hagyjon védelem nélkül"
@@ -790,7 +790,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  Plane-ek       : {args.planes} ({args.planes * 2} qubit)")
         print(f"  Fázis paraméter: {args.freq} GHz × {args.duration} ns "
               f"= {phi:.4f} rad")
-        print(f"  Mérési típus   : circuit-level bitstring (NEM meas_level=0)")
+        print("  Mérési típus   : circuit-level bitstring (NEM meas_level=0)")
         print("  Módok          : zero, h, bell (control), anchor")
         print(f"  Token          : {'[OK] IQM_TOKEN beállítva' if os.getenv('IQM_TOKEN') else '[HIBA] nincs'}")
         print("=" * 74)

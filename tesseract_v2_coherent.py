@@ -134,7 +134,7 @@ def run_comparison():
     print("\n[V1: Izolált Síkok (A mért hardveres állapot)]")
     print(f"  Síkonkénti Bell-balance         : {res_v1['mean_plane_balance_pct']}% (minden sík önmagában tökéletes)")
     print(f"  GLOBÁLIS KOHERENCIA (0^8 + 1^8) : {res_v1['global_coherence_pct']}%  <-- VÉLETLEN 1/8 SZINT!")
-    print(f"  Megjelenő állapotok száma       : 16 különböző állapot keveredik szét")
+    print("  Megjelenő állapotok száma       : 16 különböző állapot keveredik szét")
 
     # 2. V2 Csatolt Tesseract modell
     qc_v2 = build_tesseract_circuit("v2_coherent", phase_idx=0)
@@ -172,7 +172,7 @@ def run_on_iqm_hardware(backend_name: str = "garnet", shots: int = 1024):
     backend = provider.get_backend()
 
     print(f"Csatlakozva az IQM backendhez: {backend.name} ({backend.num_qubits} Qubit)")
-    print(f"Áramkör transzpilálása optimális szinten (opt_level=3)...")
+    print("Áramkör transzpilálása optimális szinten (opt_level=3)...")
 
     qc_v2 = build_tesseract_circuit("v2_coherent", phase_idx=0)
     pm = generate_preset_pass_manager(optimization_level=3, backend=backend)

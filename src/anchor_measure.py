@@ -49,7 +49,6 @@ from qiskit import (
 )
 from qiskit.quantum_info import Statevector
 
-
 # --------------------------------------------------------------------------
 # The paper's drive parameters (HOPE-WP-2026, section 03).
 # --------------------------------------------------------------------------

@@ -102,7 +102,7 @@ def matryoshka_circuit(
     depth: int,
     num_qubits: int = 2,
     use_fractional: bool = False,
-) -> "QuantumCircuit":
+) -> QuantumCircuit:
     """
     Matryoshka fractal circuit at given depth.
 
@@ -165,7 +165,7 @@ def borg_circuit(
     horizon: int,
     num_qubits: int = 2,
     use_fractional: bool = False,
-) -> "QuantumCircuit":
+) -> QuantumCircuit:
     """
     Borg cube node circuit — anchor model test.
 
@@ -252,7 +252,7 @@ def anchor_dynamics_circuit(
     duration_ns: int,
     amp: float,
     freq_ghz: float,
-) -> "QuantumCircuit":
+) -> QuantumCircuit:
     """
     Anchor dynamics: psi(t) evolution at 37 ns.
 
@@ -452,7 +452,7 @@ def _get_backend(backend_name: str):
 
 
 def run_on_backend(
-    circuits: list["QuantumCircuit"],
+    circuits: list[QuantumCircuit],
     backend,
     backend_name: str,
     shots: int,
@@ -570,7 +570,7 @@ def run_matryoshka(
 ) -> dict[str, Any]:
     """Run matryoshka fractal preservation test."""
     print(f"\n{'='*60}")
-    print(f"MATRYOSHKA FRACTAL TEST")
+    print("MATRYOSHKA FRACTAL TEST")
     print(f"  WavePacket: A={wp.amplitude} gamma={wp.gamma} f={wp.frequency} phi={wp.phase}")
     print(f"  Depths: {depths}")
     print(f"  Shots: {shots} | Backend: {backend_name} | Fractional: {use_fractional}")
@@ -640,7 +640,7 @@ def run_borg(
 ) -> dict[str, Any]:
     """Run Borg cube 16-node prediction test."""
     print(f"\n{'='*60}")
-    print(f"BORG CUBE PREDICTIVE TEST")
+    print("BORG CUBE PREDICTIVE TEST")
     print(f"  WavePacket: A={wp.amplitude} gamma={wp.gamma} f={wp.frequency} phi={wp.phase}")
     print(f"  Replicas: {replicas} (cap 16)")
     print(f"  Shots: {shots} | Backend: {backend_name} | Fractional: {use_fractional}")

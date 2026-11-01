@@ -24,7 +24,7 @@ import sys
 from pathlib import Path
 
 # Modules that are part of the standard library.
-STDLIB = set(sys.stdlib_module_names)
+STDLIB: set[str] = set(sys.stdlib_module_names)
 
 # The project's own top-level packages, which are obviously not stdlib.
 OWN_PACKAGES = {"src"}
@@ -77,10 +77,10 @@ def main() -> int:
     print("Quantum Anchor — dependency audit")
     print("=" * 55)
     for name, mods in sorted(all_imports.items()):
-        external = sorted(m for m in mods if m not in STDLIB and m not in OWN_PACKAGES)
-        status = "OK" if not external else f"THIRD-PARTY: {external}"
+        ext_list = sorted(m for m in mods if m not in STDLIB and m not in OWN_PACKAGES)
+        status = "OK" if not ext_list else f"THIRD-PARTY: {ext_list}"
         print(f"  {name:<22} -> {sorted(mods)}")
-        if external:
+        if ext_list:
             print(f"  {'':<22}    {status}")
     print()
 
