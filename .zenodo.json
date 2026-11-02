@@ -1,6 +1,6 @@
 {
-  "title": "Quantum Anchor Protocol: Frequency-Domain Wave-Packet Encoding with Hardware-Validated Quantum Bridge",
-  "description": "Quantum Anchor Protocol encodes a frequency-domain wave packet into quantum interference circuits. This release adds a hardware-validated quantum bridge: the encoding was measured on a real 156-qubit superconducting QPU (IBM ibm_marrakesh, 2000 shots per run, 2026-10-06), reaching 99.3% Bell balance on two qubits, 98.8% on a reproducibility run, and an ideal three-qubit GHZ distribution. The decoding formulas' assumption P(q0=1)=sin^2(theta/2) is therefore measurement-verified rather than assumed.\n\nTesseract-V3 5-phase interferometric sweep on IQM Garnet (20Q, Starter tier): 5 phases, 1024 shots each (5120 total). Wilson 95% CIs: [0.74, 2.16], [0.10, 0.86], [0.05, 0.71], [0.82, 2.28], [0.10, 0.86] (%). Aggregate: 0.68% [0.49%, 0.95%]. Chi2 vs cos(8φ): 0.8331 (df=4, p>0.05). Chi2 vs flat: 1.9810 (df=4, p>0.05). Cos(8φ) fit: offset=0.68%, amplitude=0.51% (theory: 1.56%, 3x smaller), R²=0.48. Evidence grade: C (Noise-dominated — NO phase discrimination, neither model rejected, signal < noise floor). All 5 phase audits saved 2026-10-11. Phase 0 repeat 2026-10-12 confirms consistency. Pulse-level anchor drive blocked by IQM Starter tier (pulse access denied).\n\nClassical and hardware proofs are reported as strictly separate evidence levels. Negative results reported honestly.",
+  "title": "Methodological Obstacles, API Deprecations, and Empirical Null-Results in Weak-Drive Coherence Anchoring on Superconducting Processors",
+  "description": "Empirical evaluation and methodological null-result of the Quantum Anchor protocol on IBM Quantum (156-qubit Heron ibm_marrakesh) and IQM Resonance (20-qubit Garnet) superconducting processors. Evaluates API deprecations (removal of OpenPulse and analog IQ access), circuit-tautology traps, and empirical coherence noise floors across multi-qubit registers.",
   "keywords": [
     "quantum computing",
     "quantum anchor",
@@ -20,18 +20,14 @@
   "publication_date": "2026-10-12",
   "creators": [
     {
-      "name": "Máté Róbert",
-      "affiliation": "Hope Ecosystem"
+      "name": "Róbert, Máté",
+      "affiliation": "Independent Quantum Researcher, Silent Coder Lab",
+      "orcid": "0009-0003-3986-6039"
     }
   ],
   "access_right": "open",
   "upload_type": "software",
   "related_identifiers": [
-    {
-      "relation": "isSupplementTo",
-      "identifier": "https://github.com/silentnoisehun/scs-quantum",
-      "resource_type": "software"
-    },
     {
       "relation": "isSupplementTo",
       "identifier": "https://github.com/silentnoisehun/quantum-anchor",
