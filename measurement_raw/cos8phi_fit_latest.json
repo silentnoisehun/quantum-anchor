@@ -61,5 +61,38 @@
       0.858
     ]
   },
-  "timestamp": "2026-10-15T02:38:55.028997Z"
+  "timestamp": "2026-10-15T02:38:55.028997Z",
+  "provenance": {
+    "source_file": "tesseract_v3_5phase_analysis_final_latest.json",
+    "platform": "IQM Resonance",
+    "backend": "garnet",
+    "job_ids": [
+      "01a11943-739b-7415-8719-1fa493bc9aa8",
+      "01a11ab7-7d8e-77c3-bc67-ae8423181204",
+      "01a11aba-531f-73ae-8da7-c705c729038d",
+      "01a11aba-c6d7-736a-ac56-a5c0525d2cc4",
+      "01a11abb-525f-7534-a1f1-5c98b274d710"
+    ],
+    "counts_c0": [
+      6,
+      3,
+      2,
+      7,
+      1
+    ],
+    "counts_c1": [
+      7,
+      0,
+      0,
+      7,
+      2
+    ],
+    "shots_per_phase": [
+      1024,
+      1024,
+      1024,
+      1024,
+      1024
+    ]
+  }
 }
