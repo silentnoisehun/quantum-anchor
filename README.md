@@ -1,6 +1,13 @@
-﻿# Quantum Anchor
+# Quantum Anchor
 
-**Post-pulse experimental protocol for coherent state anchoring on superconducting QPUs.**
+**Post-pulse experimental protocol for coherent state anchoring on superconducting QPUs: A Methodological Null-Result Study.**
+
+> ### 📄 Publication Manuscript (Journal of Trial and Error Submission)
+> The complete academic manuscript formatted for the **Journal of Trial and Error (JOTE)** is available at:
+> - **LaTeX Manuscript:** [rxiv/jote_manuscript.tex](arxiv/jote_manuscript.tex)
+> - **Title:** *Methodological Obstacles, API Deprecations, and Empirical Null-Results in Weak-Drive Coherence Anchoring on Superconducting Processors*
+> - **Author:** Máté Róbert (Independent Researcher)
+> - **Focus:** Comprehensive documentation of API deprecations (OpenPulse removal, primitive parameter changes), the circuit-tautology retraction, and hardware null-results on IBM Heron (156Q) and IQM Garnet (20Q).
 
 > ## ⚠️ STATUS — Read before citing
 >
