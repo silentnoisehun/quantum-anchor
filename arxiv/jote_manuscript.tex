@@ -21,8 +21,8 @@
 \maketitle
 
 \begin{abstract}
-\noindent \textbf{Context:} The ``Quantum Anchor'' hypothesis postulated that continuous or periodic off-resonant weak microwave drives could dynamically anchor quantum phase and suppress environmental dissipation ($T_1$/$T_2$ decay) during idle times on transmon architectures. \\
-\textbf{Methodological Hurdles:} Originally formulated for low-level analog pulse schedules (\texttt{qiskit.pulse}, \texttt{meas\_level=0}), experimental validation faced critical API deprecations across commercial cloud platforms, notably the phase-out of direct OpenPulse access by IBM and execution entitlement barriers on IQM platforms. Translating the concept into native circuit primitives revealed severe theoretical pitfalls, including amplitude-scaling oversights where nominal ``weak'' perturbations approached full $\pi$-pulse rotations. \\
+\noindent \textbf{Context:} The ``Quantum Anchor'' hypothesis postulated that continuous or periodic off-resonant weak microwave drives could dynamically anchor quantum phase and suppress environmental dissipation ($T_1$/$T_2$ decay) during idle times on transmon architectures~\cite{transmon_coherence,dynamical_decoupling}. \\
+\textbf{Methodological Hurdles:} Originally formulated for low-level analog pulse schedules (\texttt{qiskit.pulse}~\cite{qiskit_pulse}, \texttt{meas\_level=0}), experimental validation faced critical API deprecations across commercial cloud platforms, notably the phase-out of direct OpenPulse access by IBM and execution entitlement barriers on IQM platforms. Translating the concept into native circuit primitives revealed severe theoretical pitfalls, including amplitude-scaling oversights where nominal ``weak'' perturbations approached full $\pi$-pulse rotations. \\
 \textbf{Empirical Results:} We conducted empirical evaluations on a 156-qubit IBM Heron processor (\texttt{ibm\_marrakesh}) and a 20-qubit IQM processor (\texttt{garnet}). On the Heron platform, single-qubit state survival reached $\psi(37\,\text{ns}) = 0.331662$, while both the unperturbed baseline and the active anchor condition yielded 0\% clear retention, failing to demonstrate dissipative mitigation. On IQM Garnet, multi-register entangling configurations achieved high per-plane Bell fidelity (95.4--96.6\%) and an 8-qubit GHZ state with 83.01\% global coherence (Wilson 95\% CI [80.59, 85.18]\%). However, an interferometric 5-phase parameter sweep showed global coherence confined to 0.20--1.37\%, situated at or below the hardware noise floor ($\sim 0.68\%$). \\
 \textbf{Retractions and Null Findings:} We explicitly retract an earlier reported positive result of ``100\% state preservation'', demonstrating that it was an artifact of circuit-level self-inversion (a tautological identity operation) rather than genuine physical preservation. Goodness-of-fit tests reject both the theoretical oscillatory modulation and flat baseline at $p < 0.05$. \\
 \textbf{Conclusions:} We present this study as a rigorous methodological null-result. The physical anchor drive hypothesis remains unsupported by empirical data. We outline clear recommendations for cloud-based quantum characterization, highlighting the critical distinctions between virtual phase rotations, circuit tautologies, and true physical drive dynamics.
@@ -33,11 +33,11 @@
 
 \section{Introduction}
 
-In quantum information processing on superconducting transmon circuits, coherence preservation against environmental dephasing ($T_2^*$) and energy relaxation ($T_1$) remains an essential challenge. The Quantum Anchor hypothesis was conceived as a heuristic state-stabilization strategy: it suggested that applying a calibrated, off-resonant continuous or periodic microwave tone during idling intervals could constrain transmon drift to a preferred manifold without inducing wave-function collapse.
+In quantum information processing on superconducting transmon circuits, coherence preservation against environmental dephasing ($T_2^*$) and energy relaxation ($T_1$) remains an essential challenge~\cite{transmon_coherence,blais_cqed,koch2007transmon}. The Quantum Anchor hypothesis was conceived as a heuristic state-stabilization strategy: it suggested that applying a calibrated, off-resonant continuous or periodic microwave tone during idling intervals could constrain transmon drift to a preferred manifold without inducing wave-function collapse~\cite{dynamical_decoupling,viola1998dd}.
 
 Testing this protocol required access to raw, un-demodulated analog measurements and sub-gate microwave pulse generation. However, cloud-hosted quantum computing has rapidly standardized around rigid, gate-level compilation pipelines and abstracted execution primitives. In this article, we report the complete experimental trajectory of the Quantum Anchor protocol: from its original pulse-level formulation through multiple API deprecations and hardware trials, culminating in unambiguous empirical null results and the retraction of a circuit-level false positive.
 
-The publication of well-documented negative results, failed protocols, and software deprecation impacts is crucial for avoiding duplicated community effort and unmasking systematic measurement artifacts in quantum empirical research.
+The publication of well-documented negative results, failed protocols, and software deprecation impacts is crucial for avoiding duplicated community effort and unmasking systematic measurement artifacts in quantum empirical research~\cite{jote_aims}.
 
 \section{Evidence Classification Framework}
 
@@ -65,21 +65,21 @@ $\mathbb{R}$ & \textbf{RETRACTED} & Prior positive finding shown to stem from sy
 The transition from theoretical formulation to physical execution encountered five structural barriers:
 
 \begin{description}
-  \item[\textbf{F1 --- Removal of Qiskit Pulse:}] The original experimental design depended directly on \texttt{qiskit.pulse} scheduling (\texttt{pulse.drive\_channel}, \texttt{pulse.play}). IBM officially deprecated low-level OpenPulse control for production user-tier backends in 2024, removing direct pulse programming in early 2025. This rendered the original protocol inaccessible on public cloud QPUs.
-  \item[\textbf{F2 --- Primitive Extraction Limits:}] In current Qiskit Runtime architectures (\texttt{SamplerV2} and \texttt{EstimatorV2}), the legacy parameters \texttt{meas\_level=0} (raw integrated IQ vector output) and \texttt{meas\_return='avg'} are non-existent. Output streams are restricted to post-discriminator digital bitstrings (\texttt{meas\_level=2}), obscuring analog intermediate states.
+  \item[\textbf{F1 --- Removal of Qiskit Pulse:}] The original experimental design depended directly on \texttt{qiskit.pulse} scheduling (\texttt{pulse.drive\_channel}, \texttt{pulse.play}). IBM officially deprecated low-level OpenPulse control for production user-tier backends in 2024, removing direct pulse programming in early 2025~\cite{ibm_runtime,qiskit_pulse}. This rendered the original protocol inaccessible on public cloud QPUs.
+  \item[\textbf{F2 --- Primitive Extraction Limits:}] In current Qiskit Runtime architectures (\texttt{SamplerV2} and \texttt{EstimatorV2}), the legacy parameters \texttt{meas\_level=0} (raw integrated IQ vector output) and \texttt{meas\_return='avg'} are non-existent. Output streams are restricted to post-discriminator digital bitstrings (\texttt{meas\_level=2}), obscuring analog intermediate states~\cite{ibm_runtime}.
   \item[\textbf{F3 --- The Amplitude Scaling Oversight:}] Initial analytical specifications designated an anchor amplitude $\text{amp} = 0.08$ with a pulse duration $\tau = 37\,\text{ns}$ as a ``weak non-destructive perturbation''. However, integrating the effective Rabi rotation angle:
   \begin{equation}
     \theta_{\text{Bloch}} = \text{amp} \times \tau = 0.08 \times 37 = 2.96\,\text{rad} \approx 0.942\,\pi
   \end{equation}
   A $2.96\,\text{rad}$ rotation represents $94.2\%$ of a complete state inversion ($\pi$-pulse). Consequently, the drive was not perturbative; it acted as a strong, near-complete spin inversion.
-  \item[\textbf{F4 --- Unphysical Zero-Dissipation Limit ($\gamma=0$):}] Theoretical benchmark models posited an idealized dissipation-free condition ($\gamma=0$). Because all physical superconducting transmon qubits operate under finite dielectric loss and Purcell decay ($T_1 \sim 80\text{--}150\,\mu\text{s}$), this baseline cannot be realized on physical hardware.
+  \item[\textbf{F4 --- Unphysical Zero-Dissipation Limit ($\gamma=0$):}] Theoretical benchmark models posited an idealized dissipation-free condition ($\gamma=0$). Because all physical superconducting transmon qubits operate under finite dielectric loss and Purcell decay ($T_1 \sim 80\text{--}150\,\mu\text{s}$), this baseline cannot be realized on physical hardware~\cite{transmon_coherence,bylander2011noise}.
   \item[\textbf{F5 --- Cloud Entitlement Barriers:}] On the IQM Resonance platform (IQM Garnet 20Q), low-level pulse sweeps require enterprise-level permissions. Submissions targeting the pulse-level \texttt{SweepDefinition} endpoint were rejected with authorization denial errors (\texttt{Personal account does not have pulse-level access enabled}), restricting evaluations strictly to circuit-level operations.
 \end{description}
 
 \section{IBM Hardware Evaluation: ibm\_marrakesh (156Q Heron r2)}
 
 \subsection{Protocol Migration to Fractional Gates}
-To circumvent the deprecation of \texttt{qiskit.pulse}, we migrated the protocol into fractional gate rotations ($\text{RX}(\theta), \text{RZ}(\phi)$) combined with open-system Lindblad dynamics simulation via \texttt{qiskit-dynamics}.
+To circumvent the deprecation of \texttt{qiskit.pulse}, we migrated the protocol into fractional gate rotations ($\text{RX}(\theta), \text{RZ}(\phi)$) combined with open-system Lindblad dynamics simulation via \texttt{qiskit-dynamics}~\cite{mckay2017gates}.
 
 Measurements were executed on the 156-qubit IBM Heron r2 processor (\texttt{ibm\_marrakesh}) with 2000 shots per circuit setting. Single-qubit state survival was tracked under varying parameter depths ($D_0$ through $D_8$).
 
@@ -113,13 +113,13 @@ The $\gamma=0$ implementation applied forward rotations followed immediately by 
 \subsection{Experimental Architecture}
 To assess whether multi-register state correlations could stabilize phase drift without analog pulse access, an 8-qubit register was partitioned into four 2-qubit partitions ($q_0\text{--}q_1, q_2\text{--}q_3, q_4\text{--}q_5, q_6\text{--}q_7$). Native gates on IQM Garnet include $\{\text{CZ}, \text{PRX}, \text{RZ}\}$.
 
-A virtual Z-rotation $\text{RZ}(\theta)$ was introduced with $\theta = 0.4398\,\text{rad}$ ($2\pi \times 4.11\,\text{GHz} \times 37\,\text{ns} \pmod{2\pi}$). Crucially, this operation is realized entirely through phase-offset tracking in control software; it deposits zero physical energy onto the resonator drive line.
+A virtual Z-rotation $\text{RZ}(\theta)$ was introduced with $\theta = 0.4398\,\text{rad}$ ($2\pi \times 4.11\,\text{GHz} \times 37\,\text{ns} \pmod{2\pi}$). Crucially, this operation is realized entirely through phase-offset tracking in control software; it deposits zero physical energy onto the resonator drive line~\cite{mckay2017gates}.
 
 \subsection{Multi-Register GHZ Entanglement (V2 Topology)}
 An inter-partition entangling spine connecting $q_0 \leftrightarrow q_2 \leftrightarrow q_4 \leftrightarrow q_6$ followed by intra-plane Bell extensions was measured on IQM Garnet (Job ID \texttt{01a1162c-717c-77e7-91d9-90ed16c0e591}):
 \begin{itemize}
   \item Per-partition Bell fidelities demonstrated uniform performance across pairs: $P_0 = 95.41\%$, $P_1 = 96.09\%$, $P_2 = 96.19\%$, $P_3 = 96.58\%$.
-  \item An 8-qubit entangled GHZ state reached \textbf{83.01\% global coherence} (850/1024 shots), with a Wilson 95\% confidence interval of $[80.59\%, 85.18\%]$.
+  \item An 8-qubit entangled GHZ state reached \textbf{83.01\% global coherence} (850/1024 shots), with a Wilson 95\% confidence interval~\cite{wilson1927interval} of $[80.59\%, 85.18\%]$.
 \end{itemize}
 This verified that clean multi-qubit coherent states can be established across the device. However, this benchmark reflected standard gate-synthesis performance rather than evidence of autonomous drive-induced stabilization.
 
@@ -172,16 +172,59 @@ All raw bitstring records, calibration logs, execution job IDs, and offline veri
 \bibliographystyle{plain}
 \begin{thebibliography}{99}
 \bibitem{jote_aims}
-van Dongen, N. N., \& Sikorski, J. (2021). The Journal of Trial and Error: A platform for publishing negative and inconclusive findings. \textit{Journal of Trial and Error}, 1(1), 1--4.
+N.~N.~van Dongen and J.~Sikorski,
+``The Journal of Trial and Error: A platform for publishing negative and inconclusive findings,''
+\emph{Journal of Trial and Error}, vol.~1, no.~1, pp.~1--4, 2021.
 
 \bibitem{ibm_runtime}
-IBM Quantum. (2024). \textit{Qiskit Runtime Primitives and Migration Guide}. IBM Documentation.
+IBM Quantum,
+``Qiskit Runtime Primitives and Migration Guide,''
+IBM Documentation, 2024.
+
+\bibitem{qiskit_pulse}
+T.~Alexander et~al.,
+``Qiskit pulse: programming quantum computers through the cloud with pulses,''
+\emph{Quantum Science and Technology}, vol.~5, no.~4, p.~044006, 2020.
 
 \bibitem{transmon_coherence}
-Krantz, P., Kjaergaard, M., Yan, F., Orlando, T. P., Gustavsson, S., \& Oliver, W. D. (2019). A quantum engineer's guide to superconducting qubits. \textit{Applied Physics Reviews}, 6(2), 021318.
+P.~Krantz, M.~Kjaergaard, F.~Yan, T.~P.~Orlando, S.~Gustavsson, and W.~D.~Oliver,
+``A quantum engineer's guide to superconducting qubits,''
+\emph{Applied Physics Reviews}, vol.~6, no.~2, p.~021318, 2019.
+
+\bibitem{blais_cqed}
+A.~Blais, A.~L.~Grimsmo, S.~M.~Girvin, and A.~Wallraff,
+``Circuit quantum electrodynamics,''
+\emph{Reviews of Modern Physics}, vol.~93, no.~2, p.~025005, 2021.
+
+\bibitem{koch2007transmon}
+J.~Koch et~al.,
+``Charge-insensitive qubit design in the transmon regime,''
+\emph{Physical Review A}, vol.~76, no.~4, p.~042319, 2007.
 
 \bibitem{dynamical_decoupling}
-Viola, L., Knill, E., \& Lloyd, S. (1999). Dynamical decoupling of open quantum systems. \textit{Physical Review Letters}, 82(12), 2417.
+L.~Viola, E.~Knill, and S.~Lloyd,
+``Dynamical decoupling of open quantum systems,''
+\emph{Physical Review Letters}, vol.~82, no.~12, pp.~2417--2421, 1999.
+
+\bibitem{viola1998dd}
+L.~Viola and S.~Lloyd,
+``Dynamical suppression of decoherence in two-state quantum systems,''
+\emph{Physical Review A}, vol.~58, no.~4, pp.~2733--2744, 1998.
+
+\bibitem{bylander2011noise}
+J.~Bylander et~al.,
+``Noise spectroscopy through dynamical decoupling with a superconducting flux qubit,''
+\emph{Nature Physics}, vol.~7, no.~7, pp.~565--570, 2011.
+
+\bibitem{mckay2017gates}
+D.~C.~McKay, C.~J.~Wood, S.~Sheldon, J.~M.~Chow, and J.~M.~Gambetta,
+``Efficient Z gates for quantum computing,''
+\emph{Physical Review A}, vol.~96, no.~2, p.~022330, 2017.
+
+\bibitem{wilson1927interval}
+E.~B.~Wilson,
+``Probable inference, the law of succession, and statistical inference,''
+\emph{Journal of the American Statistical Association}, vol.~22, no.~158, pp.~209--212, 1927.
 \end{thebibliography}
 
 \end{document}
