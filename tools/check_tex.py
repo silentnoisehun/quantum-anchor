@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 DOC = Path(sys.argv[1] if len(sys.argv) > 1
-           else r"C:\Users\mater\Documents\orassh\quantum_anchor\arxiv\quantum_anchor_v1.2.tex")
+           else Path(__file__).resolve().parent.parent / "arxiv" / "jote_manuscript.tex")
 
 text = DOC.read_text(encoding="utf-8")
 
