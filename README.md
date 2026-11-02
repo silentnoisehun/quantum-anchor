@@ -286,3 +286,12 @@ access this account actually has.
 ## License
 
 MIT — see [`LICENSE`](LICENSE).
+
+---
+
+## 🤝 Contact & Research Collaboration
+
+- **Author:** Máté Róbert
+- **Email:** `materobi86@gmail.com`
+- **GitHub:** [`silentnoisehun`](https://github.com/silentnoisehun)
+- **Status:** **Open to research collaborations, academic partnerships, and joint QPU experimental campaigns** *(Nyitott vagyok kutatási együttműködésekre és közös publikációkra)*.

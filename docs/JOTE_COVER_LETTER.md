@@ -2,7 +2,7 @@
 
 **Date:** November 2026  
 **To:** The Editorial Board, *Journal of Trial and Error* (ISSN: 2667-1204)  
-**From:** Máté Róbert, Independent Quantum Researcher, Budapest, Hungary (`silentnoisehun@gmail.com`)  
+**From:** Máté Róbert, Independent Quantum Researcher, Budapest, Hungary (`materobi86@gmail.com`)  
 **Subject:** Submission of Manuscript: *"Methodological Obstacles, API Deprecations, and Empirical Null-Results in Weak-Drive Coherence Anchoring on Superconducting Processors"*
 
 ---
@@ -37,5 +37,10 @@ Sincerely,
 **Máté Róbert**  
 Independent Quantum Researcher  
 Budapest, Hungary  
-Email: `silentnoisehun@gmail.com`  
+Email: `materobi86@gmail.com`  
 GitHub: [`silentnoisehun`](https://github.com/silentnoisehun)
+
+
+---
+**Contact & Collaboration:** Máté Róbert — `materobi86@gmail.com`  
+*Open to research collaborations and academic partnerships / Nyitott vagyok kutatási együttműködésekre.*
