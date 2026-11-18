@@ -1,6 +1,6 @@
 {
   "title": "Methodological Obstacles, API Deprecations, and Empirical Null-Results in Weak-Drive Coherence Anchoring on Superconducting Processors",
-  "description": "Empirical evaluation and methodological null-result of the Quantum Anchor protocol on IBM Quantum (156-qubit Heron ibm_marrakesh) and IQM Resonance (20-qubit Garnet) superconducting processors. Evaluates API deprecations (removal of OpenPulse and analog IQ access), circuit-tautology traps, and empirical coherence noise floors across multi-qubit registers.",
+  "description": "Empirical evaluation and methodological null-result of the Quantum Anchor protocol on IBM Quantum (156-qubit Heron ibm_marrakesh) and IQM Resonance (20-qubit Garnet) superconducting processors. Evaluates API deprecations (removal of OpenPulse and analog IQ access), circuit-tautology traps, and empirical coherence noise floors across multi-qubit registers.\n\nTesseract-V3 five-phase sweep (IQM Garnet, 2026-10-08, one 1024-shot job per phase; counts 13, 3, 2, 14, 3; total 35/5120 = 0.684%). Chi-square on counts (not percentages): vs flat 20.29 (df = 4, p = 4.4e-4), so the five phases differ; vs fitted cos(8φ) 8.53 (df = 3 for two fitted parameters, p = 0.036); vs the parameter-free ideal prediction (1 + cos 8φ)/128, 11.44 (df = 5, Monte Carlo p = 0.047). Phases 2 and 3 have identical predictions but gave 2 vs 14 counts (exact p = 0.0042). With one job per phase, phase is confounded with job and calibration, so the cause of the differences is not identified. Evidence grade: C, cos(8φ) modulation not established on hardware.\n\nErratum 2026-11-18: earlier versions computed both chi-square values on percentages (1.9810 and 0.8331) and printed the ideal prediction a factor of two too high (maximum 3.125% instead of 1.5625%). The \"Phase 0 repeat\" entries re-download the same job and are not an independent repeat. Thanks to K. Indahl (Heuremen LLC) for the independent recount.",
   "keywords": [
     "quantum computing",
     "quantum anchor",
@@ -13,15 +13,17 @@
     "IBM Quantum",
     "negative result",
     "reproducibility",
-    "measurement ledger"
+    "measurement ledger",
+    "erratum",
+    "chi-square on counts"
   ],
   "license": "MIT",
-  "version": "1.3.0",
-  "publication_date": "2026-11-02",
+  "version": "1.4.0",
+  "publication_date": "2026-11-18",
   "creators": [
     {
       "name": "Róbert, Máté",
-      "affiliation": "Independent Quantum Researcher, Silent Coder Lab",
+      "affiliation": "Hope Ecosystem",
       "orcid": "0009-0003-3986-6039"
     }
   ],
