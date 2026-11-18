@@ -164,7 +164,7 @@ analysis = {
         "chi2_flat": round(float(chi2_flat), 4),
         "model": f"coherence(phi) = {A:.4f} * cos(8*phi) + {B:.4f}"
     },
-    "verdict": f"Cos(8phi) fit: amplitude={A:.2f}%, offset={B:.2f}%, R^2={r2:.3f}. Amplitude compatible with noise floor (theoretical max 3.125%). Evidence Grade: C — hardware noise dominates signal.",
+    "verdict": f"Cos(8phi) fit: amplitude={A:.2f}%, offset={B:.2f}%, R^2={r2:.3f}. Amplitude compatible with noise floor (theoretical max 1.5625%). Evidence Grade: C — hardware noise dominates signal.",
     "evidence_grade": "C",
     "physical_anchor_compensation_proven": False,
     "global_20_reality_sync_proven": False,

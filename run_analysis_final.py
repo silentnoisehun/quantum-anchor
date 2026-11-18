@@ -110,7 +110,7 @@ elif abs(A) > 1.0 and r2 > 0.3:
     verdict_text = 'Moderate cos(8φ) signal above noise.'
 else:
     grade = 'C'
-    verdict_text = 'Cos(8φ) fit amplitude compatible with noise floor (theoretical max 3.125%). Evidence Grade: C — hardware noise dominates signal.'
+    verdict_text = 'Cos(8φ) fit amplitude compatible with noise floor (theoretical max 1.5625%). Evidence Grade: C — hardware noise dominates signal.'
 
 verdict = f'Cos(8phi) fit: amplitude={A:.2f}%, offset={B:.2f}%, R^2={r2:.3f}. {verdict_text}'
 

@@ -1,0 +1,145 @@
+{
+  "metadata": {
+    "recount_id": "ERRATA_2026-11-18_counts_recount",
+    "date_utc": "2026-11-18T16:50:00Z",
+    "date_budapest": "2026-11-18T17:50:00+01:00",
+    "author": "Maya, on request of Lead Engineer Máté Róbert",
+    "protocol": "tesseract_5phase_cos8phi",
+    "platform": "IQM Resonance",
+    "backend": "garnet",
+    "backend_qubits": 20,
+    "theoretical_max_pct": 1.5625,
+    "random_noise_floor_pct": 0.78125
+  },
+  "phases": [
+    {
+      "phase_idx": 0,
+      "phi_rad": 0.0,
+      "c0": 6,
+      "c1": 7,
+      "total_coherence_counts": 13,
+      "shots": 1024,
+      "global_coherence_pct": 1.2695,
+      "wilson_ci95_pct": [
+        0.743,
+        2.16
+      ],
+      "ideal_expected_counts": 16.0,
+      "job_id": "01a11943-739b-7415-8719-1fa493bc9aa8",
+      "note": "Repeat run from 06:09 UTC; original 08:35 run yielded 8/1024"
+    },
+    {
+      "phase_idx": 1,
+      "phi_rad": 1.2566370614359172,
+      "c0": 3,
+      "c1": 0,
+      "total_coherence_counts": 3,
+      "shots": 1024,
+      "global_coherence_pct": 0.293,
+      "wilson_ci95_pct": [
+        0.1,
+        0.858
+      ],
+      "ideal_expected_counts": 1.5279,
+      "job_id": "01a11ab7-7d8e-77c3-bc67-ae8423181204",
+      "note": null
+    },
+    {
+      "phase_idx": 2,
+      "phi_rad": 2.5132741228718345,
+      "c0": 2,
+      "c1": 0,
+      "total_coherence_counts": 2,
+      "shots": 1024,
+      "global_coherence_pct": 0.1953,
+      "wilson_ci95_pct": [
+        0.054,
+        0.709
+      ],
+      "ideal_expected_counts": 10.4721,
+      "job_id": "01a11aba-531f-73ae-8da7-c705c729038d",
+      "note": null
+    },
+    {
+      "phase_idx": 3,
+      "phi_rad": 3.7699111843077517,
+      "c0": 7,
+      "c1": 7,
+      "total_coherence_counts": 14,
+      "shots": 1024,
+      "global_coherence_pct": 1.3672,
+      "wilson_ci95_pct": [
+        0.816,
+        2.282
+      ],
+      "ideal_expected_counts": 10.4721,
+      "job_id": "01a11aba-c6d7-736a-ac56-a5c0525d2cc4",
+      "note": null
+    },
+    {
+      "phase_idx": 4,
+      "phi_rad": 5.026548245743669,
+      "c0": 1,
+      "c1": 2,
+      "total_coherence_counts": 3,
+      "shots": 1024,
+      "global_coherence_pct": 0.293,
+      "wilson_ci95_pct": [
+        0.1,
+        0.858
+      ],
+      "ideal_expected_counts": 1.5279,
+      "job_id": "01a11abb-525f-7534-a1f1-5c98b274d710",
+      "note": null
+    }
+  ],
+  "pooled": {
+    "total_coherence_counts": 35,
+    "total_shots": 5120,
+    "mean_coherence_pct": 0.6836,
+    "wilson_ci95_pct": [
+      0.492,
+      0.949
+    ],
+    "random_noise_floor_pct": 0.78125
+  },
+  "statistical_tests": {
+    "flat_model_chi2": {
+      "chi2": 20.2857,
+      "df": 4,
+      "p_value": 0.0004385404670545821,
+      "verdict": "Flat rate rejected (p = 0.00044). The 5 phases show statistically significant differences in raw counts."
+    },
+    "cos8phi_fit_chi2": {
+      "amplitude_pct": 0.5113,
+      "offset_pct": 0.6836,
+      "r_squared": 0.4827,
+      "chi2": 8.5312,
+      "df": 3,
+      "p_value": 0.0362,
+      "verdict": "cos(8phi) fit rejected at alpha=0.05 (p = 0.036). R^2 = 0.4827 indicates moderate correlation but fails fit test."
+    },
+    "ideal_model_chi2": {
+      "formula": "(1 + cos(8phi)) / 128",
+      "chi2": 11.442,
+      "df": 5,
+      "asymptotic_p_value": 0.0433,
+      "monte_carlo_p_value": 0.0485,
+      "verdict": "Ideal model marginally rejected at alpha=0.05 (MC p = 0.047), driven by Phase 2 deficit."
+    },
+    "phase2_vs_phase3_binomial": {
+      "phase2_counts": 2,
+      "phase3_counts": 14,
+      "total_counts": 16,
+      "null_probability": 0.5,
+      "p_value_two_sided": 0.00418,
+      "verdict": "Phase 2 vs Phase 3 counts (2 vs 14) differ significantly (p = 0.0042), but were executed as separate jobs 11 seconds apart."
+    }
+  },
+  "verdict": {
+    "summary": "Five phases differ statistically (chi2 = 20.29, p < 0.001), but cos(8phi) modulation is NOT established (p = 0.036). Observed rates (0.68% mean) are consistent with random 8-bit noise floor (0.78%). Phase 2 vs 3 asymmetry (2 vs 14) is confounded by inter-job drift.",
+    "evidence_grade": "C",
+    "physical_anchor_compensation_proven": false,
+    "global_20_reality_sync_proven": false
+  }
+}

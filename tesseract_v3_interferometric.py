@@ -7,9 +7,10 @@ PROBLÉMA (V2): A Z-bázisú mérés vak a relatív fázisra.
   |GHZ> = (|0^8> + e^{i8phi}|1^8>)/sqrt(2)  ->  P(0^8) = P(1^8) = 0.5  minden phi-re.
 
 MEGOLDÁS (V3): H-kapuk minden qubitre MÉRÉS ELŐTT.
-  H^x8 |GHZ(phi)> = sum_x (1/√256) [1 + (-1)^{|x|} e^{i8phi}] |x>
+  H^x8 |GHZ(phi)> = sum_x (1/√512) [1 + (-1)^{|x|} e^{i8phi}] |x>
   A 8-qubites all-zero és all-one populációk most phi-tól függően változnak:
-  P(0^8) = P(1^8) = (1/256) |1 + e^{i8phi}|² = (1/128)(1 + cos(8phi))
+  P(0^8) = P(1^8) = (1/512) |1 + e^{i8phi}|² = (1/256)(1 + cos(8phi))
+  P(0^8) + P(1^8) = (1/128)(1 + cos(8phi))
 
 Ez megkülönbözteti az 5 fázis-valóságot (phi_k = 2πk/5, k=0..4).
 
@@ -309,11 +310,11 @@ def run_phase_sweep(backend_name: str = "garnet", shots: int = 1024,
               f"koherencia={r['global_coherence_pct']:.2f}% "
               f"(0^8={r['c0']}, 1^8={r['c1']}, shots={r['returned']})")
 
-    # Elméleti predikció: P(0^8) = P(1^8) = (1/128)(1 + cos(8phi))
+    # Elméleti predikció: P(0^8) = P(1^8) = (1/256)(1 + cos(8phi))
     print("\nElméleti predikció (cos(8phi) moduláció):")
     for k in range(5):
         phi = 2 * math.pi * k / 5.0
-        p_theory = (1 + math.cos(8 * phi)) / 128.0 * 100  # %
+        p_theory = (1 + math.cos(8 * phi)) / 256.0 * 100  # %
         print(f"  k={k}: P(0^8)=P(1^8)={p_theory:.3f}% -> sum={2*p_theory:.3f}%")
 
     return results

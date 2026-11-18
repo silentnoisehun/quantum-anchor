@@ -28,7 +28,7 @@ The original pulse-level protocol (`qiskit.pulse`, `meas_level=0`) was **depreca
 | **Borg γ=0.5 anchor ON** | 87.74% balance, 0% clear | 🔬 **HARDWARE MEASURED** | IBM `ibm_marrakesh` |
 | **Tesseract 4-plane (IQM Garnet)** | Per-plane 95-96%, Global 11.62% | 🔬 **HARDWARE MEASURED** | IQM Resonance Garnet 20Q |
 | **Tesseract-V2 inter-plane backbone** | **83.01%** global 8-qubit GHZ, CI [80.59, 85.18] vs V1 [9.80, 13.73] | 🔬 **HARDWARE MEASURED** | IQM Resonance Garnet 20Q |
-| **Tesseract-V3 5-phase interferometric sweep** | 5/5 phases complete; 0.2-1.4%; χ²(cos)=30.72 (p=6.4×10⁻⁶), χ²(flat)=20.29 (p=5.2×10⁻⁴), R²=0.48, fitted amp 0.51% vs 1.56% (3× smaller) | ❌ **NOT PROVEN (both models rejected, noise-dominated)** | IQM Resonance Garnet 20Q |
+| **Tesseract-V3 5-phase interferometric sweep** | 5/5 phases complete; 0.2-1.4%; χ² on counts: flat 20.29 (p=4.4×10⁻⁴), fitted cos(8φ) 8.53 (df 3, p=0.036), ideal (1+cos 8φ)/128 11.44 (df 5, MC p=0.047), R²=0.48, fitted amp 0.51% vs ideal 0.78% | ❌ **NOT PROVEN (flat rejected, cos(8φ) not established)** | IQM Resonance Garnet 20Q |
 
 **The central claim — that a weak drive can compensate T1/T2 dissipation — is
 NOT proven by any measurement in this paper.** The two anchor-on/off rows above
@@ -356,21 +356,19 @@ with the noise floor **above** the predicted signal (0.3–3.1%):
 
 | phase_idx | φ (rad) | theory P(0⁸)+P(1⁸) | measured | Wilson 95% CI |
 |---|---|---|---|---|
-| 0 | 0.000 | 3.125% | 1.27% | [0.74, 2.16] |
-| 1 | 1.257 | 1.078% | 0.29% | [0.10, 0.86] |
-| 2 | 2.513 | 0.375% | 0.20% | [0.05, 0.71] |
-| 3 | 3.770 | 0.375% | 1.37% | [0.82, 2.28] |
-| 4 | 5.027 | 1.078% | 0.29% | [0.10, 0.86] |
+| 0 | 0.000 | 1.563% | 1.27% | [0.74, 2.16] |
+| 1 | 1.257 | 0.149% | 0.29% | [0.10, 0.86] |
+| 2 | 2.513 | 1.023% | 0.20% | [0.05, 0.71] |
+| 3 | 3.770 | 1.023% | 1.37% | [0.82, 2.28] |
+| 4 | 5.027 | 0.149% | 0.29% | [0.10, 0.86] |
 
-Goodness-of-fit settles it: the theoretical cos(8φ) curve is **NOT rejected**
-(χ² = 2.99, df = 4, p = 5.60×10⁻¹), and a **flat, unmodulated response cannot
-be rejected** either (χ² = 1.99, df = 4, p = 7.38×10⁻¹).
+The summed all-zero/all-one rate was 0.20–1.37% per phase (35/5120 = 0.68% overall, Wilson 95% CI [0.49, 0.95]%). For the circuit as built, the ideal prediction is $(1+\cos 8\phi)/128$, i.e. 1.56, 0.15, 1.02, 1.02 and 0.15% (expected counts 16.0, 1.5, 10.5, 10.5, 1.5 per 1024 shots). Its mean over the five phases, 0.78%, equals the rate of a fully random 8-bit output (2/256). All tests are on counts. A flat, phase-independent rate is rejected ($\chi^2=20.29$, df 4, $p=4.4\times10^{-4}$). A fitted $A\cos 8\phi+B$ curve also fits poorly ($\chi^2=8.53$, df 3, $p=0.036$). Against the parameter-free ideal prediction the agreement is marginal ($\chi^2=11.44$, df 5, Monte Carlo $p=0.047$), driven by phase 2.
 
-> ❌ **The cos(8φ) modulation is NOT established on hardware.** The five phases
-> are not statistically distinguishable at 1024 shots/phase. The measured
-> ordering also does not follow theory: phase 3 should be among the lowest
-> (0.375%) and measured highest (1.37%), while phase 0 should be highest
-> (3.125%) and measured 1.27%.
+> ❌ **The cos(8φ) modulation is NOT established on hardware.** The phases
+> differ (flat rejected), but not in the cos(8φ) pattern. Phases 2 and 3 share
+> the same prediction (1.02%) but measured 0.20% and 1.37% (exact $p = 0.0042$);
+> phase 0 (predicted 1.56%) measured 1.27%. With one job per phase, phase is
+> confounded with job and calibration.
 
 The R² = 0.49 of the cos(8φ) fit is **not** evidence of modulation: the fitted
 amplitude is 0.51% vs theoretical 1.56% (3× smaller). R² is positive but low;

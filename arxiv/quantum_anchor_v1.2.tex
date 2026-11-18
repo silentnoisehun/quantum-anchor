@@ -212,8 +212,9 @@ Global $00000000 + 11111111$ & 11.62\% & $\times$ \\
 Tesseract-V2 global GHZ coherence & 83.01\% (850/1024) & $\mathfrak{H}$ \\
 Tesseract-V2 Wilson 95\% CI & [80.59, 85.18]\% & $\mathfrak{H}$ \\
 Tesseract-V3 5-phase global coherence & 0.20--1.37\% & $\triangle$ \\
-$\chi^2$ fit: theoretical $\cos(8\phi)$ & 30.72 (df 4), $p=6.4\times10^{-6}$ & $\times$ \\
-$\chi^2$ fit: flat / no modulation & 20.29 (df 4), $p=5.2\times10^{-4}$ & $\times$ \\
+$\chi^2$ (counts): flat / no modulation & 20.29 (df 4), $p=4.4\times10^{-4}$ & $\times$ \\
+$\chi^2$ (counts): fitted $A\cos 8\phi+B$ & 8.53 (df 3), $p=0.036$ & $\times$ \\
+$\chi^2$ (counts): ideal $(1+\cos 8\phi)/128$ & 11.44 (df 5), MC $p=0.047$ & $\times$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -235,7 +236,8 @@ measured.
 The V1/V2 readout is Z-basis, and an 8-qubit GHZ state is \emph{blind} to
 relative phase there: $P(0^8)=P(1^8)=1/2$ for every $\phi$, so the five
 phase-realities are indistinguishable by construction. V3 inserts $H^{\otimes 8}$
-before readout, giving $P(0^8)=P(1^8)=(1/128)(1+\cos 8\phi)$, which does vary
+before readout, giving $P(0^8)=P(1^8)=(1/256)(1+\cos 8\phi)$, i.e.
+$P(0^8)+P(1^8)=(1+\cos 8\phi)/128$, which does vary
 with $\phi$. In simulation this works; on hardware the signal did not survive.
 
 \begin{table}[h]
@@ -244,33 +246,43 @@ with $\phi$. In simulation this works; on hardware the signal did not survive.
 \toprule
 phase\_idx & $\phi$ (rad) & theory & measured & Wilson 95\% CI \\
 \midrule
-0 & 0.0000 & 3.125\% & 1.27\% & [0.74, 2.16] \\
-1 & 1.2566 & 1.078\% & 0.29\% & [0.10, 0.86] \\
-2 & 2.5133 & 0.375\% & 0.20\% & [0.05, 0.71] \\
-3 & 3.7699 & 0.375\% & 1.37\% & [0.82, 2.28] \\
-4 & 5.0265 & 1.078\% & 0.29\% & [0.10, 0.86] \\
+0 & 0.0000 & 1.563\% & 1.27\% & [0.74, 2.16] \\
+1 & 1.2566 & 0.149\% & 0.29\% & [0.10, 0.86] \\
+2 & 2.5133 & 1.023\% & 0.20\% & [0.05, 0.71] \\
+3 & 3.7699 & 1.023\% & 1.37\% & [0.82, 2.28] \\
+4 & 5.0265 & 0.149\% & 0.29\% & [0.10, 0.86] \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textbf{Interpretation.} Global coherence measured 0.2--1.4\%, with the hardware
-noise floor \textbf{above} the predicted signal (0.3--3.1\%). Goodness-of-fit
-\textbf{rejects} the theoretical $\cos(8\phi)$ curve ($\chi^2=30.72$, df 4,
-$p=6.40\times10^{-6}$) and \textbf{rejects} a flat, unmodulated response
-($\chi^2=20.29$, df 4, $p=5.20\times10^{-4}$).
+\textbf{Interpretation.} The summed all-zero/all-one rate was 0.20--1.37\% per
+phase (35/5120 = 0.68\% overall, Wilson 95\% CI [0.49, 0.95]\%). For the circuit
+as built, the ideal prediction is $(1+\cos 8\phi)/128$, i.e. 1.56, 0.15, 1.02,
+1.02 and 0.15\% (expected counts 16.0, 1.5, 10.5, 10.5, 1.5 per 1024 shots). Its
+mean over the five phases, 0.78\%, equals the rate of a fully random 8-bit
+output ($2/256$), so the aggregate rate cannot separate signal from noise. All
+tests are on counts. A flat, phase-independent rate is rejected
+($\chi^2=20.29$, df 4, $p=4.4\times10^{-4}$; exact multinomial $p=4.9\times10^{-4}$).
+A fitted $A\cos 8\phi+B$ curve also fits poorly ($\chi^2=8.53$, df 3, $p=0.036$;
+binomial deviance 10.35, parametric bootstrap $p=0.022$). Against the
+parameter-free ideal prediction the agreement is marginal ($\chi^2=11.44$, df 5,
+Monte Carlo $p=0.047$); the deviation comes almost entirely from phase 2
+(2 observed vs 10.5 expected).
 
-\textbf{The $\cos(8\phi)$ modulation is NOT established on hardware.} The five
-phases are not statistically distinguishable at 1024 shots per phase. The
-measured ordering also does not follow theory: phase 3 should be among the
-lowest (0.375\%) and measured highest (1.37\%), while phase 0 should be highest
-(3.125\%) and measured 1.27\%.
+\textbf{The $\cos(8\phi)$ modulation is NOT established on hardware.} Phases 2
+and 3 have identical predicted rates under any $\cos 8\phi$ model, yet gave 2 and
+14 counts (exact binomial $p=0.0042$). With one 1024-shot job per phase, phase
+is confounded with job and calibration, so the source of the phase-to-phase
+differences cannot be identified from these data.
 
 The $R^2=0.48$ of the $\cos(8\phi)$ fit is \emph{not} evidence of modulation: the
-fitted amplitude is 0.51\% vs theoretical 1.56\% (3$\times$ smaller). $R^2$ is
-positive but low; the $\chi^2$ tests show both the theoretical curve and the
-flat model are rejected ($p<0.05$).
+fitted amplitude is 0.51\% vs the ideal 0.78\% (about $1.5\times$ smaller), and the
+fitted offset 0.68\% vs the ideal 0.78\%.
 
-Phase 0 repeat (2026-10-12) confirms consistency: Job \texttt{01a11943-739b-7415-8719-1fa493bc9aa8} DONE, 1.27\% global coherence (c0=6, c1=7), Wilson 95\% CI [0.74\%, 2.16\%]. Credits exhausted on phases 1-4. The 2026-10-08/09 5-phase sweep remains the definitive dataset.
+No independent repeat exists: later entries re-download the same phase-0 job
+(\texttt{01a11943-739b-7415-8719-1fa493bc9aa8}, c0=6, c1=7). Credits were exhausted
+before phases 1--4 could be repeated. The 2026-10-08 sweep (one job per phase) is
+the only dataset.
 
 Full job IDs and raw counts: VALIDATION.md $\S$7.12.
 

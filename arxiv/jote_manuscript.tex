@@ -132,11 +132,11 @@ Because projective Z-basis measurements on GHZ states are insensitive to relativ
 \toprule
 \textbf{Phase Index} & \textbf{Phase $\phi$ (rad)} & \textbf{Theoretical Signal} & \textbf{Measured Coherence} & \textbf{Wilson 95\% CI} \\
 \midrule
-0 & 0.0000 & 3.125\% & 1.27\% & [0.74, 2.16]\% \\
-1 & 1.2566 & 1.078\% & 0.29\% & [0.10, 0.86]\% \\
-2 & 2.5133 & 0.375\% & 0.20\% & [0.05, 0.71]\% \\
-3 & 3.7699 & 0.375\% & 1.37\% & [0.82, 2.28]\% \\
-4 & 5.0265 & 1.078\% & 0.29\% & [0.10, 0.86]\% \\
+0 & 0.0000 & 1.563\% & 1.27\% & [0.74, 2.16]\% \\
+1 & 1.2566 & 0.149\% & 0.29\% & [0.10, 0.86]\% \\
+2 & 2.5133 & 1.023\% & 0.20\% & [0.05, 0.71]\% \\
+3 & 3.7699 & 1.023\% & 1.37\% & [0.82, 2.28]\% \\
+4 & 5.0265 & 0.149\% & 0.29\% & [0.10, 0.86]\% \\
 \bottomrule
 \end{tabular}
 \caption{Hardware measurement of 5-phase interferometric readout on IQM Garnet.}
@@ -146,10 +146,10 @@ Because projective Z-basis measurements on GHZ states are insensitive to relativ
 \noindent \textbf{Statistical Evaluation:}
 \begin{enumerate}
   \item Global state survival measured between $0.20\%$ and $1.37\%$.
-  \item The physical noise floor of the readout ($\sim 0.68\%$) equals or exceeds the predicted interferometric contrast.
-  \item Goodness-of-fit testing against the theoretical $\cos(8\phi)$ model yields $\chi^2 = 30.72$ ($\text{df}=4, p = 6.4 \times 10^{-6}$), soundly \textbf{rejecting} agreement with theoretical predictions.
-  \item Testing against an unmodulated flat noise model similarly yields $\chi^2 = 20.29$ ($\text{df}=4, p = 5.2 \times 10^{-4}$), indicating that fluctuations across shots reflect drift rather than coherent phase modulation.
-  \item The empirical ordering diverged completely from theory: Phase 3 (theoretically $0.375\%$) registered the highest count ($1.37\%$), while Phase 0 (theoretically $3.125\%$) registered only $1.27\%$.
+  \item The mean measured rate (0.68\%) is close to both the ideal phase-averaged rate and the fully random rate (both 0.78\%), so it cannot serve as a noise-floor estimate.
+  \item Against the parameter-free ideal prediction $(1+\cos 8\phi)/128$, $\chi^2 = 11.44$ (df = 5, Monte Carlo $p = 0.047$): marginal, driven by phase 2.
+  \item Testing against an unmodulated flat noise model yields $\chi^2 = 20.29$ (df = 4, $p = 4.4\times10^{-4}$): the phases differ, but with one job per phase the cause (phase, calibration or job) cannot be identified.
+  \item Phases 2 and 3 share the same prediction (1.02\%) but measured 0.20\% and 1.37\% (exact $p = 0.0042$); phase 0 (predicted 1.56\%) measured 1.27\%.
 \end{enumerate}
 
 \section{Discussion and Methodological Lessons}
